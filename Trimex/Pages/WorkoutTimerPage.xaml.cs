@@ -43,7 +43,7 @@ public partial class WorkoutTimerPage : ContentPage
         base.OnDisappearing();
     }
 
-    private async void OnStateTapped(object? sender, TappedEventArgs e)
+    private void OnTimerActionClicked(object? sender, EventArgs e)
     {
         switch (_state)
         {
@@ -59,7 +59,19 @@ public partial class WorkoutTimerPage : ContentPage
                 ResumeWorkout();
                 break;
             case WorkoutTimerState.Completed:
-                await Navigation.PopAsync();
+                break;
+        }
+    }
+
+    private void OnStateTapped(object? sender, TappedEventArgs e)
+    {
+        switch (_state)
+        {
+            case WorkoutTimerState.Running:
+                PauseWorkout();
+                break;
+            case WorkoutTimerState.Paused:
+                ResumeWorkout();
                 break;
         }
     }
@@ -140,6 +152,7 @@ public partial class WorkoutTimerPage : ContentPage
             _state = WorkoutTimerState.Running;
             _preCountdownStartedAtUtc = null;
             _currentRunStartedAtUtc = DateTimeOffset.UtcNow;
+            ProgressRing.Progress = 0;
             UpdateVisualState();
             return;
         }
@@ -213,36 +226,47 @@ public partial class WorkoutTimerPage : ContentPage
         switch (_state)
         {
             case WorkoutTimerState.Idle:
-                StateValueLabel.Text = ">";
-                StateHintLabel.Text = "Tap play to start the 10-second countdown";
+                StateValueLabel.Text = string.Empty;
+                StateHintLabel.Text = string.Empty;
                 PausedTimeLabel.IsVisible = false;
                 ProgressRing.Progress = 0;
+                TimerActionButton.Text = "PLAY";
+                TimerActionButton.IsEnabled = true;
+                TimerActionButton.IsVisible = true;
+                TimerDisplayLayout.IsVisible = false;
                 break;
             case WorkoutTimerState.PreCountdown:
                 StateValueLabel.Text = "10";
                 StateHintLabel.Text = "Get ready";
                 PausedTimeLabel.IsVisible = false;
+                TimerActionButton.IsVisible = false;
+                TimerDisplayLayout.IsVisible = true;
                 break;
             case WorkoutTimerState.Running:
                 StateValueLabel.Text = _configuration.CountsDown
                     ? FormatClock(TimeSpan.FromSeconds(_configuration.DurationSeconds) - GetElapsed())
                     : FormatClock(GetElapsed());
-                StateHintLabel.Text = "Tap the timer to pause";
+                StateHintLabel.Text = "Tap the time to pause";
                 PausedTimeLabel.IsVisible = false;
+                TimerActionButton.IsVisible = false;
+                TimerDisplayLayout.IsVisible = true;
                 break;
             case WorkoutTimerState.Paused:
-                StateValueLabel.Text = "||";
-                StateHintLabel.Text = "Tap play to continue";
-                PausedTimeLabel.Text = _configuration.CountsDown
-                    ? FormatClock(TimeSpan.FromSeconds(_configuration.DurationSeconds) - _elapsedBeforeCurrentRun)
-                    : FormatClock(_elapsedBeforeCurrentRun);
-                PausedTimeLabel.IsVisible = true;
+                StateValueLabel.Text = string.Empty;
+                StateHintLabel.Text = string.Empty;
+                PausedTimeLabel.IsVisible = false;
+                TimerActionButton.Text = "RESUME";
+                TimerActionButton.IsEnabled = true;
+                TimerActionButton.IsVisible = true;
+                TimerDisplayLayout.IsVisible = false;
                 break;
             case WorkoutTimerState.Completed:
                 StateValueLabel.Text = _configuration.CountsDown ? "00:00" : FormatClock(_elapsedBeforeCurrentRun);
-                StateHintLabel.Text = "Workout completed. Tap to go back.";
+                StateHintLabel.Text = "Workout completed. Go back to start a new one.";
                 PausedTimeLabel.IsVisible = false;
                 ProgressRing.Progress = 1;
+                TimerActionButton.IsVisible = false;
+                TimerDisplayLayout.IsVisible = true;
                 break;
         }
     }

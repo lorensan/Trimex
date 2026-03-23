@@ -2,9 +2,12 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:controls="clr-namespace:Trimex.Controls"
-             x:Class="Trimex.Pages.WorkoutTimerPage">
+             x:Class="Trimex.Pages.WorkoutTimerPage"
+             BackgroundColor="{StaticResource AppBackground}">
 
-    <Grid Padding="24,20,24,24" RowDefinitions="Auto,*,Auto">
+    <Grid Padding="24,20,24,24"
+          RowDefinitions="Auto,*,Auto"
+          BackgroundColor="{StaticResource AppBackground}">
         <VerticalStackLayout Grid.Row="0" Spacing="8">
             <Label x:Name="WorkoutTitleLabel"
                    Style="{StaticResource PageTitleStyle}" />
@@ -22,9 +25,10 @@
                       HeightRequest="320">
                     <controls:CircularProgressView x:Name="ProgressRing" />
 
-                    <VerticalStackLayout HorizontalOptions="Center"
-                                         VerticalOptions="Center"
-                                         Spacing="8">
+                    <VerticalStackLayout x:Name="TimerDisplayLayout"
+                                          HorizontalOptions="Center"
+                                          VerticalOptions="Center"
+                                          Spacing="8">
                         <Label x:Name="StateValueLabel"
                                Style="{StaticResource TimerValueStyle}">
                             <Label.GestureRecognizers>
@@ -33,13 +37,21 @@
                         </Label>
 
                         <Label x:Name="StateHintLabel"
-                               Style="{StaticResource HeroSubtitleStyle}" />
+                                Style="{StaticResource HeroSubtitleStyle}" />
 
                         <Label x:Name="PausedTimeLabel"
                                Style="{StaticResource ValueTextStyle}"
                                IsVisible="False"
-                               HorizontalTextAlignment="Center" />
+                                HorizontalTextAlignment="Center" />
                     </VerticalStackLayout>
+
+                    <Button x:Name="TimerActionButton"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            WidthRequest="120"
+                            Text="PLAY"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Clicked="OnTimerActionClicked" />
                 </Grid>
 
                 <VerticalStackLayout x:Name="RoundSection"

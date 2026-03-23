@@ -1,20 +1,35 @@
+using Microsoft.Extensions.DependencyInjection;
+
 namespace Trimex
 {
     public partial class App : Application
     {
-        private readonly AppShell _appShell;
+        private readonly IServiceProvider _services;
 
-        public App(AppShell appShell, Services.IDatabaseInitializer databaseInitializer)
+        public App(IServiceProvider services, Services.IDatabaseInitializer databaseInitializer)
         {
             InitializeComponent();
-            _appShell = appShell;
+            _services = services;
 
-            databaseInitializer.InitializeAsync().GetAwaiter().GetResult();
+            _ = InitializeDatabaseAsync(databaseInitializer);
         }
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(_appShell);
+            var appShell = _services.GetRequiredService<AppShell>();
+            return new Window(appShell);
+        }
+
+        private static async Task InitializeDatabaseAsync(Services.IDatabaseInitializer databaseInitializer)
+        {
+            try
+            {
+                await databaseInitializer.InitializeAsync();
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Database initialization failed: {ex}");
+            }
         }
     }
 }
