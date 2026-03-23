@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Trimex.Pages.HomePage"
+             Title="Trimex">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24,24,24,40" Spacing="20">
+            <Label Text="TRIMEX"
+                   Style="{StaticResource PageTitleStyle}" />
+
+            <Label Text="Fast timer flows, clean visuals, and a database-ready structure for future WOD types."
+                   Style="{StaticResource HeroSubtitleStyle}" />
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Choose your timer"
+                           Style="{StaticResource SectionTitleStyle}" />
+                    <Label Text="AMRAP and FOR TIME are fully implemented. The remaining buttons are already placed in the main screen for the next iterations."
+                           Style="{StaticResource MutedCaptionStyle}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Button Text="FOR TIME"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Clicked="OnForTimeClicked" />
+
+            <Button Text="AMRAP"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Clicked="OnAmrapClicked" />
+
+            <Button Text="EMOM"
+                    Style="{StaticResource GhostButtonStyle}"
+                    Clicked="OnPendingClicked" />
+
+            <Button Text="TABATA"
+                    Style="{StaticResource GhostButtonStyle}"
+                    Clicked="OnPendingClicked" />
+
+            <Button Text="HERO WODS"
+                    Style="{StaticResource GhostButtonStyle}"
+                    Clicked="OnPendingClicked" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
