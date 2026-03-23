@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Trimex.Pages.AmrapConfigurationPage"
+             Title="AMRAP">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24,24,24,40" Spacing="18">
+            <Label Text="AMRAP Configuration"
+                   Style="{StaticResource PageTitleStyle}" />
+
+            <Label Text="Select the number of minutes of your AMRAP."
+                   Style="{StaticResource HeroSubtitleStyle}" />
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="14">
+                    <Label Text="Hero WOD"
+                           Style="{StaticResource SectionTitleStyle}" />
+
+                    <Picker x:Name="HeroWodPicker"
+                            Title="Choose a saved hero WOD (optional)"
+                            SelectedIndexChanged="OnHeroWodSelectionChanged" />
+
+                    <Label x:Name="HeroWodEmptyLabel"
+                           Text="No AMRAP hero WODs are stored yet in SQLite."
+                           Style="{StaticResource MutedCaptionStyle}"
+                           IsVisible="False" />
+
+                    <Border x:Name="HeroDescriptionBorder"
+                            Style="{StaticResource CardBorderStyle}"
+                            Padding="14"
+                            IsVisible="False">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Workout description"
+                                   Style="{StaticResource SectionTitleStyle}" />
+                            <Label x:Name="HeroDescriptionLabel"
+                                   Style="{StaticResource MutedCaptionStyle}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Minutes"
+                           Style="{StaticResource SectionTitleStyle}" />
+                    <Picker x:Name="MinutesPicker" />
+                    <Label x:Name="MinutesSummaryLabel"
+                           Style="{StaticResource ValueTextStyle}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Notes"
+                           Style="{StaticResource SectionTitleStyle}" />
+                    <Button Text="Add notes"
+                            Style="{StaticResource GhostButtonStyle}"
+                            Clicked="OnAddNotesClicked" />
+                    <Label x:Name="NotesLabel"
+                           Style="{StaticResource MutedCaptionStyle}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Button Text="START"
+                    Style="{StaticResource PrimaryButtonStyle}"
+                    Clicked="OnStartClicked" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

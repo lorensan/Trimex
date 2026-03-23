@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Trimex.Pages.ForTimeConfigurationPage"
+             Title="FOR TIME">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24,24,24,40" Spacing="18">
+            <Label Text="FOR TIME"
+                   Style="{StaticResource PageTitleStyle}" />
+
+            <Label Text="As fast as you can."
+                   Style="{StaticResource HeroSubtitleStyle}" />
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="14">
+                    <Label Text="Hero WOD"
+                           Style="{StaticResource SectionTitleStyle}" />
+
+                    <Picker x:Name="HeroWodPicker"
+                            Title="Choose a saved hero WOD (optional)"
+                            SelectedIndexChanged="OnHeroWodSelectionChanged" />
+
+                    <Label x:Name="HeroWodEmptyLabel"
+                           Text="No FOR TIME hero WODs are stored yet in SQLite."
+                           Style="{StaticResource MutedCaptionStyle}"
+                           IsVisible="False" />
+
+                    <Border x:Name="HeroDescriptionBorder"
+                            Style="{StaticResource CardBorderStyle}"
+                            Padding="14"
+                            IsVisible="False">
+                        <VerticalStackLayout Spacing="8">
+                            <Label Text="Workout description"
+                                   Style="{StaticResource SectionTitleStyle}" />
+                            <Label x:Name="HeroDescriptionLabel"
+                                   Style="{StaticResource MutedCaptionStyle}" />
+                        </VerticalStackLayout>
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="TIME LIMIT"
+                           Style="{StaticResource SectionTitleStyle}" />
+                    <Picker x:Name="TimeCapPicker" />
+                    <Label x:Name="TimeCapSummaryLabel"
+                           Style="{StaticResource ValueTextStyle}" />
+                    <Label Text="Select 0 minutes if you want a manual stop with no cap."
+                           Style="{StaticResource MutedCaptionStyle}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="Notes"
+                           Style="{StaticResource SectionTitleStyle}" />
+                    <Button Text="Add notes"
+                            Style="{StaticResource GhostButtonStyle}"
+                            Clicked="OnAddNotesClicked" />
+                    <Label x:Name="NotesLabel"
+                           Style="{StaticResource MutedCaptionStyle}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Button Text="START"
+                    Style="{StaticResource AccentButtonStyle}"
+                    Clicked="OnStartClicked" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

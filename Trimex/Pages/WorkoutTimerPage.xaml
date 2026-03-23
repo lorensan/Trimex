@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:controls="clr-namespace:Trimex.Controls"
+             x:Class="Trimex.Pages.WorkoutTimerPage">
+
+    <Grid Padding="24,20,24,24" RowDefinitions="Auto,*,Auto">
+        <VerticalStackLayout Grid.Row="0" Spacing="8">
+            <Label x:Name="WorkoutTitleLabel"
+                   Style="{StaticResource PageTitleStyle}" />
+            <Label x:Name="WorkoutContextLabel"
+                   Style="{StaticResource HeroSubtitleStyle}" />
+        </VerticalStackLayout>
+
+        <Grid Grid.Row="1">
+            <Grid x:Name="ConfettiOverlay"
+                  InputTransparent="True" />
+
+            <VerticalStackLayout VerticalOptions="Center" Spacing="22">
+                <Grid HorizontalOptions="Center"
+                      WidthRequest="320"
+                      HeightRequest="320">
+                    <controls:CircularProgressView x:Name="ProgressRing" />
+
+                    <VerticalStackLayout HorizontalOptions="Center"
+                                         VerticalOptions="Center"
+                                         Spacing="8">
+                        <Label x:Name="StateValueLabel"
+                               Style="{StaticResource TimerValueStyle}">
+                            <Label.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnStateTapped" />
+                            </Label.GestureRecognizers>
+                        </Label>
+
+                        <Label x:Name="StateHintLabel"
+                               Style="{StaticResource HeroSubtitleStyle}" />
+
+                        <Label x:Name="PausedTimeLabel"
+                               Style="{StaticResource ValueTextStyle}"
+                               IsVisible="False"
+                               HorizontalTextAlignment="Center" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <VerticalStackLayout x:Name="RoundSection"
+                                     Spacing="12"
+                                     IsVisible="False">
+                    <Label Text="How many rounds?"
+                           Style="{StaticResource SectionTitleStyle}"
+                           HorizontalTextAlignment="Center" />
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="12">
+                        <Button Text="ROUND"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Clicked="OnRoundClicked" />
+                        <Label x:Name="RoundCountLabel"
+                               Style="{StaticResource CounterBadgeStyle}"
+                               VerticalTextAlignment="Center"
+                               HorizontalTextAlignment="Center" />
+                    </Grid>
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </Grid>
+
+        <Button Grid.Row="2"
+                Text="End workout"
+                Style="{StaticResource GhostButtonStyle}"
+                Clicked="OnEndClicked" />
+    </Grid>
+</ContentPage>
