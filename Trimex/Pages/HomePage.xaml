@@ -1,45 +1,67 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Trimex.Pages.HomePage"
-             Title="Trimex">
+<ContentPage
+    x:Class="Trimex.Pages.HomePage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Trimex">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="24,24,24,40" Spacing="20">
-            <Label Text="TRIMEX"
-                   Style="{StaticResource PageTitleStyle}" />
+    <Grid>
+        <Image Source="background.jpg" Aspect="AspectFill" InputTransparent="True" />
 
-            <Label Text="Fast timer flows, clean visuals, and a database-ready structure for future WOD types."
-                   Style="{StaticResource HeroSubtitleStyle}" />
+        <Grid RowDefinitions="*, Auto">
 
-            <Border Style="{StaticResource CardBorderStyle}">
-                <VerticalStackLayout Spacing="10">
-                    <Label Text="Choose your timer"
-                           Style="{StaticResource SectionTitleStyle}" />
-                    <Label Text="AMRAP and FOR TIME are fully implemented. The remaining buttons are already placed in the main screen for the next iterations."
-                           Style="{StaticResource MutedCaptionStyle}" />
-                </VerticalStackLayout>
-            </Border>
+            <VerticalStackLayout
+                Grid.Row="0"
+                Padding="30,0"
+                Spacing="50"
+                VerticalOptions="Center">
 
-            <Button Text="FOR TIME"
-                    Style="{StaticResource AccentButtonStyle}"
-                    Clicked="OnForTimeClicked" />
+                <Label
+                    HorizontalOptions="Center"
+                    HorizontalTextAlignment="Center"
+                    Style="{StaticResource PageTitleStyle}"
+                    Text="TRIMEX" />
 
-            <Button Text="AMRAP"
-                    Style="{StaticResource PrimaryButtonStyle}"
-                    Clicked="OnAmrapClicked" />
+                <Grid ColumnDefinitions="2*, 10*, 2*">
+                    <VerticalStackLayout Grid.Column="1" Spacing="20">
 
-            <Button Text="EMOM"
-                    Style="{StaticResource GhostButtonStyle}"
-                    Clicked="OnPendingClicked" />
+                        <Button
+                            Clicked="OnForTimeClicked"
+                            Style="{StaticResource AccentButtonStyle}"
+                            Text="FOR TIME" />
 
-            <Button Text="TABATA"
-                    Style="{StaticResource GhostButtonStyle}"
-                    Clicked="OnPendingClicked" />
+                        <Button
+                            Clicked="OnAmrapClicked"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Text="AMRAP" />
 
-            <Button Text="HERO WODS"
-                    Style="{StaticResource GhostButtonStyle}"
-                    Clicked="OnPendingClicked" />
-        </VerticalStackLayout>
-    </ScrollView>
+                        <Button
+                            Clicked="OnPendingClicked"
+                            Style="{StaticResource GhostButtonStyle}"
+                            Text="EMOM" />
+
+                        <Button
+                            Clicked="OnPendingClicked"
+                            Style="{StaticResource GhostButtonStyle}"
+                            Text="TABATA" />
+
+                        <Button
+                            Clicked="OnPendingClicked"
+                            Style="{StaticResource GhostButtonStyle}"
+                            Text="HERO WODS" />
+                    </VerticalStackLayout>
+                </Grid>
+            </VerticalStackLayout>
+
+            <Label
+                Grid.Row="1"
+                Margin="0,10,0,20"
+                FontSize="16"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="Training History"
+                TextColor="White" />
+
+        </Grid>
+    </Grid>
 </ContentPage>

@@ -1,72 +1,127 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Trimex.Pages.ForTimeConfigurationPage"
-             Title="FOR TIME">
+<ContentPage
+    x:Class="Trimex.Pages.ForTimeConfigurationPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="FOR TIME"
+    BackgroundColor="Black">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="24,24,24,40" Spacing="18">
-            <Label Text="FOR TIME"
-                   Style="{StaticResource PageTitleStyle}" />
+    <Grid>
+        <Image Source="background.jpg" Aspect="AspectFill" InputTransparent="True" />
 
-            <Label Text="As fast as you can."
-                   Style="{StaticResource HeroSubtitleStyle}" />
+        <!--  Main content  -->
+        <ScrollView>
+            <VerticalStackLayout Padding="24,24,24,40" Spacing="18">
+                <Label Style="{StaticResource PageTitleStyle}" Text="FOR TIME" />
 
-            <Border Style="{StaticResource CardBorderStyle}">
-                <VerticalStackLayout Spacing="14">
-                    <Label Text="Hero WOD"
-                           Style="{StaticResource SectionTitleStyle}" />
+                <Label Style="{StaticResource HeroSubtitleStyle}" Text="As fast as you can." />
 
-                    <Picker x:Name="HeroWodPicker"
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <VerticalStackLayout Spacing="14">
+                        <Label Style="{StaticResource SectionTitleStyle}" Text="Hero WOD" />
+
+                        <Picker
+                            x:Name="HeroWodPicker"
                             Title="Choose a saved hero WOD (optional)"
                             SelectedIndexChanged="OnHeroWodSelectionChanged" />
 
-                    <Label x:Name="HeroWodEmptyLabel"
-                           Text="No FOR TIME hero WODs are stored yet in SQLite."
-                           Style="{StaticResource MutedCaptionStyle}"
-                           IsVisible="False" />
+                        <Label
+                            x:Name="HeroWodEmptyLabel"
+                            IsVisible="False"
+                            Style="{StaticResource MutedCaptionStyle}"
+                            Text="No FOR TIME hero WODs are stored yet in SQLite." />
 
-                    <Border x:Name="HeroDescriptionBorder"
-                            Style="{StaticResource CardBorderStyle}"
+                        <Border
+                            x:Name="HeroDescriptionBorder"
                             Padding="14"
-                            IsVisible="False">
-                        <VerticalStackLayout Spacing="8">
-                            <Label Text="Workout description"
-                                   Style="{StaticResource SectionTitleStyle}" />
-                            <Label x:Name="HeroDescriptionLabel"
-                                   Style="{StaticResource MutedCaptionStyle}" />
-                        </VerticalStackLayout>
-                    </Border>
-                </VerticalStackLayout>
-            </Border>
+                            IsVisible="False"
+                            Style="{StaticResource CardBorderStyle}">
+                            <VerticalStackLayout Spacing="8">
+                                <Label Style="{StaticResource SectionTitleStyle}" Text="Workout description" />
+                                <Label x:Name="HeroDescriptionLabel" Style="{StaticResource MutedCaptionStyle}" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
 
-            <Border Style="{StaticResource CardBorderStyle}">
-                <VerticalStackLayout Spacing="12">
-                    <Label Text="TIME LIMIT"
-                           Style="{StaticResource SectionTitleStyle}" />
-                    <Picker x:Name="TimeCapPicker" />
-                    <Label x:Name="TimeCapSummaryLabel"
-                           Style="{StaticResource ValueTextStyle}" />
-                    <Label Text="Select 0 minutes if you want a manual stop with no cap."
-                           Style="{StaticResource MutedCaptionStyle}" />
-                </VerticalStackLayout>
-            </Border>
+                <Border Style="{StaticResource CardBorderStyle}">
+                    <VerticalStackLayout Spacing="12">
+                        <Label Style="{StaticResource SectionTitleStyle}" Text="TIME LIMIT" />
+                        <Border
+                            Padding="14"
+                            BackgroundColor="{StaticResource SurfaceAlt}"
+                            StrokeThickness="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnTimeCapTapped" />
+                            </Border.GestureRecognizers>
+                            <Label
+                                x:Name="TimeCapDisplayLabel"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="20"
+                                HorizontalTextAlignment="Center"
+                                Text="15 minutes"
+                                TextColor="{StaticResource TextPrimary}" />
+                        </Border>
+                        <Label Style="{StaticResource MutedCaptionStyle}" Text="Select 0 minutes if you want a manual stop with no cap." />
+                    </VerticalStackLayout>
+                </Border>
 
-            <Border Style="{StaticResource CardBorderStyle}">
-                <VerticalStackLayout Spacing="12">
-                    <Label Text="Notes"
-                           Style="{StaticResource SectionTitleStyle}" />
-                    <Button Text="Add notes"
-                            Style="{StaticResource GhostButtonStyle}"
-                            Clicked="OnAddNotesClicked" />
-                    <Label x:Name="NotesLabel"
-                           Style="{StaticResource MutedCaptionStyle}" />
-                </VerticalStackLayout>
-            </Border>
-
-            <Button Text="START"
+                <Button
+                    Clicked="OnStartClicked"
                     Style="{StaticResource AccentButtonStyle}"
-                    Clicked="OnStartClicked" />
-        </VerticalStackLayout>
-    </ScrollView>
+                    Text="START" />
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!--  Floating overlay for time selection  -->
+        <Grid
+            x:Name="TimeCapOverlay"
+            BackgroundColor="Black"
+            IsVisible="False">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayBackgroundTapped" />
+            </Grid.GestureRecognizers>
+
+            <Border
+                Margin="32"
+                Padding="20"
+                BackgroundColor="Black"
+                HorizontalOptions="Center"
+                Stroke="{StaticResource BorderColor}"
+                StrokeThickness="1"
+                VerticalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="16" WidthRequest="260">
+                    <Label
+                        FontFamily="OpenSansSemibold"
+                        FontSize="18"
+                        HorizontalTextAlignment="Center"
+                        Text="Select Time Limit"
+                        TextColor="{StaticResource TextPrimary}" />
+
+                    <ScrollView HeightRequest="320">
+                        <VerticalStackLayout
+                            x:Name="TimeCapItemsLayout"
+                            HorizontalOptions="Center"
+                            Spacing="4" />
+                    </ScrollView>
+
+                    <Button
+                        BackgroundColor="{StaticResource SurfaceAlt}"
+                        Clicked="OnOverlayCancelClicked"
+                        CornerRadius="14"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="16"
+                        HeightRequest="44"
+                        Text="Cancel"
+                        TextColor="{StaticResource TextPrimary}" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+    </Grid>
 </ContentPage>

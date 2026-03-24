@@ -24,4 +24,5 @@ public partial class HomePage : ContentPage
     {
         await DisplayAlertAsync("Coming next", "This section is prepared in the home screen, but the workout flow is still pending in the spec.", "OK");
     }
+
 }

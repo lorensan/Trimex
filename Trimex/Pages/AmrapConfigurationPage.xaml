@@ -4,8 +4,11 @@
              x:Class="Trimex.Pages.AmrapConfigurationPage"
              Title="AMRAP">
 
-    <ScrollView>
-        <VerticalStackLayout Padding="24,24,24,40" Spacing="18">
+    <Grid>
+        <Image Source="background.jpg" Aspect="AspectFill" InputTransparent="True" />
+
+        <ScrollView>
+            <VerticalStackLayout Padding="24,24,24,40" Spacing="18">
             <Label Text="AMRAP Configuration"
                    Style="{StaticResource PageTitleStyle}" />
 
@@ -65,6 +68,7 @@
             <Button Text="START"
                     Style="{StaticResource PrimaryButtonStyle}"
                     Clicked="OnStartClicked" />
-        </VerticalStackLayout>
-    </ScrollView>
+            </VerticalStackLayout>
+        </ScrollView>
+    </Grid>
 </ContentPage>
