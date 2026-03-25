@@ -1,4 +1,5 @@
 using Trimex.Models;
+using Trimex.Services;
 
 namespace Trimex.Pages;
 
@@ -15,6 +16,8 @@ public partial class WorkoutTimerPage : ContentPage
     private DateTimeOffset? _currentRunStartedAtUtc;
     private TimeSpan _elapsedBeforeCurrentRun = TimeSpan.Zero;
     private int _roundCount;
+    private int _lastPreCountdownCueSecond = int.MaxValue;
+    private int _lastFinalWarningSecond = int.MaxValue;
 
     public WorkoutTimerPage(WorkoutConfigurationRequest configuration)
     {
@@ -117,6 +120,7 @@ public partial class WorkoutTimerPage : ContentPage
 
     private void StartPreCountdown()
     {
+        ResetCueTracking();
         _state = WorkoutTimerState.PreCountdown;
         _preCountdownStartedAtUtc = DateTimeOffset.UtcNow;
         _timer.Start();
@@ -128,6 +132,7 @@ public partial class WorkoutTimerPage : ContentPage
         _timer.Stop();
         _preCountdownStartedAtUtc = null;
         _state = WorkoutTimerState.Idle;
+        ResetCueTracking();
         UpdateVisualState();
     }
 
@@ -168,9 +173,12 @@ public partial class WorkoutTimerPage : ContentPage
             _preCountdownStartedAtUtc = null;
             _currentRunStartedAtUtc = DateTimeOffset.UtcNow;
             ProgressRing.Progress = 0;
+            _ = TimerCueService.PlayStartSequenceAsync();
             UpdateVisualState();
             return;
         }
+
+        TryPlayPreCountdownCue(remaining);
 
         StateValueLabel.Text = remaining.ToString();
         StateHintLabel.Text = "Tap to cancel";
@@ -192,6 +200,7 @@ public partial class WorkoutTimerPage : ContentPage
                 return;
             }
 
+            TryPlayFinalWarningCue(remaining);
             StateValueLabel.Text = FormatClock(remaining);
             StateHintLabel.Text = "Tap the time or pause";
             ProgressRing.Progress = elapsed.TotalSeconds / _configuration.DurationSeconds;
@@ -206,6 +215,7 @@ public partial class WorkoutTimerPage : ContentPage
 
         if (_configuration.TimeCapSeconds is int timeCapSeconds && timeCapSeconds > 0)
         {
+            TryPlayFinalWarningCue(TimeSpan.FromSeconds(timeCapSeconds) - elapsed);
             ProgressRing.Progress = Math.Min(1d, elapsed.TotalSeconds / timeCapSeconds);
 
             if (elapsed.TotalSeconds >= timeCapSeconds)
@@ -225,8 +235,39 @@ public partial class WorkoutTimerPage : ContentPage
         _state = WorkoutTimerState.Completed;
         _currentRunStartedAtUtc = null;
         _elapsedBeforeCurrentRun = finalTime;
+        _ = TimerCueService.PlayCompletionSequenceAsync();
         UpdateVisualState();
         _ = DisplayAlertAsync("Workout completed", "Timer finished. You can go back or start a new workout from the main menu.", "OK");
+    }
+
+    private void TryPlayPreCountdownCue(int remainingSeconds)
+    {
+        if (remainingSeconds is < 1 or > 3 || remainingSeconds == _lastPreCountdownCueSecond)
+        {
+            return;
+        }
+
+        _lastPreCountdownCueSecond = remainingSeconds;
+        _ = TimerCueService.PlayCountdownWarningAsync();
+    }
+
+    private void TryPlayFinalWarningCue(TimeSpan remaining)
+    {
+        var remainingSeconds = (int)Math.Ceiling(remaining.TotalSeconds);
+
+        if (remainingSeconds is < 1 or > 3 || remainingSeconds == _lastFinalWarningSecond)
+        {
+            return;
+        }
+
+        _lastFinalWarningSecond = remainingSeconds;
+        _ = TimerCueService.PlayCountdownWarningAsync();
+    }
+
+    private void ResetCueTracking()
+    {
+        _lastPreCountdownCueSecond = int.MaxValue;
+        _lastFinalWarningSecond = int.MaxValue;
     }
 
     private TimeSpan GetElapsed()
