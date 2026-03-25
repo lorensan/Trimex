@@ -25,6 +25,7 @@ bld/
 
 # Visual Studio workspace files
 .vs/
+.vs
 
 # .NET Core
 project.lock.json
