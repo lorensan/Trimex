@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Trimex.Pages.TabataTimerPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:Trimex.Controls"
+    BackgroundColor="{StaticResource AppBackground}">
+
+    <Grid
+        Padding="24,20,24,24"
+        BackgroundColor="{StaticResource AppBackground}"
+        RowDefinitions="Auto,*,Auto">
+
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="8">
+            <Label Style="{StaticResource PageTitleStyle}" Text="TABATA" />
+            <Label x:Name="WorkoutContextLabel" Style="{StaticResource HeroSubtitleStyle}" />
+        </VerticalStackLayout>
+
+        <!-- Main area -->
+        <Grid Grid.Row="1">
+            <VerticalStackLayout Spacing="12" VerticalOptions="Center">
+
+                <!-- Round indicator -->
+                <Label
+                    x:Name="RoundLabel"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="20"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{StaticResource AccentGreen}" />
+
+                <!-- Phase label (WORK / REST) -->
+                <Label
+                    x:Name="PhaseLabel"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="16"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{StaticResource AccentGreen}" />
+
+                <!-- Circle timer -->
+                <Grid
+                    HeightRequest="320"
+                    HorizontalOptions="Center"
+                    WidthRequest="320">
+                    <controls:CircularProgressView x:Name="ProgressRing" />
+
+                    <Grid
+                        x:Name="TimerDisplayLayout"
+                        HeightRequest="220"
+                        HorizontalOptions="Center"
+                        IsVisible="False"
+                        VerticalOptions="Center"
+                        WidthRequest="220">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnStateTapped" />
+                        </Grid.GestureRecognizers>
+                        <VerticalStackLayout
+                            HorizontalOptions="Center"
+                            Spacing="4"
+                            VerticalOptions="Center">
+                            <Label
+                                x:Name="StateValueLabel"
+                                FontSize="46"
+                                MaxLines="1"
+                                Style="{StaticResource TimerValueStyle}" />
+                            <Label
+                                x:Name="StateHintLabel"
+                                LineBreakMode="TailTruncation"
+                                MaxLines="1"
+                                Style="{StaticResource HeroSubtitleStyle}" />
+                            <ImageButton
+                                x:Name="PauseActionButton"
+                                Padding="0"
+                                Aspect="AspectFit"
+                                BackgroundColor="Transparent"
+                                Clicked="OnTimerActionClicked"
+                                HeightRequest="112"
+                                HorizontalOptions="Center"
+                                IsVisible="False"
+                                Margin="0,8,0,0"
+                                Source="pause.png"
+                                VerticalOptions="Center"
+                                WidthRequest="112" />
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <ImageButton
+                        x:Name="TimerActionButton"
+                        Padding="0"
+                        Aspect="AspectFit"
+                        BackgroundColor="Transparent"
+                        Clicked="OnTimerActionClicked"
+                        HeightRequest="156"
+                        HorizontalOptions="Center"
+                        Source="play.png"
+                        VerticalOptions="Center"
+                        WidthRequest="156" />
+                </Grid>
+
+                <!-- Exercise description (hero WOD only) -->
+                <Label
+                    x:Name="ExerciseLabel"
+                    HorizontalTextAlignment="Center"
+                    IsVisible="False"
+                    Padding="8,0"
+                    Style="{StaticResource HeroSubtitleStyle}" />
+
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- Slide to end -->
+        <controls:SlideToEndView
+            Grid.Row="2"
+            x:Name="SlideToEnd"
+            SlideCompleted="OnSlideCompleted" />
+
+    </Grid>
+</ContentPage>

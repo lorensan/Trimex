@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="Trimex.Pages.EmomConfigurationPage"
+    x:Class="Trimex.Pages.TabataConfigurationPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="EMOM">
+    Title="TABATA">
 
     <Grid>
         <Image Source="background.jpg" Aspect="AspectFill" InputTransparent="True" />
@@ -11,33 +11,8 @@
         <!-- Content centered vertically -->
         <VerticalStackLayout Padding="24,40,24,40" Spacing="18" VerticalOptions="Center">
 
-            <Label Style="{StaticResource PageTitleStyle}" Text="EMOM" />
-            <Label Style="{StaticResource HeroSubtitleStyle}" Text="Every Minute On the Minute" />
-
-            <!-- Duration -->
-            <Border Style="{StaticResource CardBorderStyle}">
-                <VerticalStackLayout Spacing="12">
-                    <Label Style="{StaticResource SectionTitleStyle}" Text="Duration" />
-                    <Border
-                        Padding="14"
-                        BackgroundColor="{StaticResource SurfaceAlt}"
-                        StrokeThickness="0">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="12" />
-                        </Border.StrokeShape>
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnDurationTapped" />
-                        </Border.GestureRecognizers>
-                        <Label
-                            x:Name="DurationDisplayLabel"
-                            FontFamily="OpenSansSemibold"
-                            FontSize="20"
-                            HorizontalTextAlignment="Center"
-                            Text="30 seconds"
-                            TextColor="{StaticResource TextPrimary}" />
-                    </Border>
-                </VerticalStackLayout>
-            </Border>
+            <Label Style="{StaticResource PageTitleStyle}" Text="TABATA" />
+            <Label Style="{StaticResource HeroSubtitleStyle}" Text="Configure your tabata as you like" />
 
             <!-- Rounds -->
             <Border Style="{StaticResource CardBorderStyle}">
@@ -58,20 +33,61 @@
                             FontFamily="OpenSansSemibold"
                             FontSize="20"
                             HorizontalTextAlignment="Center"
-                            Text="10"
+                            Text="8 ROUNDS"
                             TextColor="{StaticResource TextPrimary}" />
                     </Border>
-                    <Label
-                        x:Name="RoundsSummaryLabel"
-                        Style="{StaticResource ValueTextStyle}" />
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Death by EMOM -->
-            <Button
-                Clicked="OnDeathByClicked"
-                Style="{StaticResource AccentButtonStyle}"
-                Text="Death by EMOM" />
+            <!-- Work Time -->
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Style="{StaticResource SectionTitleStyle}" Text="Work Time" />
+                    <Border
+                        Padding="14"
+                        BackgroundColor="{StaticResource SurfaceAlt}"
+                        StrokeThickness="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnWorkTimeTapped" />
+                        </Border.GestureRecognizers>
+                        <Label
+                            x:Name="WorkTimeDisplayLabel"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="20"
+                            HorizontalTextAlignment="Center"
+                            Text="20 seconds"
+                            TextColor="{StaticResource AccentGreen}" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Rest Time -->
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Style="{StaticResource SectionTitleStyle}" Text="Rest Time" />
+                    <Border
+                        Padding="14"
+                        BackgroundColor="{StaticResource SurfaceAlt}"
+                        StrokeThickness="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnRestTimeTapped" />
+                        </Border.GestureRecognizers>
+                        <Label
+                            x:Name="RestTimeDisplayLabel"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="20"
+                            HorizontalTextAlignment="Center"
+                            Text="10 seconds"
+                            TextColor="{StaticResource AccentRed}" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
 
             <!-- START -->
             <Button
@@ -80,54 +96,6 @@
                 Text="START" />
 
         </VerticalStackLayout>
-
-        <!-- Duration overlay -->
-        <Grid
-            x:Name="DurationOverlay"
-            BackgroundColor="{StaticResource Overlay}"
-            IsVisible="False">
-            <Grid.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnDurationOverlayBackgroundTapped" />
-            </Grid.GestureRecognizers>
-            <Border
-                Padding="20"
-                BackgroundColor="{StaticResource Surface}"
-                HeightRequest="300"
-                HorizontalOptions="Center"
-                Stroke="{StaticResource BorderColor}"
-                StrokeThickness="1"
-                VerticalOptions="Center"
-                WidthRequest="300">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="20" />
-                </Border.StrokeShape>
-                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="16">
-                    <Label
-                        Grid.Row="0"
-                        FontFamily="OpenSansSemibold"
-                        FontSize="18"
-                        HorizontalTextAlignment="Center"
-                        Text="Select Duration"
-                        TextColor="{StaticResource TextPrimary}" />
-                    <ScrollView Grid.Row="1">
-                        <VerticalStackLayout
-                            x:Name="DurationItemsLayout"
-                            HorizontalOptions="Center"
-                            Spacing="4" />
-                    </ScrollView>
-                    <Button
-                        Grid.Row="2"
-                        BackgroundColor="{StaticResource SurfaceAlt}"
-                        Clicked="OnDurationOverlayCancelClicked"
-                        CornerRadius="14"
-                        FontFamily="OpenSansSemibold"
-                        FontSize="16"
-                        HeightRequest="44"
-                        Text="Cancel"
-                        TextColor="{StaticResource TextPrimary}" />
-                </Grid>
-            </Border>
-        </Grid>
 
         <!-- Rounds overlay -->
         <Grid
@@ -176,6 +144,102 @@
                 </Grid>
             </Border>
         </Grid>
+
+        <!-- Work Time overlay -->
+        <Grid
+            x:Name="WorkTimeOverlay"
+            BackgroundColor="{StaticResource Overlay}"
+            IsVisible="False">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnWorkTimeOverlayBackgroundTapped" />
+            </Grid.GestureRecognizers>
+            <Border
+                Padding="20"
+                BackgroundColor="{StaticResource Surface}"
+                HeightRequest="300"
+                HorizontalOptions="Center"
+                Stroke="{StaticResource BorderColor}"
+                StrokeThickness="1"
+                VerticalOptions="Center"
+                WidthRequest="300">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="16">
+                    <Label
+                        Grid.Row="0"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="18"
+                        HorizontalTextAlignment="Center"
+                        Text="Select Work Time"
+                        TextColor="{StaticResource TextPrimary}" />
+                    <ScrollView Grid.Row="1">
+                        <VerticalStackLayout
+                            x:Name="WorkTimeItemsLayout"
+                            HorizontalOptions="Center"
+                            Spacing="4" />
+                    </ScrollView>
+                    <Button
+                        Grid.Row="2"
+                        BackgroundColor="{StaticResource SurfaceAlt}"
+                        Clicked="OnWorkTimeOverlayCancelClicked"
+                        CornerRadius="14"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="16"
+                        HeightRequest="44"
+                        Text="Cancel"
+                        TextColor="{StaticResource TextPrimary}" />
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Rest Time overlay -->
+        <Grid
+            x:Name="RestTimeOverlay"
+            BackgroundColor="{StaticResource Overlay}"
+            IsVisible="False">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnRestTimeOverlayBackgroundTapped" />
+            </Grid.GestureRecognizers>
+            <Border
+                Padding="20"
+                BackgroundColor="{StaticResource Surface}"
+                HeightRequest="300"
+                HorizontalOptions="Center"
+                Stroke="{StaticResource BorderColor}"
+                StrokeThickness="1"
+                VerticalOptions="Center"
+                WidthRequest="300">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="16">
+                    <Label
+                        Grid.Row="0"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="18"
+                        HorizontalTextAlignment="Center"
+                        Text="Select Rest Time"
+                        TextColor="{StaticResource TextPrimary}" />
+                    <ScrollView Grid.Row="1">
+                        <VerticalStackLayout
+                            x:Name="RestTimeItemsLayout"
+                            HorizontalOptions="Center"
+                            Spacing="4" />
+                    </ScrollView>
+                    <Button
+                        Grid.Row="2"
+                        BackgroundColor="{StaticResource SurfaceAlt}"
+                        Clicked="OnRestTimeOverlayCancelClicked"
+                        CornerRadius="14"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="16"
+                        HeightRequest="44"
+                        Text="Cancel"
+                        TextColor="{StaticResource TextPrimary}" />
+                </Grid>
+            </Border>
+        </Grid>
+
     </Grid>
 </ContentPage>
-

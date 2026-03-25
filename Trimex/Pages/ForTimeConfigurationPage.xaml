@@ -79,39 +79,39 @@
         <!--  Floating overlay for time selection  -->
         <Grid
             x:Name="TimeCapOverlay"
-            BackgroundColor="Black"
+            BackgroundColor="{StaticResource Overlay}"
             IsVisible="False">
             <Grid.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnOverlayBackgroundTapped" />
             </Grid.GestureRecognizers>
-
             <Border
-                Margin="32"
                 Padding="20"
-                BackgroundColor="Black"
+                BackgroundColor="{StaticResource Surface}"
+                HeightRequest="300"
                 HorizontalOptions="Center"
                 Stroke="{StaticResource BorderColor}"
                 StrokeThickness="1"
-                VerticalOptions="Center">
+                VerticalOptions="Center"
+                WidthRequest="300">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="20" />
                 </Border.StrokeShape>
-                <VerticalStackLayout Spacing="16" WidthRequest="260">
+                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="16">
                     <Label
+                        Grid.Row="0"
                         FontFamily="OpenSansSemibold"
                         FontSize="18"
                         HorizontalTextAlignment="Center"
                         Text="Select Time Limit"
                         TextColor="{StaticResource TextPrimary}" />
-
-                    <ScrollView HeightRequest="320">
+                    <ScrollView Grid.Row="1">
                         <VerticalStackLayout
                             x:Name="TimeCapItemsLayout"
                             HorizontalOptions="Center"
                             Spacing="4" />
                     </ScrollView>
-
                     <Button
+                        Grid.Row="2"
                         BackgroundColor="{StaticResource SurfaceAlt}"
                         Clicked="OnOverlayCancelClicked"
                         CornerRadius="14"
@@ -120,7 +120,7 @@
                         HeightRequest="44"
                         Text="Cancel"
                         TextColor="{StaticResource TextPrimary}" />
-                </VerticalStackLayout>
+                </Grid>
             </Border>
         </Grid>
     </Grid>

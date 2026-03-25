@@ -95,6 +95,10 @@
         <Setter Property="BackgroundColor" Value="{StaticResource AccentGreen}" />
     </Style>
 
+    <Style x:Key="TabataButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+        <Setter Property="BackgroundColor" Value="{StaticResource AccentPurple}" />
+    </Style>
+
     <Style x:Key="GhostButtonStyle" TargetType="Button">
         <Setter Property="BackgroundColor" Value="{StaticResource SurfaceAlt}" />
         <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />

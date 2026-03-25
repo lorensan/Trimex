@@ -41,8 +41,8 @@
                             Text="EMOM" />
 
                         <Button
-                            Clicked="OnPendingClicked"
-                            Style="{StaticResource GhostButtonStyle}"
+                            Clicked="OnTabataClicked"
+                            Style="{StaticResource TabataButtonStyle}"
                             Text="TABATA" />
 
                         <Button

@@ -28,6 +28,7 @@ namespace Trimex
             builder.Services.AddTransient<AmrapConfigurationPage>();
             builder.Services.AddTransient<ForTimeConfigurationPage>();
             builder.Services.AddTransient<EmomConfigurationPage>();
+            builder.Services.AddTransient<TabataConfigurationPage>();
 
 #if DEBUG
      		builder.Logging.AddDebug();
