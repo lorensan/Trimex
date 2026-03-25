@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Trimex.Pages.DeathByEmomPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Death by EMOM">
+
+    <Grid>
+        <Image Source="background.jpg" Aspect="AspectFill" InputTransparent="True" />
+
+        <!-- Content centered vertically -->
+        <VerticalStackLayout Padding="24,40,24,40" Spacing="18" VerticalOptions="Center">
+
+            <Label Style="{StaticResource PageTitleStyle}" Text="EMOM" />
+            <Label Style="{StaticResource HeroSubtitleStyle}" Text="Death by EMOM" />
+
+            <!-- Duration -->
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="12">
+                    <Grid ColumnDefinitions="Auto,*" ColumnSpacing="16">
+                        <Label
+                            Grid.Column="0"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="20"
+                            TextColor="{StaticResource TextPrimary}"
+                            VerticalTextAlignment="Center"
+                            Text="EACH" />
+                        <Border
+                            Grid.Column="1"
+                            Padding="14"
+                            BackgroundColor="{StaticResource SurfaceAlt}"
+                            StrokeThickness="0">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12" />
+                            </Border.StrokeShape>
+                            <Border.GestureRecognizers>
+                                <TapGestureRecognizer Tapped="OnDurationTapped" />
+                            </Border.GestureRecognizers>
+                            <Label
+                                x:Name="DurationDisplayLabel"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="20"
+                                HorizontalTextAlignment="Center"
+                                Text="01:00"
+                                TextColor="{StaticResource TextPrimary}" />
+                        </Border>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- START -->
+            <Button
+                Clicked="OnStartClicked"
+                Style="{StaticResource GreenButtonStyle}"
+                Text="START" />
+
+        </VerticalStackLayout>
+
+        <!-- Duration overlay -->
+        <Grid
+            x:Name="DurationOverlay"
+            BackgroundColor="{StaticResource Overlay}"
+            IsVisible="False">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnOverlayBackgroundTapped" />
+            </Grid.GestureRecognizers>
+
+            <Border
+                Margin="32"
+                Padding="20"
+                BackgroundColor="{StaticResource Surface}"
+                HorizontalOptions="Center"
+                Stroke="{StaticResource BorderColor}"
+                StrokeThickness="1"
+                VerticalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="16" WidthRequest="260">
+                    <Label
+                        FontFamily="OpenSansSemibold"
+                        FontSize="18"
+                        HorizontalTextAlignment="Center"
+                        Text="Select Duration"
+                        TextColor="{StaticResource TextPrimary}" />
+
+                    <ScrollView HeightRequest="320">
+                        <VerticalStackLayout
+                            x:Name="DurationItemsLayout"
+                            HorizontalOptions="Center"
+                            Spacing="4" />
+                    </ScrollView>
+
+                    <Button
+                        BackgroundColor="{StaticResource SurfaceAlt}"
+                        Clicked="OnOverlayCancelClicked"
+                        CornerRadius="14"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="16"
+                        HeightRequest="44"
+                        Text="Cancel"
+                        TextColor="{StaticResource TextPrimary}" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>

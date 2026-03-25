@@ -86,6 +86,15 @@
         <Setter Property="BackgroundColor" Value="{StaticResource AccentRed}" />
     </Style>
 
+    <Style x:Key="EmomButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+        <Setter Property="BackgroundColor" Value="{StaticResource AccentGold}" />
+        <Setter Property="TextColor" Value="#0D0D0D" />
+    </Style>
+
+    <Style x:Key="GreenButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+        <Setter Property="BackgroundColor" Value="{StaticResource AccentGreen}" />
+    </Style>
+
     <Style x:Key="GhostButtonStyle" TargetType="Button">
         <Setter Property="BackgroundColor" Value="{StaticResource SurfaceAlt}" />
         <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />

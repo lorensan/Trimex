@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
-    x:Class="Trimex.Pages.WorkoutTimerPage"
+    x:Class="Trimex.Pages.DeathByEmomTimerPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:Trimex.Controls"
@@ -10,15 +10,26 @@
         Padding="24,20,24,24"
         BackgroundColor="{StaticResource AppBackground}"
         RowDefinitions="Auto,*,Auto">
+
+        <!-- Header -->
         <VerticalStackLayout Grid.Row="0" Spacing="8">
             <Label x:Name="WorkoutTitleLabel" Style="{StaticResource PageTitleStyle}" />
             <Label x:Name="WorkoutContextLabel" Style="{StaticResource HeroSubtitleStyle}" />
         </VerticalStackLayout>
 
+        <!-- Main area -->
         <Grid Grid.Row="1">
-            <Grid x:Name="ConfettiOverlay" InputTransparent="True" />
+            <VerticalStackLayout Spacing="16" VerticalOptions="Center">
 
-            <VerticalStackLayout Spacing="22" VerticalOptions="Center">
+                <!-- Round indicator -->
+                <Label
+                    x:Name="RoundLabel"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="20"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{StaticResource AccentRed}" />
+
+                <!-- Circle timer -->
                 <Grid
                     HeightRequest="320"
                     HorizontalOptions="Center"
@@ -29,12 +40,12 @@
                         x:Name="TimerDisplayLayout"
                         HeightRequest="220"
                         HorizontalOptions="Center"
+                        IsVisible="False"
                         VerticalOptions="Center"
                         WidthRequest="220">
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnStateTapped" />
                         </Grid.GestureRecognizers>
-
                         <VerticalStackLayout
                             HorizontalOptions="Center"
                             Spacing="4"
@@ -44,21 +55,11 @@
                                 FontSize="46"
                                 MaxLines="1"
                                 Style="{StaticResource TimerValueStyle}" />
-
                             <Label
                                 x:Name="StateHintLabel"
                                 LineBreakMode="TailTruncation"
                                 MaxLines="1"
                                 Style="{StaticResource HeroSubtitleStyle}" />
-
-                            <Label
-                                x:Name="PausedTimeLabel"
-                                HorizontalTextAlignment="Center"
-                                IsVisible="False"
-                                LineBreakMode="NoWrap"
-                                MaxLines="1"
-                                Style="{StaticResource ValueTextStyle}" />
-
                             <ImageButton
                                 x:Name="PauseActionButton"
                                 Padding="0"
@@ -88,39 +89,13 @@
                         WidthRequest="156" />
                 </Grid>
 
-                <VerticalStackLayout
-                    x:Name="RoundSection"
-                    IsVisible="False"
-                    Spacing="12">
-                    <Button
-                        x:Name="RoundButton"
-                        Clicked="OnRoundClicked"
-                        Text="0"
-                        WidthRequest="120"
-                        HeightRequest="120"
-                        CornerRadius="60"
-                        BackgroundColor="#22C55E"
-                        TextColor="White"
-                        FontSize="36"
-                        FontAttributes="Bold"
-                        IsEnabled="False"
-                        HorizontalOptions="Center">
-                        <Button.Shadow>
-                            <Shadow
-                                Brush="#22C55E"
-                                Offset="0,0"
-                                Radius="24"
-                                Opacity="0.85" />
-                        </Button.Shadow>
-                    </Button>
-                </VerticalStackLayout>
             </VerticalStackLayout>
         </Grid>
 
-        <Button
+        <!-- Slide to end -->
+        <controls:SlideToEndView
             Grid.Row="2"
-            Clicked="OnEndClicked"
-            Style="{StaticResource GhostButtonStyle}"
-            Text="End workout" />
+            x:Name="SlideToEnd"
+            SlideCompleted="OnSlideCompleted" />
     </Grid>
 </ContentPage>

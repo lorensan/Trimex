@@ -20,6 +20,11 @@ public partial class HomePage : ContentPage
         await Navigation.PushAsync(_serviceProvider.GetRequiredService<ForTimeConfigurationPage>());
     }
 
+    private async void OnEmomClicked(object? sender, EventArgs e)
+    {
+        await Navigation.PushAsync(_serviceProvider.GetRequiredService<EmomConfigurationPage>());
+    }
+
     private async void OnPendingClicked(object? sender, EventArgs e)
     {
         await DisplayAlertAsync("Coming next", "This section is prepared in the home screen, but the workout flow is still pending in the spec.", "OK");

@@ -3,38 +3,37 @@ using Trimex.Services;
 
 namespace Trimex.Pages;
 
-public partial class WorkoutTimerPage : ContentPage
+public partial class EmomTimerPage : ContentPage
 {
     private const string PlayIcon = "play.png";
     private const string PauseIcon = "pause.png";
 
-    private readonly WorkoutConfigurationRequest _configuration;
+    private readonly EmomConfigurationRequest _configuration;
     private readonly IDispatcherTimer _timer;
 
     private WorkoutTimerState _state = WorkoutTimerState.Idle;
     private DateTimeOffset? _preCountdownStartedAtUtc;
     private DateTimeOffset? _currentRunStartedAtUtc;
     private TimeSpan _elapsedBeforeCurrentRun = TimeSpan.Zero;
-    private int _roundCount;
+    private int _currentRound = 1;
     private int _lastPreCountdownCueSecond = int.MaxValue;
     private int _lastFinalWarningSecond = int.MaxValue;
 
-    public WorkoutTimerPage(WorkoutConfigurationRequest configuration)
+    public EmomTimerPage(EmomConfigurationRequest configuration)
     {
         InitializeComponent();
 
         _configuration = configuration;
-        Title = configuration.TypeDisplayName;
 
-        WorkoutTitleLabel.Text = configuration.TypeDisplayName;
+        WorkoutTitleLabel.Text = "EMOM";
         WorkoutContextLabel.Text = BuildContextLabel(configuration);
 
-        RoundSection.IsVisible = configuration.SupportsRounds;
-        RoundButton.Text = "0";
+        ProgressRing.AccentColor = Color.FromArgb("#FFD166");
 
-        ProgressRing.AccentColor = configuration.Type == WorkoutTypes.ForTime
-            ? Color.FromArgb("#FF3B3B")
-            : Color.FromArgb("#423BFF");
+        ExerciseLabel.IsVisible = !string.IsNullOrWhiteSpace(configuration.WodDescription);
+        ExerciseLabel.Text = configuration.WodDescription;
+
+        RoundLabel.Text = $"Round 1 of {configuration.Rounds}";
 
         _timer = Dispatcher.CreateTimer();
         _timer.Interval = TimeSpan.FromMilliseconds(200);
@@ -56,15 +55,11 @@ public partial class WorkoutTimerPage : ContentPage
             case WorkoutTimerState.Idle:
                 StartPreCountdown();
                 break;
-            case WorkoutTimerState.PreCountdown:
-                break;
             case WorkoutTimerState.Running:
                 PauseWorkout();
                 break;
             case WorkoutTimerState.Paused:
                 ResumeWorkout();
-                break;
-            case WorkoutTimerState.Completed:
                 break;
         }
     }
@@ -96,13 +91,6 @@ public partial class WorkoutTimerPage : ContentPage
 
         _timer.Stop();
         await Navigation.PopAsync();
-    }
-
-    private async void OnRoundClicked(object? sender, EventArgs e)
-    {
-        _roundCount++;
-        RoundButton.Text = _roundCount.ToString();
-        await PlayConfettiAsync();
     }
 
     private void OnTimerTick(object? sender, EventArgs e)
@@ -172,6 +160,7 @@ public partial class WorkoutTimerPage : ContentPage
             _state = WorkoutTimerState.Running;
             _preCountdownStartedAtUtc = null;
             _currentRunStartedAtUtc = DateTimeOffset.UtcNow;
+            _currentRound = 1;
             ProgressRing.Progress = 0;
             _ = TimerCueService.PlayStartSequenceAsync();
             UpdateVisualState();
@@ -179,65 +168,52 @@ public partial class WorkoutTimerPage : ContentPage
         }
 
         TryPlayPreCountdownCue(remaining);
-
         StateValueLabel.Text = remaining.ToString();
         StateHintLabel.Text = "Tap to cancel";
-        PausedTimeLabel.IsVisible = false;
         PauseActionButton.IsVisible = false;
     }
 
     private void HandleRunningTick()
     {
-        var elapsed = GetElapsed();
+        var totalElapsed = GetElapsed();
+        var intervalSeconds = _configuration.IntervalSeconds;
+        var completedRounds = (int)(totalElapsed.TotalSeconds / intervalSeconds);
+        var currentRound = completedRounds + 1;
 
-        if (_configuration.CountsDown)
+        if (completedRounds >= _configuration.Rounds)
         {
-            var remaining = TimeSpan.FromSeconds(_configuration.DurationSeconds) - elapsed;
-
-            if (remaining <= TimeSpan.Zero)
-            {
-                CompleteWorkout(TimeSpan.Zero);
-                return;
-            }
-
-            TryPlayFinalWarningCue(remaining);
-            StateValueLabel.Text = FormatClock(remaining);
-            StateHintLabel.Text = "Tap the time or pause";
-            ProgressRing.Progress = elapsed.TotalSeconds / _configuration.DurationSeconds;
-            PausedTimeLabel.IsVisible = false;
-
+            CompleteWorkout();
             return;
         }
 
-        StateValueLabel.Text = FormatClock(elapsed);
+        // Detect round transition — play start beep for each new round (skip round 1, already played on pre-countdown end)
+        if (currentRound != _currentRound)
+        {
+            _currentRound = currentRound;
+            _lastFinalWarningSecond = int.MaxValue;
+            _ = TimerCueService.PlayStartSequenceAsync();
+        }
+
+        var elapsedInInterval = totalElapsed.TotalSeconds - completedRounds * intervalSeconds;
+        var remainingInInterval = TimeSpan.FromSeconds(intervalSeconds - elapsedInInterval);
+
+        TryPlayFinalWarningCue(remainingInInterval);
+
+        RoundLabel.Text = $"Round {_currentRound} of {_configuration.Rounds}";
+        StateValueLabel.Text = FormatClock(TimeSpan.FromSeconds(elapsedInInterval));
         StateHintLabel.Text = "Tap the time or pause";
-        PausedTimeLabel.IsVisible = false;
-
-        if (_configuration.TimeCapSeconds is int timeCapSeconds && timeCapSeconds > 0)
-        {
-            TryPlayFinalWarningCue(TimeSpan.FromSeconds(timeCapSeconds) - elapsed);
-            ProgressRing.Progress = Math.Min(1d, elapsed.TotalSeconds / timeCapSeconds);
-
-            if (elapsed.TotalSeconds >= timeCapSeconds)
-            {
-                CompleteWorkout(TimeSpan.FromSeconds(timeCapSeconds));
-            }
-
-            return;
-        }
-
-        ProgressRing.Progress = 0;
+        PauseActionButton.IsVisible = true;
+        ProgressRing.Progress = elapsedInInterval / intervalSeconds;
     }
 
-    private void CompleteWorkout(TimeSpan finalTime)
+    private void CompleteWorkout()
     {
         _timer.Stop();
         _state = WorkoutTimerState.Completed;
         _currentRunStartedAtUtc = null;
-        _elapsedBeforeCurrentRun = finalTime;
         _ = TimerCueService.PlayCompletionSequenceAsync();
         UpdateVisualState();
-        _ = DisplayAlertAsync("Workout completed", "Timer finished. You can go back or start a new workout from the main menu.", "OK");
+        _ = DisplayAlertAsync("Workout completed", $"All {_configuration.Rounds} rounds done! Great work.", "OK");
     }
 
     private void TryPlayPreCountdownCue(int remainingSeconds)
@@ -270,132 +246,68 @@ public partial class WorkoutTimerPage : ContentPage
         _lastFinalWarningSecond = int.MaxValue;
     }
 
-    private TimeSpan GetElapsed()
-    {
-        return _elapsedBeforeCurrentRun +
-               (_currentRunStartedAtUtc is null
-                   ? TimeSpan.Zero
-                   : DateTimeOffset.UtcNow - _currentRunStartedAtUtc.Value);
-    }
+    private TimeSpan GetElapsed() =>
+        _elapsedBeforeCurrentRun +
+        (_currentRunStartedAtUtc is null
+            ? TimeSpan.Zero
+            : DateTimeOffset.UtcNow - _currentRunStartedAtUtc.Value);
 
     private void UpdateVisualState()
     {
         TimerActionButton.Source = PlayIcon;
         PauseActionButton.Source = PauseIcon;
         PauseActionButton.IsVisible = false;
-        RoundButton.IsEnabled = _state == WorkoutTimerState.Running;
 
         switch (_state)
         {
             case WorkoutTimerState.Idle:
                 StateValueLabel.Text = string.Empty;
                 StateHintLabel.Text = string.Empty;
-                PausedTimeLabel.IsVisible = false;
                 ProgressRing.Progress = 0;
                 TimerActionButton.IsEnabled = true;
                 TimerActionButton.IsVisible = true;
                 TimerDisplayLayout.IsVisible = false;
+                RoundLabel.Text = $"Round 1 of {_configuration.Rounds}";
                 break;
+
             case WorkoutTimerState.PreCountdown:
                 StateValueLabel.Text = "10";
                 StateHintLabel.Text = "Tap to cancel";
-                PausedTimeLabel.IsVisible = false;
                 TimerActionButton.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
                 break;
+
             case WorkoutTimerState.Running:
-                StateValueLabel.Text = _configuration.CountsDown
-                    ? FormatClock(TimeSpan.FromSeconds(_configuration.DurationSeconds) - GetElapsed())
-                    : FormatClock(GetElapsed());
                 StateHintLabel.Text = "Tap the time or pause";
-                PausedTimeLabel.IsVisible = false;
                 PauseActionButton.IsVisible = true;
                 TimerActionButton.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
                 break;
+
             case WorkoutTimerState.Paused:
                 StateValueLabel.Text = string.Empty;
                 StateHintLabel.Text = string.Empty;
-                PausedTimeLabel.IsVisible = false;
                 TimerActionButton.IsEnabled = true;
                 TimerActionButton.IsVisible = true;
                 TimerDisplayLayout.IsVisible = false;
+                RoundLabel.Text = $"Round {_currentRound} of {_configuration.Rounds}";
                 break;
+
             case WorkoutTimerState.Completed:
-                StateValueLabel.Text = _configuration.CountsDown ? "00:00" : FormatClock(_elapsedBeforeCurrentRun);
-                StateHintLabel.Text = "Workout completed. Go back to start a new one.";
-                PausedTimeLabel.IsVisible = false;
+                StateValueLabel.Text = "Done!";
+                StateHintLabel.Text = "Workout completed.";
                 ProgressRing.Progress = 1;
                 TimerActionButton.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
+                RoundLabel.Text = $"Round {_configuration.Rounds} of {_configuration.Rounds}";
                 break;
         }
     }
 
-    private async Task PlayConfettiAsync()
+    private static string BuildContextLabel(EmomConfigurationRequest configuration)
     {
-        ConfettiOverlay.Children.Clear();
-
-        var colors = new[]
-        {
-            Color.FromArgb("#FF3B3B"),
-            Color.FromArgb("#423BFF"),
-            Color.FromArgb("#FFD166"),
-            Color.FromArgb("#35D07F")
-        };
-
-        var animationTasks = new List<Task>();
-
-        for (var index = 0; index < 16; index++)
-        {
-            var particle = new BoxView
-            {
-                WidthRequest = 10,
-                HeightRequest = 10,
-                Color = colors[index % colors.Length],
-                CornerRadius = 2,
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center,
-                Opacity = 0.95
-            };
-
-            ConfettiOverlay.Children.Add(particle);
-
-            var angle = (Math.PI * 2 * index) / 16;
-            var distance = 90 + Random.Shared.Next(20, 80);
-            var x = Math.Cos(angle) * distance;
-            var y = Math.Sin(angle) * distance;
-
-            animationTasks.Add(AnimateParticleAsync(particle, x, y));
-        }
-
-        await Task.WhenAll(animationTasks);
-        ConfettiOverlay.Children.Clear();
-    }
-
-    private static async Task AnimateParticleAsync(BoxView particle, double x, double y)
-    {
-        await Task.WhenAll(
-            particle.TranslateToAsync(x, y, 1200, Easing.CubicOut),
-            particle.RotateToAsync(Random.Shared.Next(-180, 180), 1200, Easing.CubicOut),
-            particle.FadeToAsync(0, 1200, Easing.CubicIn));
-    }
-
-    private static string BuildContextLabel(WorkoutConfigurationRequest configuration)
-    {
-        var parts = new List<string> { configuration.DurationLabel };
-
-        if (!string.IsNullOrWhiteSpace(configuration.HeroWodName))
-        {
-            parts.Add(configuration.HeroWodName);
-        }
-
-        if (!string.IsNullOrWhiteSpace(configuration.Notes))
-        {
-            parts.Add(configuration.Notes);
-        }
-
-        return string.Join("  |  ", parts);
+        var intervalLabel = EmomConfigurationPage.FormatDurationLabel(configuration.IntervalSeconds);
+        return $"{intervalLabel}  ×  {configuration.Rounds} rounds";
     }
 
     private static string FormatClock(TimeSpan value)
