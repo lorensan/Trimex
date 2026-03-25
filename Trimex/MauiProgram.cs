@@ -27,6 +27,7 @@ namespace Trimex
             builder.Services.AddSingleton<HomePage>();
             builder.Services.AddTransient<AmrapConfigurationPage>();
             builder.Services.AddTransient<ForTimeConfigurationPage>();
+            builder.Services.AddTransient<EmomConfigurationPage>();
 
 #if DEBUG
      		builder.Logging.AddDebug();

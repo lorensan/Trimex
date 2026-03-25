@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Trimex.Pages.EmomConfigurationPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="EMOM">
+
+    <Grid>
+        <Image Source="background.jpg" Aspect="AspectFill" InputTransparent="True" />
+
+        <!-- Content centered vertically -->
+        <VerticalStackLayout Padding="24,40,24,40" Spacing="18" VerticalOptions="Center">
+
+            <Label Style="{StaticResource PageTitleStyle}" Text="EMOM" />
+            <Label Style="{StaticResource HeroSubtitleStyle}" Text="Every Minute On the Minute" />
+
+            <!-- Duration -->
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Style="{StaticResource SectionTitleStyle}" Text="Duration" />
+                    <Border
+                        Padding="14"
+                        BackgroundColor="{StaticResource SurfaceAlt}"
+                        StrokeThickness="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnDurationTapped" />
+                        </Border.GestureRecognizers>
+                        <Label
+                            x:Name="DurationDisplayLabel"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="20"
+                            HorizontalTextAlignment="Center"
+                            Text="30 seconds"
+                            TextColor="{StaticResource TextPrimary}" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Rounds -->
+            <Border Style="{StaticResource CardBorderStyle}">
+                <VerticalStackLayout Spacing="12">
+                    <Label Style="{StaticResource SectionTitleStyle}" Text="Rounds" />
+                    <Border
+                        Padding="14"
+                        BackgroundColor="{StaticResource SurfaceAlt}"
+                        StrokeThickness="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="12" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnRoundsTapped" />
+                        </Border.GestureRecognizers>
+                        <Label
+                            x:Name="RoundsDisplayLabel"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="20"
+                            HorizontalTextAlignment="Center"
+                            Text="10"
+                            TextColor="{StaticResource TextPrimary}" />
+                    </Border>
+                    <Label
+                        x:Name="RoundsSummaryLabel"
+                        Style="{StaticResource ValueTextStyle}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Death by EMOM -->
+            <Button
+                Clicked="OnDeathByClicked"
+                Style="{StaticResource AccentButtonStyle}"
+                Text="Death by EMOM" />
+
+            <!-- START -->
+            <Button
+                Clicked="OnStartClicked"
+                Style="{StaticResource GreenButtonStyle}"
+                Text="START" />
+
+        </VerticalStackLayout>
+
+        <!-- Duration overlay -->
+        <Grid
+            x:Name="DurationOverlay"
+            BackgroundColor="{StaticResource Overlay}"
+            IsVisible="False">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnDurationOverlayBackgroundTapped" />
+            </Grid.GestureRecognizers>
+            <Border
+                Margin="32"
+                Padding="20"
+                BackgroundColor="{StaticResource Surface}"
+                HorizontalOptions="Center"
+                Stroke="{StaticResource BorderColor}"
+                StrokeThickness="1"
+                VerticalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="16" WidthRequest="260">
+                    <Label
+                        FontFamily="OpenSansSemibold"
+                        FontSize="18"
+                        HorizontalTextAlignment="Center"
+                        Text="Select Duration"
+                        TextColor="{StaticResource TextPrimary}" />
+                    <ScrollView HeightRequest="320">
+                        <VerticalStackLayout
+                            x:Name="DurationItemsLayout"
+                            HorizontalOptions="Center"
+                            Spacing="4" />
+                    </ScrollView>
+                    <Button
+                        BackgroundColor="{StaticResource SurfaceAlt}"
+                        Clicked="OnDurationOverlayCancelClicked"
+                        CornerRadius="14"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="16"
+                        HeightRequest="44"
+                        Text="Cancel"
+                        TextColor="{StaticResource TextPrimary}" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+        <!-- Rounds overlay -->
+        <Grid
+            x:Name="RoundsOverlay"
+            BackgroundColor="{StaticResource Overlay}"
+            IsVisible="False">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnRoundsOverlayBackgroundTapped" />
+            </Grid.GestureRecognizers>
+            <Border
+                Margin="32"
+                Padding="20"
+                BackgroundColor="{StaticResource Surface}"
+                HorizontalOptions="Center"
+                Stroke="{StaticResource BorderColor}"
+                StrokeThickness="1"
+                VerticalOptions="Center">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="16" WidthRequest="260">
+                    <Label
+                        FontFamily="OpenSansSemibold"
+                        FontSize="18"
+                        HorizontalTextAlignment="Center"
+                        Text="Select Rounds"
+                        TextColor="{StaticResource TextPrimary}" />
+                    <VerticalStackLayout
+                        x:Name="RoundsItemsLayout"
+                        HorizontalOptions="Center"
+                        Spacing="4" />
+                    <Button
+                        BackgroundColor="{StaticResource SurfaceAlt}"
+                        Clicked="OnRoundsOverlayCancelClicked"
+                        CornerRadius="14"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="16"
+                        HeightRequest="44"
+                        Text="Cancel"
+                        TextColor="{StaticResource TextPrimary}" />
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+    </Grid>
+</ContentPage>
+

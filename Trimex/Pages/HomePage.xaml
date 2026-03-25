@@ -36,8 +36,8 @@
                             Text="AMRAP" />
 
                         <Button
-                            Clicked="OnPendingClicked"
-                            Style="{StaticResource GhostButtonStyle}"
+                            Clicked="OnEmomClicked"
+                            Style="{StaticResource EmomButtonStyle}"
                             Text="EMOM" />
 
                         <Button
