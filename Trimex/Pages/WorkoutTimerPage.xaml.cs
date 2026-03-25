@@ -4,6 +4,9 @@ namespace Trimex.Pages;
 
 public partial class WorkoutTimerPage : ContentPage
 {
+    private const string PlayIcon = "play.png";
+    private const string PauseIcon = "pause.png";
+
     private readonly WorkoutConfigurationRequest _configuration;
     private readonly IDispatcherTimer _timer;
 
@@ -67,6 +70,9 @@ public partial class WorkoutTimerPage : ContentPage
     {
         switch (_state)
         {
+            case WorkoutTimerState.PreCountdown:
+                CancelPreCountdown();
+                break;
             case WorkoutTimerState.Running:
                 PauseWorkout();
                 break;
@@ -117,6 +123,14 @@ public partial class WorkoutTimerPage : ContentPage
         UpdateVisualState();
     }
 
+    private void CancelPreCountdown()
+    {
+        _timer.Stop();
+        _preCountdownStartedAtUtc = null;
+        _state = WorkoutTimerState.Idle;
+        UpdateVisualState();
+    }
+
     private void PauseWorkout()
     {
         if (_currentRunStartedAtUtc is not null)
@@ -125,6 +139,7 @@ public partial class WorkoutTimerPage : ContentPage
             _currentRunStartedAtUtc = null;
         }
 
+        _timer.Stop();
         _state = WorkoutTimerState.Paused;
         UpdateVisualState();
     }
@@ -158,8 +173,9 @@ public partial class WorkoutTimerPage : ContentPage
         }
 
         StateValueLabel.Text = remaining.ToString();
-        StateHintLabel.Text = "Get ready";
+        StateHintLabel.Text = "Tap to cancel";
         PausedTimeLabel.IsVisible = false;
+        PauseActionButton.IsVisible = false;
     }
 
     private void HandleRunningTick()
@@ -177,7 +193,7 @@ public partial class WorkoutTimerPage : ContentPage
             }
 
             StateValueLabel.Text = FormatClock(remaining);
-            StateHintLabel.Text = "Tap the timer to pause";
+            StateHintLabel.Text = "Tap the time or pause";
             ProgressRing.Progress = elapsed.TotalSeconds / _configuration.DurationSeconds;
             PausedTimeLabel.IsVisible = false;
 
@@ -185,7 +201,7 @@ public partial class WorkoutTimerPage : ContentPage
         }
 
         StateValueLabel.Text = FormatClock(elapsed);
-        StateHintLabel.Text = "Tap the timer to pause";
+        StateHintLabel.Text = "Tap the time or pause";
         PausedTimeLabel.IsVisible = false;
 
         if (_configuration.TimeCapSeconds is int timeCapSeconds && timeCapSeconds > 0)
@@ -223,6 +239,10 @@ public partial class WorkoutTimerPage : ContentPage
 
     private void UpdateVisualState()
     {
+        TimerActionButton.Source = PlayIcon;
+        PauseActionButton.Source = PauseIcon;
+        PauseActionButton.IsVisible = false;
+
         switch (_state)
         {
             case WorkoutTimerState.Idle:
@@ -230,14 +250,13 @@ public partial class WorkoutTimerPage : ContentPage
                 StateHintLabel.Text = string.Empty;
                 PausedTimeLabel.IsVisible = false;
                 ProgressRing.Progress = 0;
-                TimerActionButton.Text = "PLAY";
                 TimerActionButton.IsEnabled = true;
                 TimerActionButton.IsVisible = true;
                 TimerDisplayLayout.IsVisible = false;
                 break;
             case WorkoutTimerState.PreCountdown:
                 StateValueLabel.Text = "10";
-                StateHintLabel.Text = "Get ready";
+                StateHintLabel.Text = "Tap to cancel";
                 PausedTimeLabel.IsVisible = false;
                 TimerActionButton.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
@@ -246,8 +265,9 @@ public partial class WorkoutTimerPage : ContentPage
                 StateValueLabel.Text = _configuration.CountsDown
                     ? FormatClock(TimeSpan.FromSeconds(_configuration.DurationSeconds) - GetElapsed())
                     : FormatClock(GetElapsed());
-                StateHintLabel.Text = "Tap the time to pause";
+                StateHintLabel.Text = "Tap the time or pause";
                 PausedTimeLabel.IsVisible = false;
+                PauseActionButton.IsVisible = true;
                 TimerActionButton.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
                 break;
@@ -255,7 +275,6 @@ public partial class WorkoutTimerPage : ContentPage
                 StateValueLabel.Text = string.Empty;
                 StateHintLabel.Text = string.Empty;
                 PausedTimeLabel.IsVisible = false;
-                TimerActionButton.Text = "RESUME";
                 TimerActionButton.IsEnabled = true;
                 TimerActionButton.IsVisible = true;
                 TimerDisplayLayout.IsVisible = false;

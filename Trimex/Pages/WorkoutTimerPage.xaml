@@ -30,29 +30,45 @@
                         HorizontalOptions="Center"
                         Spacing="8"
                         VerticalOptions="Center">
-                        <Label x:Name="StateValueLabel" Style="{StaticResource TimerValueStyle}">
-                            <Label.GestureRecognizers>
-                                <TapGestureRecognizer Tapped="OnStateTapped" />
-                            </Label.GestureRecognizers>
-                        </Label>
+                        <VerticalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnStateTapped" />
+                        </VerticalStackLayout.GestureRecognizers>
 
-                        <Label x:Name="StateHintLabel" Style="{StaticResource HeroSubtitleStyle}" />
+                        <Label x:Name="StateValueLabel" Style="{StaticResource TimerValueStyle}"></Label>
+
+                        <Label x:Name="StateHintLabel" Style="{StaticResource HeroSubtitleStyle}"></Label>
 
                         <Label
                             x:Name="PausedTimeLabel"
                             HorizontalTextAlignment="Center"
                             IsVisible="False"
                             Style="{StaticResource ValueTextStyle}" />
+
+                        <ImageButton
+                            x:Name="PauseActionButton"
+                            Aspect="AspectFit"
+                            BackgroundColor="Transparent"
+                            Clicked="OnTimerActionClicked"
+                            HeightRequest="52"
+                            HorizontalOptions="Center"
+                            IsVisible="False"
+                            Padding="0"
+                            Source="pause.png"
+                            VerticalOptions="Center"
+                            WidthRequest="52" />
                     </VerticalStackLayout>
 
-                    <Button
+                    <ImageButton
                         x:Name="TimerActionButton"
+                        Aspect="AspectFit"
+                        BackgroundColor="Transparent"
                         Clicked="OnTimerActionClicked"
+                        HeightRequest="72"
                         HorizontalOptions="Center"
-                        Style="{StaticResource PrimaryButtonStyle}"
-                        Text="PLAY"
+                        Padding="0"
+                        Source="play.png"
                         VerticalOptions="Center"
-                        WidthRequest="120" />
+                        WidthRequest="72" />
                 </Grid>
 
                 <VerticalStackLayout
