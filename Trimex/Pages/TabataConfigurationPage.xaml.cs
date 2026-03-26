@@ -89,9 +89,17 @@ public partial class TabataConfigurationPage : ContentPage
 
     private void UpdateDisplays()
     {
-        RoundsDisplayLabel.Text = $"{_rounds} ROUNDS";
-        WorkTimeDisplayLabel.Text = FormatDurationLabel(_workSeconds);
-        RestTimeDisplayLabel.Text = FormatDurationLabel(_restSeconds);
+        RoundsNumberLabel.Text = _rounds.ToString();
+        WorkTimeDisplayLabel.Text = FormatMmSs(_workSeconds);
+        RestTimeDisplayLabel.Text = FormatMmSs(_restSeconds);
+        TotalDurationLabel.Text = FormatMmSs(_rounds * (_workSeconds + _restSeconds));
+    }
+
+    private static string FormatMmSs(int totalSeconds)
+    {
+        var minutes = totalSeconds / 60;
+        var seconds = totalSeconds % 60;
+        return $"{minutes:00}:{seconds:00}";
     }
 
     private void BuildRoundsOverlayItems()

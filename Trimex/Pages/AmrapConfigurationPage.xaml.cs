@@ -5,117 +5,60 @@ namespace Trimex.Pages;
 
 public partial class AmrapConfigurationPage : ContentPage
 {
-    private readonly IHeroWodRepository _heroWodRepository;
-    private readonly IWorkoutNoteRepository _workoutNoteRepository;
-    private readonly List<HeroWod> _heroWods = [];
-
-    private HeroWod? _selectedHeroWod;
-    private string _notes = string.Empty;
+    private int _selectedMinutes = 20;
 
     public AmrapConfigurationPage(IHeroWodRepository heroWodRepository, IWorkoutNoteRepository workoutNoteRepository)
     {
         InitializeComponent();
-        _heroWodRepository = heroWodRepository;
-        _workoutNoteRepository = workoutNoteRepository;
 
-        for (var minute = 1; minute <= 100; minute++)
-        {
-            MinutesPicker.Items.Add($"{minute} minutes");
-        }
-
-        MinutesPicker.SelectedIndex = 19;
-        MinutesPicker.SelectedIndexChanged += (_, _) => UpdateMinuteSummary();
-
-        UpdateMinuteSummary();
-        UpdateNotesLabel();
+        BuildMinutesOverlayItems();
+        UpdateMinutesDisplay();
     }
 
-    protected override void OnAppearing()
+    // --- Minutes card / overlay ---
+
+    private void OnMinutesCardTapped(object? sender, TappedEventArgs e) =>
+        MinutesOverlay.IsVisible = true;
+
+    private void OnMinutesOverlayBackgroundTapped(object? sender, TappedEventArgs e) =>
+        MinutesOverlay.IsVisible = false;
+
+    private void OnMinutesOverlayCancelClicked(object? sender, EventArgs e) =>
+        MinutesOverlay.IsVisible = false;
+
+    private void OnMinutesItemSelected(int minutes)
     {
-        base.OnAppearing();
-        _ = LoadHeroWodsAsync();
+        _selectedMinutes = minutes;
+        UpdateMinutesDisplay();
+        MinutesOverlay.IsVisible = false;
     }
 
-    private async Task LoadHeroWodsAsync()
+    // --- Quick select presets ---
+
+    private void OnQuickSelectClicked(object? sender, EventArgs e)
     {
-        _heroWods.Clear();
-        _heroWods.AddRange(await _heroWodRepository.GetByTypeAsync(WorkoutTypes.Amrap));
-
-        HeroWodPicker.Items.Clear();
-        HeroWodPicker.Items.Add("Custom AMRAP");
-
-        foreach (var heroWod in _heroWods)
+        if (sender is Button btn && btn.CommandParameter is string val && int.TryParse(val, out var minutes))
         {
-            HeroWodPicker.Items.Add(heroWod.Name);
+            _selectedMinutes = minutes;
+            UpdateMinutesDisplay();
         }
-
-        HeroWodPicker.SelectedIndex = 0;
-        HeroWodEmptyLabel.IsVisible = _heroWods.Count == 0;
-
-        var savedNote = await _workoutNoteRepository.GetLatestAsync(WorkoutTypes.Amrap, null);
-        _notes = savedNote?.Notes ?? string.Empty;
-        UpdateNotesLabel();
     }
 
-    private async void OnHeroWodSelectionChanged(object? sender, EventArgs e)
-    {
-        _selectedHeroWod = HeroWodPicker.SelectedIndex <= 0
-            ? null
-            : _heroWods[HeroWodPicker.SelectedIndex - 1];
-
-        HeroDescriptionBorder.IsVisible = _selectedHeroWod is not null;
-        HeroDescriptionLabel.Text = _selectedHeroWod?.WodDescription ?? string.Empty;
-
-        if (_selectedHeroWod?.Duration is int duration && duration > 0)
-        {
-            var selectedMinutes = Math.Clamp(duration / 60, 1, 100);
-            MinutesPicker.SelectedIndex = selectedMinutes - 1;
-        }
-
-        var savedNote = await _workoutNoteRepository.GetLatestAsync(WorkoutTypes.Amrap, _selectedHeroWod?.UniqueId);
-        _notes = savedNote?.Notes
-            ?? _selectedHeroWod?.Notes
-            ?? string.Empty;
-
-        UpdateMinuteSummary();
-        UpdateNotesLabel();
-    }
-
-    private async void OnAddNotesClicked(object? sender, EventArgs e)
-    {
-        var editedNote = await DisplayPromptAsync(
-            "Workout notes",
-            "Add the note you want to keep for this AMRAP setup.",
-            accept: "Save",
-            cancel: "Cancel",
-            placeholder: "Movement details, scaling, strategy...",
-            maxLength: 500,
-            initialValue: _notes);
-
-        if (editedNote is null)
-        {
-            return;
-        }
-
-        _notes = editedNote.Trim();
-        await _workoutNoteRepository.SaveAsync(WorkoutTypes.Amrap, _selectedHeroWod?.UniqueId, _notes);
-        UpdateNotesLabel();
-    }
+    // --- Navigation ---
 
     private async void OnStartClicked(object? sender, EventArgs e)
     {
-        var selectedMinutes = MinutesPicker.SelectedIndex + 1;
         var request = new WorkoutConfigurationRequest
         {
             Type = WorkoutTypes.Amrap,
             TypeDisplayName = "AMRAP",
-            DurationSeconds = selectedMinutes * 60,
-            TimeCapSeconds = selectedMinutes * 60,
-            DurationLabel = $"{selectedMinutes} minutes",
-            Notes = _notes,
-            HeroWodUniqueId = _selectedHeroWod?.UniqueId,
-            HeroWodName = _selectedHeroWod?.Name ?? string.Empty,
-            WodDescription = _selectedHeroWod?.WodDescription ?? string.Empty,
+            DurationSeconds = _selectedMinutes * 60,
+            TimeCapSeconds = _selectedMinutes * 60,
+            DurationLabel = $"{_selectedMinutes} minutes",
+            Notes = string.Empty,
+            HeroWodUniqueId = null,
+            HeroWodName = string.Empty,
+            WodDescription = string.Empty,
             CountsDown = true,
             SupportsRounds = true
         };
@@ -123,16 +66,61 @@ public partial class AmrapConfigurationPage : ContentPage
         await Navigation.PushAsync(new WorkoutTimerPage(request));
     }
 
-    private void UpdateMinuteSummary()
+    // --- Display helpers ---
+
+    private void UpdateMinutesDisplay()
     {
-        var selectedMinutes = MinutesPicker.SelectedIndex + 1;
-        MinutesSummaryLabel.Text = $"{selectedMinutes} minutes";
+        MinutesNumberLabel.Text = $"{_selectedMinutes:00}";
+        UpdatePresetStates();
+        UpdateIntensityLabel();
     }
 
-    private void UpdateNotesLabel()
+    private void UpdatePresetStates()
     {
-        NotesLabel.Text = string.IsNullOrWhiteSpace(_notes)
-            ? "No notes saved yet."
-            : _notes;
+        var active   = Color.FromArgb("#423BFF");
+        var inactive = Color.FromArgb("#262626");
+
+        (Button btn, int value)[] presets =
+        [
+            (Preset5,  5),
+            (Preset10, 10),
+            (Preset15, 15),
+            (Preset20, 20)
+        ];
+
+        foreach (var (btn, value) in presets)
+            btn.BackgroundColor = _selectedMinutes == value ? active : inactive;
+    }
+
+    private void UpdateIntensityLabel()
+    {
+        (IntensityLabel.Text, IntensityLabel.TextColor) = _selectedMinutes switch
+        {
+            <= 8  => ("SPRINT",           Color.FromArgb("#FF3B3B")),
+            <= 15 => ("HIGH PERFORMANCE", Color.FromArgb("#35D07F")),
+            _     => ("ENDURANCE",        Color.FromArgb("#423BFF"))
+        };
+    }
+
+    private void BuildMinutesOverlayItems()
+    {
+        for (var minute = 1; minute <= 100; minute++)
+        {
+            var m = minute;
+            var label = new Label
+            {
+                Text = $"{minute} min",
+                FontSize = 17,
+                FontFamily = "OpenSansSemibold",
+                TextColor = Color.FromArgb("#FFFFFF"),
+                HorizontalTextAlignment = TextAlignment.Center,
+                Padding = new Thickness(0, 10)
+            };
+
+            var tap = new TapGestureRecognizer();
+            tap.Tapped += (_, _) => OnMinutesItemSelected(m);
+            label.GestureRecognizers.Add(tap);
+            MinutesItemsLayout.Children.Add(label);
+        }
     }
 }

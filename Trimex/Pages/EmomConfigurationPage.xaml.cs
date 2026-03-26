@@ -57,7 +57,7 @@ public partial class EmomConfigurationPage : ContentPage
 
     // --- Navigation ---
 
-    private async void OnDeathByClicked(object? sender, EventArgs e) =>
+    private async void OnDeathByTapped(object? sender, TappedEventArgs e) =>
         await Navigation.PushAsync(new DeathByEmomPage());
 
     private async void OnStartClicked(object? sender, EventArgs e)
@@ -74,7 +74,7 @@ public partial class EmomConfigurationPage : ContentPage
     // --- Display helpers ---
 
     private void UpdateDurationDisplay() =>
-        DurationDisplayLabel.Text = FormatDurationLabel(_selectedIntervalSeconds);
+        DurationDisplayLabel.Text = FormatMmSs(_selectedIntervalSeconds);
 
     private void UpdateRoundsDisplay() =>
         RoundsDisplayLabel.Text = _rounds.ToString();
@@ -83,8 +83,12 @@ public partial class EmomConfigurationPage : ContentPage
     {
         var total = TimeSpan.FromSeconds((double)_selectedIntervalSeconds * _rounds);
         var totalMinutes = (int)total.TotalMinutes;
-        RoundsSummaryLabel.Text = $"{_rounds}  /  {totalMinutes:00}:{total.Seconds:00}";
+        RoundsSummaryLabel.Text = _rounds.ToString();
+        TotalTimeSummaryLabel.Text = $"{totalMinutes:00}:{total.Seconds:00}";
     }
+
+    private static string FormatMmSs(int seconds) =>
+        $"{seconds / 60:00}:{seconds % 60:00}";
 
     private void BuildDurationOverlayItems()
     {

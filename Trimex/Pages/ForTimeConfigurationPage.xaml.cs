@@ -5,78 +5,24 @@ namespace Trimex.Pages;
 
 public partial class ForTimeConfigurationPage : ContentPage
 {
-    private readonly IHeroWodRepository _heroWodRepository;
-    private readonly IWorkoutNoteRepository _workoutNoteRepository;
-    private readonly List<HeroWod> _heroWods = [];
-
-    private HeroWod? _selectedHeroWod;
     private int _selectedMinutes = 15;
 
     public ForTimeConfigurationPage(IHeroWodRepository heroWodRepository, IWorkoutNoteRepository workoutNoteRepository)
     {
         InitializeComponent();
-        _heroWodRepository = heroWodRepository;
-        _workoutNoteRepository = workoutNoteRepository;
 
         BuildTimeCapOverlayItems();
         UpdateTimeCapDisplay();
     }
 
-    protected override void OnAppearing()
-    {
-        base.OnAppearing();
-        _ = LoadHeroWodsAsync();
-    }
-
-    private async Task LoadHeroWodsAsync()
-    {
-        _heroWods.Clear();
-        _heroWods.AddRange(await _heroWodRepository.GetByTypeAsync(WorkoutTypes.ForTime));
-
-        HeroWodPicker.Items.Clear();
-        HeroWodPicker.Items.Add("Custom FOR TIME");
-
-        foreach (var heroWod in _heroWods)
-        {
-            HeroWodPicker.Items.Add(heroWod.Name);
-        }
-
-        HeroWodPicker.SelectedIndex = 0;
-        HeroWodEmptyLabel.IsVisible = _heroWods.Count == 0;
-
-        var savedNote = await _workoutNoteRepository.GetLatestAsync(WorkoutTypes.ForTime, null);
-    }
-
-    private async void OnHeroWodSelectionChanged(object? sender, EventArgs e)
-    {
-        _selectedHeroWod = HeroWodPicker.SelectedIndex <= 0
-            ? null
-            : _heroWods[HeroWodPicker.SelectedIndex - 1];
-
-        HeroDescriptionBorder.IsVisible = _selectedHeroWod is not null;
-        HeroDescriptionLabel.Text = _selectedHeroWod?.WodDescription ?? string.Empty;
-
-        if (_selectedHeroWod?.TimeCap is int timeCap && timeCap >= 0)
-        {
-            _selectedMinutes = Math.Clamp(timeCap / 60, 0, 100);
-            UpdateTimeCapDisplay();
-        }
-    }
-
-    private void OnTimeCapTapped(object? sender, TappedEventArgs e)
-    {
+    private void OnTimeCapTapped(object? sender, TappedEventArgs e) =>
         TimeCapOverlay.IsVisible = true;
-    }
 
-    private void OnOverlayBackgroundTapped(object? sender, TappedEventArgs e)
-    {
+    private void OnOverlayBackgroundTapped(object? sender, TappedEventArgs e) =>
         TimeCapOverlay.IsVisible = false;
-    }
 
-    private void OnOverlayCancelClicked(object? sender, EventArgs e)
-    {
+    private void OnOverlayCancelClicked(object? sender, EventArgs e) =>
         TimeCapOverlay.IsVisible = false;
-    }
 
     private void OnTimeCapItemSelected(int minutes)
     {
@@ -85,19 +31,12 @@ public partial class ForTimeConfigurationPage : ContentPage
         TimeCapOverlay.IsVisible = false;
     }
 
-    private async void OnAddNotesClicked(object? sender, EventArgs e)
+    private void OnQuickSelectClicked(object? sender, EventArgs e)
     {
-        var editedNote = await DisplayPromptAsync(
-            "Workout notes",
-            "Add the note you want to keep for this FOR TIME setup.",
-            accept: "Save",
-            cancel: "Cancel",
-            placeholder: "Reps, split strategy, scaling...",
-            maxLength: 500);
-
-        if (editedNote is null)
+        if (sender is Button btn && btn.CommandParameter is string val && int.TryParse(val, out var minutes))
         {
-            return;
+            _selectedMinutes = minutes;
+            UpdateTimeCapDisplay();
         }
     }
 
@@ -114,9 +53,9 @@ public partial class ForTimeConfigurationPage : ContentPage
             TimeCapSeconds = capSeconds,
             DurationLabel = $"{selectedMinutes} minutes",
             Notes = string.Empty,
-            HeroWodUniqueId = _selectedHeroWod?.UniqueId,
-            HeroWodName = _selectedHeroWod?.Name ?? string.Empty,
-            WodDescription = _selectedHeroWod?.WodDescription ?? string.Empty,
+            HeroWodUniqueId = null,
+            HeroWodName = string.Empty,
+            WodDescription = string.Empty,
             CountsDown = false,
             SupportsRounds = false
         };
@@ -127,8 +66,26 @@ public partial class ForTimeConfigurationPage : ContentPage
     private void UpdateTimeCapDisplay()
     {
         TimeCapDisplayLabel.Text = _selectedMinutes == 0
-            ? "No cap (manual stop)"
-            : $"{_selectedMinutes} minutes";
+            ? "∞"
+            : $"{_selectedMinutes:00}:00";
+        UpdatePillStates();
+    }
+
+    private void UpdatePillStates()
+    {
+        var inactive = Color.FromArgb("#262626");
+        var active   = Color.FromArgb("#FF3B3B");
+
+        (Button pill, int value)[] pills =
+        [
+            (Pill5,  5),
+            (Pill10, 10),
+            (Pill15, 15),
+            (Pill20, 20)
+        ];
+
+        foreach (var (pill, value) in pills)
+            pill.BackgroundColor = _selectedMinutes == value ? active : inactive;
     }
 
     private void BuildTimeCapOverlayItems()

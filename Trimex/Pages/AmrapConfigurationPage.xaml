@@ -1,74 +1,234 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Trimex.Pages.AmrapConfigurationPage"
-             Title="AMRAP">
+<ContentPage
+    x:Class="Trimex.Pages.AmrapConfigurationPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="AMRAP">
 
     <Grid>
         <Image Source="background.jpg" Aspect="AspectFill" InputTransparent="True" />
 
-        <ScrollView>
-            <VerticalStackLayout Padding="24,24,24,40" Spacing="18">
-            <Label Text="AMRAP Configuration"
-                   Style="{StaticResource PageTitleStyle}" />
+        <!-- Full-screen fit layout: header + time card + presets + button -->
+        <Grid
+            Padding="20,40,20,24"
+            RowDefinitions="Auto,*,Auto,Auto"
+            RowSpacing="12">
 
-            <Label Text="Select the number of minutes of your AMRAP."
-                   Style="{StaticResource HeroSubtitleStyle}" />
-
-            <Border Style="{StaticResource CardBorderStyle}">
-                <VerticalStackLayout Spacing="14">
-                    <Label Text="Hero WOD"
-                           Style="{StaticResource SectionTitleStyle}" />
-
-                    <Picker x:Name="HeroWodPicker"
-                            Title="Choose a saved hero WOD (optional)"
-                            SelectedIndexChanged="OnHeroWodSelectionChanged" />
-
-                    <Label x:Name="HeroWodEmptyLabel"
-                           Text="No AMRAP hero WODs are stored yet in SQLite."
-                           Style="{StaticResource MutedCaptionStyle}"
-                           IsVisible="False" />
-
-                    <Border x:Name="HeroDescriptionBorder"
-                            Style="{StaticResource CardBorderStyle}"
-                            Padding="14"
-                            IsVisible="False">
-                        <VerticalStackLayout Spacing="8">
-                            <Label Text="Workout description"
-                                   Style="{StaticResource SectionTitleStyle}" />
-                            <Label x:Name="HeroDescriptionLabel"
-                                   Style="{StaticResource MutedCaptionStyle}" />
-                        </VerticalStackLayout>
-                    </Border>
-                </VerticalStackLayout>
-            </Border>
-
-            <Border Style="{StaticResource CardBorderStyle}">
-                <VerticalStackLayout Spacing="12">
-                    <Label Text="Minutes"
-                           Style="{StaticResource SectionTitleStyle}" />
-                    <Picker x:Name="MinutesPicker" />
-                    <Label x:Name="MinutesSummaryLabel"
-                           Style="{StaticResource ValueTextStyle}" />
-                </VerticalStackLayout>
-            </Border>
-
-            <Border Style="{StaticResource CardBorderStyle}">
-                <VerticalStackLayout Spacing="12">
-                    <Label Text="Notes"
-                           Style="{StaticResource SectionTitleStyle}" />
-                    <Button Text="Add notes"
-                            Style="{StaticResource GhostButtonStyle}"
-                            Clicked="OnAddNotesClicked" />
-                    <Label x:Name="NotesLabel"
-                           Style="{StaticResource MutedCaptionStyle}" />
-                </VerticalStackLayout>
-            </Border>
-
-            <Button Text="START"
-                    Style="{StaticResource PrimaryButtonStyle}"
-                    Clicked="OnStartClicked" />
+            <!-- Hero Header -->
+            <VerticalStackLayout Grid.Row="0" Margin="0,0,0,4" Spacing="2">
+                <Label
+                    FontFamily="OpenSansSemibold"
+                    FontSize="38"
+                    HorizontalTextAlignment="Center"
+                    Text="AMRAP"
+                    TextColor="{StaticResource TextPrimary}" />
+                <Label
+                    CharacterSpacing="2"
+                    FontFamily="OpenSansRegular"
+                    FontSize="10"
+                    HorizontalTextAlignment="Center"
+                    Text="AS MANY ROUNDS AS POSSIBLE"
+                    TextColor="{StaticResource TextSecondary}" />
             </VerticalStackLayout>
-        </ScrollView>
+
+            <!-- Time Card -->
+            <Border
+                Grid.Row="1"
+                BackgroundColor="{StaticResource SurfaceContainerLow}"
+                Padding="0"
+                Stroke="{StaticResource BorderColor}"
+                StrokeThickness="1">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnMinutesCardTapped" />
+                </Border.GestureRecognizers>
+                <VerticalStackLayout HorizontalOptions="Center" Spacing="4" VerticalOptions="Center">
+                    <Label
+                        CharacterSpacing="2"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="10"
+                        HorizontalTextAlignment="Center"
+                        Text="MINUTES"
+                        TextColor="{StaticResource TextSecondary}" />
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="2">
+                        <Label
+                            x:Name="MinutesNumberLabel"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="72"
+                            Text="20"
+                            TextColor="{StaticResource TextPrimary}"
+                            VerticalOptions="End" />
+                        <Label
+                            FontFamily="OpenSansSemibold"
+                            FontSize="36"
+                            Margin="0,0,0,6"
+                            Text=":00"
+                            TextColor="{StaticResource AccentBlue}"
+                            VerticalOptions="End" />
+                    </HorizontalStackLayout>
+                    <Label
+                        CharacterSpacing="2"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="9"
+                        HorizontalTextAlignment="Center"
+                        Text="TAP TO EDIT"
+                        TextColor="{StaticResource MutedText}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Presets + Intensity Bar -->
+            <VerticalStackLayout Grid.Row="2" Spacing="8">
+
+                <!-- 4-col Preset Grid -->
+                <Grid ColumnDefinitions="*,*,*,*" ColumnSpacing="8">
+                    <Button
+                        x:Name="Preset5"
+                        Grid.Column="0"
+                        BackgroundColor="{StaticResource SurfaceContainerHighest}"
+                        Clicked="OnQuickSelectClicked"
+                        CommandParameter="5"
+                        CornerRadius="12"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="14"
+                        HeightRequest="52"
+                        Text="5:00"
+                        TextColor="{StaticResource TextPrimary}" />
+                    <Button
+                        x:Name="Preset10"
+                        Grid.Column="1"
+                        BackgroundColor="{StaticResource SurfaceContainerHighest}"
+                        Clicked="OnQuickSelectClicked"
+                        CommandParameter="10"
+                        CornerRadius="12"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="14"
+                        HeightRequest="52"
+                        Text="10:00"
+                        TextColor="{StaticResource TextPrimary}" />
+                    <Button
+                        x:Name="Preset15"
+                        Grid.Column="2"
+                        BackgroundColor="{StaticResource SurfaceContainerHighest}"
+                        Clicked="OnQuickSelectClicked"
+                        CommandParameter="15"
+                        CornerRadius="12"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="14"
+                        HeightRequest="52"
+                        Text="15:00"
+                        TextColor="{StaticResource TextPrimary}" />
+                    <Button
+                        x:Name="Preset20"
+                        Grid.Column="3"
+                        BackgroundColor="{StaticResource AccentBlue}"
+                        Clicked="OnQuickSelectClicked"
+                        CommandParameter="20"
+                        CornerRadius="12"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="14"
+                        HeightRequest="52"
+                        Text="20:00"
+                        TextColor="{StaticResource TextPrimary}" />
+                </Grid>
+
+                <!-- Intensity Bar -->
+                <Border
+                    BackgroundColor="{StaticResource SurfaceContainerHighest}"
+                    Padding="14,10"
+                    Stroke="Transparent"
+                    StrokeThickness="0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12" />
+                    </Border.StrokeShape>
+                    <Grid ColumnDefinitions="4,*" ColumnSpacing="12">
+                        <BoxView
+                            Grid.Column="0"
+                            BackgroundColor="{StaticResource AccentBlue}"
+                            CornerRadius="2"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Fill" />
+                        <VerticalStackLayout Grid.Column="1" Spacing="2">
+                            <Label
+                                CharacterSpacing="2"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="9"
+                                Text="ESTIMATED INTENSITY"
+                                TextColor="{StaticResource TextSecondary}" />
+                            <Label
+                                x:Name="IntensityLabel"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="16"
+                                Text="HIGH PERFORMANCE"
+                                TextColor="{StaticResource TextPrimary}" />
+                        </VerticalStackLayout>
+                    </Grid>
+                </Border>
+
+            </VerticalStackLayout>
+
+            <!-- START WORKOUT -->
+            <Button
+                Grid.Row="3"
+                BackgroundColor="#CAFD00"
+                Clicked="OnStartClicked"
+                CornerRadius="14"
+                FontFamily="OpenSansSemibold"
+                FontSize="16"
+                HeightRequest="52"
+                Text="START WORKOUT ⚡"
+                TextColor="#000000" />
+
+        </Grid>
+
+        <!-- Minutes overlay -->
+        <Grid
+            x:Name="MinutesOverlay"
+            BackgroundColor="{StaticResource Overlay}"
+            IsVisible="False">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnMinutesOverlayBackgroundTapped" />
+            </Grid.GestureRecognizers>
+            <Border
+                Padding="20"
+                BackgroundColor="{StaticResource Surface}"
+                HeightRequest="300"
+                HorizontalOptions="Center"
+                Stroke="{StaticResource BorderColor}"
+                StrokeThickness="1"
+                VerticalOptions="Center"
+                WidthRequest="300">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
+                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="16">
+                    <Label
+                        Grid.Row="0"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="18"
+                        HorizontalTextAlignment="Center"
+                        Text="Select Minutes"
+                        TextColor="{StaticResource TextPrimary}" />
+                    <ScrollView Grid.Row="1">
+                        <VerticalStackLayout
+                            x:Name="MinutesItemsLayout"
+                            HorizontalOptions="Center"
+                            Spacing="4" />
+                    </ScrollView>
+                    <Button
+                        Grid.Row="2"
+                        BackgroundColor="{StaticResource SurfaceAlt}"
+                        Clicked="OnMinutesOverlayCancelClicked"
+                        CornerRadius="14"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="16"
+                        HeightRequest="44"
+                        Text="Cancel"
+                        TextColor="{StaticResource TextPrimary}" />
+                </Grid>
+            </Border>
+        </Grid>
+
     </Grid>
 </ContentPage>
