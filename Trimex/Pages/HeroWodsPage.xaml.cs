@@ -11,6 +11,7 @@ public partial class HeroWodsPage : ContentPage
 
     private IReadOnlyList<HeroWod> _allWods = [];
     private HeroWod? _selectedWod;
+    private double _sheetDragY;
 
     // Filter state
     private bool _filterMen;
@@ -180,7 +181,7 @@ public partial class HeroWodsPage : ContentPage
 
         var list = results.ToList();
         WodsCollectionView.ItemsSource = list;
-        ResultsCountLabel.Text = list.Count == 1 ? "1 WOD" : $"{list.Count} WODs";
+        ResultsCountLabel.Text = $"showing {list.Count} WODs";
     }
 
     private static bool IsUnderOneHour(HeroWod wod) => wod.Type switch
@@ -203,8 +204,10 @@ public partial class HeroWodsPage : ContentPage
 
     private async Task ShowDetailSheetAsync(HeroWod wod)
     {
-        DetailTypeLabel.Text   = wod.TypeBadge;
-        DetailNameLabel.Text   = wod.Name.ToUpperInvariant();
+        DetailTypeLabel.Text            = wod.TypeBadge;
+        DetailTypeLabel.TextColor       = wod.TypeBadgeTextColor;
+        DetailTypeBadge.BackgroundColor = wod.TypeBadgeBgColor;
+        DetailNameLabel.Text            = wod.Name.ToUpperInvariant();
         DetailGenderLabel.Text = wod.IsCustom ? "Custom WOD" : wod.GenderCategory;
         TimeTargetLabel.Text   = wod.DurationDisplay;
 
@@ -246,6 +249,37 @@ public partial class HeroWodsPage : ContentPage
 
     private async void OnDimmerTapped(object? sender, TappedEventArgs e)
         => await HideDetailSheetAsync();
+
+    private void OnDetailSheetPanUpdated(object? sender, PanUpdatedEventArgs e)
+    {
+        switch (e.StatusType)
+        {
+            case GestureStatus.Started:
+                _sheetDragY = 0;
+                break;
+
+            case GestureStatus.Running:
+                // Android reports per-frame deltas; iOS/Windows report cumulative totals.
+#if ANDROID
+                _sheetDragY = Math.Max(0, _sheetDragY + e.TotalY);
+#else
+                _sheetDragY = Math.Max(0, e.TotalY);
+#endif
+                DetailSheet.TranslationY = _sheetDragY;
+                OverlayDimmer.Opacity = Math.Max(0, 1.0 - _sheetDragY / 400.0);
+                break;
+
+            case GestureStatus.Completed:
+            case GestureStatus.Canceled:
+                if (_sheetDragY > 150)
+                    _ = HideDetailSheetAsync();
+                else
+                    _ = Task.WhenAll(
+                        DetailSheet.TranslateToAsync(0, 0, 200, Easing.CubicOut),
+                        OverlayDimmer.FadeToAsync(1, 200));
+                break;
+        }
+    }
 
     // ── FAB ──────────────────────────────────────────────────────────────────
 
@@ -313,7 +347,7 @@ public partial class HeroWodsPage : ContentPage
 
     private static void SetChipActive(Border chipBorder, Label chipLabel, bool active)
     {
-        chipLabel.TextColor        = active ? Color.FromArgb("#CAFD00") : Color.FromArgb("#8A8A8A");
-        chipBorder.BackgroundColor = active ? Color.FromArgb("#1A2900") : Color.FromArgb("#262626");
+        chipLabel.TextColor        = active ? Color.FromArgb("#00363D") : Color.FromArgb("#8A8A8A");
+        chipBorder.BackgroundColor = active ? Color.FromArgb("#DAFF6E") : Color.FromArgb("#262626");
     }
 }

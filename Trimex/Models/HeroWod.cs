@@ -37,6 +37,26 @@ public sealed class HeroWod
     };
 
     [Ignore]
+    public Color TypeBadgeTextColor => Type switch
+    {
+        WorkoutTypes.ForTime => Color.FromArgb("#4DA6FF"),  // blue
+        WorkoutTypes.Amrap   => Color.FromArgb("#FF8C42"),  // orange
+        WorkoutTypes.Tabata  => Color.FromArgb("#35D07F"),  // green
+        WorkoutTypes.Emom    => Color.FromArgb("#FFFFFF"),  // white
+        _                    => Color.FromArgb("#CAFD00")   // yellow (custom + default)
+    };
+
+    [Ignore]
+    public Color TypeBadgeBgColor => Type switch
+    {
+        WorkoutTypes.ForTime => Color.FromArgb("#0D1E33"),
+        WorkoutTypes.Amrap   => Color.FromArgb("#2E1800"),
+        WorkoutTypes.Tabata  => Color.FromArgb("#0D2E1A"),
+        WorkoutTypes.Emom    => Color.FromArgb("#2A2A2A"),
+        _                    => Color.FromArgb("#1A2900")   // yellow/custom
+    };
+
+    [Ignore]
     public string DurationDisplay => Type switch
     {
         WorkoutTypes.Amrap   => Duration.HasValue ? $"{Duration.Value / 60} min AMRAP" : "—",
