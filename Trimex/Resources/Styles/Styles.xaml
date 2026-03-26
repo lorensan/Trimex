@@ -99,6 +99,11 @@
         <Setter Property="BackgroundColor" Value="{StaticResource AccentPurple}" />
     </Style>
 
+    <Style x:Key="HeroWodsButtonStyle" TargetType="Button" BasedOn="{StaticResource PrimaryButtonStyle}">
+        <Setter Property="BackgroundColor" Value="{StaticResource AccentNeonYellow}" />
+        <Setter Property="TextColor" Value="#0D0D0D" />
+    </Style>
+
     <Style x:Key="GhostButtonStyle" TargetType="Button">
         <Setter Property="BackgroundColor" Value="{StaticResource SurfaceAlt}" />
         <Setter Property="TextColor" Value="{StaticResource TextPrimary}" />

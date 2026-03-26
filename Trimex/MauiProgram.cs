@@ -29,6 +29,8 @@ namespace Trimex
             builder.Services.AddTransient<ForTimeConfigurationPage>();
             builder.Services.AddTransient<EmomConfigurationPage>();
             builder.Services.AddTransient<TabataConfigurationPage>();
+            builder.Services.AddTransient<HeroWodsPage>();
+            builder.Services.AddTransient<CustomWodCreationPage>();
 
 #if DEBUG
      		builder.Logging.AddDebug();

@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Trimex.Pages.HeroWodsPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:models="clr-namespace:Trimex.Models"
+    Title="Hero WODs">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- ═══ FILTER AREA ═══════════════════════════════════════════════ -->
+        <VerticalStackLayout
+            Grid.Row="0"
+            BackgroundColor="{StaticResource AppBackground}"
+            Padding="20,16,20,10"
+            Spacing="12">
+
+            <Label
+                Text="HERO WODs"
+                Style="{StaticResource PageTitleStyle}"
+                HorizontalOptions="Start" />
+
+            <!-- Search bar -->
+            <Border
+                BackgroundColor="{StaticResource SurfaceContainerLow}"
+                Padding="14,0"
+                StrokeShape="RoundRectangle 14"
+                Stroke="Transparent">
+                <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
+                    <Label
+                        Grid.Column="0"
+                        Text="⌕"
+                        FontSize="20"
+                        TextColor="{StaticResource MutedText}"
+                        VerticalOptions="Center" />
+                    <Entry
+                        x:Name="SearchEntry"
+                        Grid.Column="1"
+                        Placeholder="Search hero WOD..."
+                        BackgroundColor="Transparent"
+                        ReturnType="Search"
+                        TextChanged="OnSearchTextChanged" />
+                </Grid>
+            </Border>
+
+            <!-- Gender chips -->
+            <HorizontalStackLayout Spacing="8">
+                <Border
+                    x:Name="MenChipBorder"
+                    BackgroundColor="{StaticResource SurfaceContainerHighest}"
+                    Padding="16,7"
+                    StrokeShape="RoundRectangle 20"
+                    Stroke="Transparent">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnMenChipTapped" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        x:Name="MenChipLabel"
+                        Text="Men"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="13"
+                        TextColor="{StaticResource MutedText}" />
+                </Border>
+                <Border
+                    x:Name="WomenChipBorder"
+                    BackgroundColor="{StaticResource SurfaceContainerHighest}"
+                    Padding="16,7"
+                    StrokeShape="RoundRectangle 20"
+                    Stroke="Transparent">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnWomenChipTapped" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        x:Name="WomenChipLabel"
+                        Text="Women"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="13"
+                        TextColor="{StaticResource MutedText}" />
+                </Border>
+            </HorizontalStackLayout>
+
+            <!-- Duration chips -->
+            <HorizontalStackLayout Spacing="8">
+                <Border
+                    x:Name="Under1HChipBorder"
+                    BackgroundColor="{StaticResource SurfaceContainerHighest}"
+                    Padding="16,7"
+                    StrokeShape="RoundRectangle 20"
+                    Stroke="Transparent">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnUnder1HChipTapped" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        x:Name="Under1HChipLabel"
+                        Text="Under 1H"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="13"
+                        TextColor="{StaticResource MutedText}" />
+                </Border>
+                <Border
+                    x:Name="NoTimeLimitChipBorder"
+                    BackgroundColor="{StaticResource SurfaceContainerHighest}"
+                    Padding="16,7"
+                    StrokeShape="RoundRectangle 20"
+                    Stroke="Transparent">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnNoTimeLimitChipTapped" />
+                    </Border.GestureRecognizers>
+                    <Label
+                        x:Name="NoTimeLimitChipLabel"
+                        Text="No Time Limit"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="13"
+                        TextColor="{StaticResource MutedText}" />
+                </Border>
+            </HorizontalStackLayout>
+
+            <!-- Type chips (horizontal scroll) -->
+            <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+                <HorizontalStackLayout Spacing="8">
+                    <Border
+                        x:Name="AmrapTypeChipBorder"
+                        BackgroundColor="{StaticResource SurfaceContainerHighest}"
+                        Padding="16,7"
+                        StrokeShape="RoundRectangle 20"
+                        Stroke="Transparent">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnAmrapTypeChipTapped" />
+                        </Border.GestureRecognizers>
+                        <Label
+                            x:Name="AmrapTypeChipLabel"
+                            Text="AMRAP"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="13"
+                            TextColor="{StaticResource MutedText}" />
+                    </Border>
+                    <Border
+                        x:Name="EmomTypeChipBorder"
+                        BackgroundColor="{StaticResource SurfaceContainerHighest}"
+                        Padding="16,7"
+                        StrokeShape="RoundRectangle 20"
+                        Stroke="Transparent">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnEmomTypeChipTapped" />
+                        </Border.GestureRecognizers>
+                        <Label
+                            x:Name="EmomTypeChipLabel"
+                            Text="EMOM"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="13"
+                            TextColor="{StaticResource MutedText}" />
+                    </Border>
+                    <Border
+                        x:Name="TabataTypeChipBorder"
+                        BackgroundColor="{StaticResource SurfaceContainerHighest}"
+                        Padding="16,7"
+                        StrokeShape="RoundRectangle 20"
+                        Stroke="Transparent">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnTabataTypeChipTapped" />
+                        </Border.GestureRecognizers>
+                        <Label
+                            x:Name="TabataTypeChipLabel"
+                            Text="Tabata"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="13"
+                            TextColor="{StaticResource MutedText}" />
+                    </Border>
+                    <Border
+                        x:Name="ForTimeTypeChipBorder"
+                        BackgroundColor="{StaticResource SurfaceContainerHighest}"
+                        Padding="16,7"
+                        StrokeShape="RoundRectangle 20"
+                        Stroke="Transparent">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnForTimeTypeChipTapped" />
+                        </Border.GestureRecognizers>
+                        <Label
+                            x:Name="ForTimeTypeChipLabel"
+                            Text="For Time"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="13"
+                            TextColor="{StaticResource MutedText}" />
+                    </Border>
+                    <Border
+                        x:Name="CustomTypeChipBorder"
+                        BackgroundColor="{StaticResource SurfaceContainerHighest}"
+                        Padding="16,7"
+                        StrokeShape="RoundRectangle 20"
+                        Stroke="Transparent">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnCustomTypeChipTapped" />
+                        </Border.GestureRecognizers>
+                        <Label
+                            x:Name="CustomTypeChipLabel"
+                            Text="CUSTOM"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="13"
+                            TextColor="{StaticResource MutedText}" />
+                    </Border>
+                </HorizontalStackLayout>
+            </ScrollView>
+
+            <Label
+                x:Name="ResultsCountLabel"
+                Text=""
+                FontSize="12"
+                TextColor="{StaticResource MutedText}" />
+        </VerticalStackLayout>
+
+        <!-- ═══ WODs GRID ══════════════════════════════════════════════════ -->
+        <CollectionView
+            x:Name="WodsCollectionView"
+            Grid.Row="1"
+            Margin="12,4,12,0"
+            SelectionMode="None">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout
+                    Orientation="Vertical"
+                    Span="2"
+                    HorizontalItemSpacing="8"
+                    VerticalItemSpacing="8" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:HeroWod">
+                    <Border
+                        BackgroundColor="#131313"
+                        StrokeShape="RoundRectangle 16"
+                        Stroke="Transparent"
+                        Margin="2,2,2,2">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnWodCardTapped" />
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout Padding="14,12" Spacing="7">
+                            <!-- Type badge -->
+                            <Border
+                                BackgroundColor="#1A2900"
+                                Padding="8,3"
+                                StrokeShape="RoundRectangle 6"
+                                Stroke="Transparent"
+                                HorizontalOptions="Start">
+                                <Label
+                                    Text="{Binding TypeBadge}"
+                                    TextColor="#CAFD00"
+                                    FontFamily="OpenSansSemibold"
+                                    FontSize="10" />
+                            </Border>
+                            <!-- WOD Name -->
+                            <Label
+                                Text="{Binding Name}"
+                                TextColor="#CAFD00"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="22"
+                                LineBreakMode="TailTruncation" />
+                            <!-- Gender -->
+                            <Label
+                                Text="{Binding GenderCategory}"
+                                TextColor="{StaticResource MutedText}"
+                                FontSize="12" />
+                            <!-- Duration -->
+                            <Label
+                                Text="{Binding DurationDisplay}"
+                                TextColor="{StaticResource TextSecondary}"
+                                FontSize="12" />
+                        </VerticalStackLayout>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- ═══ OVERLAY DIMMER (above grid, below sheet) ══════════════════ -->
+        <BoxView
+            x:Name="OverlayDimmer"
+            Color="#80000000"
+            Grid.RowSpan="2"
+            IsVisible="False">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnDimmerTapped" />
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <!-- ═══ FAB — create custom WOD (visible only in CUSTOM mode) ═════ -->
+        <Button
+            x:Name="FabButton"
+            Grid.RowSpan="2"
+            VerticalOptions="End"
+            HorizontalOptions="End"
+            Margin="0,0,24,32"
+            IsVisible="False"
+            Text="+"
+            FontFamily="OpenSansSemibold"
+            FontSize="28"
+            TextColor="#0D0D0D"
+            BackgroundColor="#CAFD00"
+            WidthRequest="60"
+            HeightRequest="60"
+            CornerRadius="30"
+            Clicked="OnCreateCustomWodClicked" />
+
+        <!-- ═══ DETAIL BOTTOM SHEET (top of stacking order) ══════════════ -->
+        <Border
+            x:Name="DetailSheet"
+            Grid.RowSpan="2"
+            VerticalOptions="End"
+            IsVisible="False"
+            BackgroundColor="#0E0E0E"
+            StrokeShape="RoundRectangle 24,24,0,0"
+            Stroke="Transparent"
+            Padding="24,16,24,36">
+            <ScrollView>
+                <VerticalStackLayout Spacing="20">
+
+                    <!-- Handle bar -->
+                    <BoxView
+                        Color="#262626"
+                        WidthRequest="40"
+                        HeightRequest="4"
+                        HorizontalOptions="Center"
+                        CornerRadius="2" />
+
+                    <!-- Header: type badge + hero name -->
+                    <VerticalStackLayout Spacing="6">
+                        <Border
+                            x:Name="DetailTypeBadge"
+                            BackgroundColor="#1A2900"
+                            Padding="10,4"
+                            StrokeShape="RoundRectangle 6"
+                            Stroke="Transparent"
+                            HorizontalOptions="Start">
+                            <Label
+                                x:Name="DetailTypeLabel"
+                                Text="FOR TIME"
+                                TextColor="#CAFD00"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="11" />
+                        </Border>
+                        <Label
+                            x:Name="DetailNameLabel"
+                            Text="MURPH"
+                            TextColor="#CAFD00"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="30" />
+                        <Label
+                            x:Name="DetailGenderLabel"
+                            Text="Men"
+                            TextColor="{StaticResource MutedText}"
+                            FontSize="13" />
+                    </VerticalStackLayout>
+
+                    <!-- Exercises list -->
+                    <VerticalStackLayout x:Name="ExercisesLayout" Spacing="5" />
+
+                    <!-- Metrics row -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Border
+                            Grid.Column="0"
+                            BackgroundColor="{StaticResource SurfaceContainerLow}"
+                            Padding="14,12"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="Transparent">
+                            <VerticalStackLayout Spacing="3">
+                                <Label
+                                    Text="TIME TARGET"
+                                    FontSize="10"
+                                    FontFamily="OpenSansSemibold"
+                                    TextColor="{StaticResource MutedText}" />
+                                <Label
+                                    x:Name="TimeTargetLabel"
+                                    Text="—"
+                                    FontFamily="OpenSansSemibold"
+                                    FontSize="16"
+                                    TextColor="{StaticResource TextPrimary}"
+                                    LineBreakMode="TailTruncation" />
+                            </VerticalStackLayout>
+                        </Border>
+                        <Border
+                            Grid.Column="1"
+                            BackgroundColor="{StaticResource SurfaceContainerLow}"
+                            Padding="14,12"
+                            StrokeShape="RoundRectangle 12"
+                            Stroke="Transparent">
+                            <VerticalStackLayout Spacing="3">
+                                <Label
+                                    Text="LAST RECORD"
+                                    FontSize="10"
+                                    FontFamily="OpenSansSemibold"
+                                    TextColor="{StaticResource MutedText}" />
+                                <Label
+                                    x:Name="LastRecordLabel"
+                                    Text="—"
+                                    FontFamily="OpenSansSemibold"
+                                    FontSize="16"
+                                    TextColor="{StaticResource TextPrimary}"
+                                    LineBreakMode="TailTruncation" />
+                            </VerticalStackLayout>
+                        </Border>
+                    </Grid>
+
+                    <!-- GO TO WORKOUT TIMER -->
+                    <Button
+                        x:Name="GoToTimerButton"
+                        Text="GO TO WORKOUT TIMER"
+                        BackgroundColor="#CAFD00"
+                        TextColor="#0D0D0D"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="16"
+                        CornerRadius="22"
+                        HeightRequest="56"
+                        Clicked="OnGoToTimerClicked" />
+
+                </VerticalStackLayout>
+            </ScrollView>
+        </Border>
+
+    </Grid>
+</ContentPage>

@@ -46,8 +46,8 @@
                             Text="TABATA" />
 
                         <Button
-                            Clicked="OnPendingClicked"
-                            Style="{StaticResource GhostButtonStyle}"
+                            Clicked="OnHeroWodsClicked"
+                            Style="{StaticResource HeroWodsButtonStyle}"
                             Text="HERO WODS" />
                     </VerticalStackLayout>
                 </Grid>

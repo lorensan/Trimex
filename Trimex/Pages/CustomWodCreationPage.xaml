@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="Trimex.Pages.CustomWodCreationPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="Custom WOD">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24,20,24,40" Spacing="32">
+
+            <!-- ═══ TITLE INPUT ══════════════════════════════════════════════ -->
+            <VerticalStackLayout Spacing="0">
+                <Label
+                    Text="WOD TITLE"
+                    Style="{StaticResource SectionTitleStyle}"
+                    Margin="0,0,0,10" />
+                <Entry
+                    x:Name="TitleEntry"
+                    Placeholder="e.g. Storm, Redemption..."
+                    BackgroundColor="Transparent"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="22"
+                    TextColor="{StaticResource TextPrimary}" />
+                <!-- Neon bottom border accent -->
+                <BoxView
+                    Color="#CAFD00"
+                    HeightRequest="2"
+                    HorizontalOptions="Fill" />
+            </VerticalStackLayout>
+
+            <!-- ═══ SEQUENCE ═════════════════════════════════════════════════ -->
+            <VerticalStackLayout Spacing="12">
+                <Label
+                    Text="SEQUENCE"
+                    Style="{StaticResource SectionTitleStyle}" />
+
+                <!-- Dynamic exercise list -->
+                <VerticalStackLayout x:Name="ExercisesListLayout" Spacing="6" />
+
+                <!-- Add exercise button -->
+                <Border
+                    BackgroundColor="{StaticResource SurfaceContainerHighest}"
+                    Padding="16,10"
+                    StrokeShape="RoundRectangle 20"
+                    Stroke="Transparent"
+                    HorizontalOptions="Start">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnAddExerciseTapped" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="8">
+                        <Label
+                            Text="+"
+                            TextColor="#CAFD00"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="20"
+                            VerticalOptions="Center" />
+                        <Label
+                            Text="Add exercise"
+                            TextColor="{StaticResource TextSecondary}"
+                            FontSize="14"
+                            VerticalOptions="Center" />
+                    </HorizontalStackLayout>
+                </Border>
+            </VerticalStackLayout>
+
+            <!-- ═══ TIME TARGET ══════════════════════════════════════════════ -->
+            <VerticalStackLayout Spacing="12">
+                <Label
+                    Text="TIME TARGET"
+                    Style="{StaticResource SectionTitleStyle}" />
+                <Grid ColumnDefinitions="72,Auto,72,*" ColumnSpacing="8" VerticalOptions="Center">
+                    <Border
+                        Grid.Column="0"
+                        BackgroundColor="{StaticResource SurfaceContainerLow}"
+                        Padding="0"
+                        StrokeShape="RoundRectangle 10"
+                        Stroke="Transparent">
+                        <Entry
+                            x:Name="MinutesEntry"
+                            Placeholder="00"
+                            Keyboard="Numeric"
+                            MaxLength="2"
+                            TextColor="{StaticResource TextPrimary}"
+                            BackgroundColor="Transparent"
+                            HorizontalTextAlignment="Center"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="22"
+                            HeightRequest="52" />
+                    </Border>
+                    <Label
+                        Grid.Column="1"
+                        Text=":"
+                        TextColor="{StaticResource TextSecondary}"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="26"
+                        VerticalOptions="Center" />
+                    <Border
+                        Grid.Column="2"
+                        BackgroundColor="{StaticResource SurfaceContainerLow}"
+                        Padding="0"
+                        StrokeShape="RoundRectangle 10"
+                        Stroke="Transparent">
+                        <Entry
+                            x:Name="SecondsEntry"
+                            Placeholder="00"
+                            Keyboard="Numeric"
+                            MaxLength="2"
+                            TextColor="{StaticResource TextPrimary}"
+                            BackgroundColor="Transparent"
+                            HorizontalTextAlignment="Center"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="22"
+                            HeightRequest="52" />
+                    </Border>
+                    <Label
+                        Grid.Column="3"
+                        Text="MM : SS"
+                        TextColor="{StaticResource MutedText}"
+                        FontSize="12"
+                        VerticalOptions="Center"
+                        Margin="8,0,0,0" />
+                </Grid>
+                <Label
+                    Text="Leave empty for no time limit"
+                    FontSize="12"
+                    TextColor="{StaticResource MutedText}" />
+            </VerticalStackLayout>
+
+            <!-- ═══ SAVE WOD ══════════════════════════════════════════════════ -->
+            <Button
+                x:Name="SaveButton"
+                Text="SAVE WOD"
+                BackgroundColor="#CAFD00"
+                TextColor="#0D0D0D"
+                FontFamily="OpenSansSemibold"
+                FontSize="16"
+                CornerRadius="22"
+                HeightRequest="56"
+                Clicked="OnSaveWodClicked" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
