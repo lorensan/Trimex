@@ -234,41 +234,68 @@
                         StrokeShape="RoundRectangle 16"
                         Stroke="Transparent"
                         Margin="2,2,2,2">
-                        <Border.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnWodCardTapped" />
-                        </Border.GestureRecognizers>
-                        <VerticalStackLayout Padding="14,12" Spacing="7">
-                            <!-- Type badge -->
-                            <Border
-                                BackgroundColor="{Binding TypeBadgeBgColor}"
-                                Padding="8,3"
-                                StrokeShape="RoundRectangle 6"
-                                Stroke="Transparent"
-                                HorizontalOptions="Start">
+                        <Grid>
+                            <VerticalStackLayout Padding="14,12" Spacing="7">
+                                <!-- Type badge -->
+                                <Border
+                                    BackgroundColor="{Binding TypeBadgeBgColor}"
+                                    Padding="8,3"
+                                    StrokeShape="RoundRectangle 6"
+                                    Stroke="Transparent"
+                                    HorizontalOptions="Start">
+                                    <Label
+                                        Text="{Binding TypeBadge}"
+                                        TextColor="{Binding TypeBadgeTextColor}"
+                                        FontFamily="OpenSansSemibold"
+                                        FontSize="10" />
+                                </Border>
+                                <!-- WOD Name -->
                                 <Label
-                                    Text="{Binding TypeBadge}"
-                                    TextColor="{Binding TypeBadgeTextColor}"
+                                    Text="{Binding Name}"
+                                    TextColor="#009FB2"
                                     FontFamily="OpenSansSemibold"
-                                    FontSize="10" />
-                            </Border>
-                            <!-- WOD Name -->
-                            <Label
-                                Text="{Binding Name}"
-                                TextColor="#009FB2"
+                                    FontSize="22"
+                                    LineBreakMode="TailTruncation" />
+                                <!-- Gender -->
+                                <Label
+                                    Text="{Binding GenderCategory}"
+                                    TextColor="{StaticResource MutedText}"
+                                    FontSize="12" />
+                                <!-- Duration -->
+                                <Label
+                                    Text="{Binding DurationDisplay}"
+                                    TextColor="{StaticResource TextSecondary}"
+                                    FontSize="12" />
+                            </VerticalStackLayout>
+
+                            <Button
+                                BackgroundColor="Transparent"
+                                BorderWidth="0"
+                                CornerRadius="16"
+                                Clicked="OnWodCardClicked"
+                                Pressed="OnWodCardPressed"
+                                Released="OnWodCardReleased" />
+
+                            <Button
+                                IsVisible="{Binding CanShowDelete}"
+                                Text="X"
                                 FontFamily="OpenSansSemibold"
-                                FontSize="22"
-                                LineBreakMode="TailTruncation" />
-                            <!-- Gender -->
-                            <Label
-                                Text="{Binding GenderCategory}"
-                                TextColor="{StaticResource MutedText}"
-                                FontSize="12" />
-                            <!-- Duration -->
-                            <Label
-                                Text="{Binding DurationDisplay}"
-                                TextColor="{StaticResource TextSecondary}"
-                                FontSize="12" />
-                        </VerticalStackLayout>
+                                FontSize="16"
+                                WidthRequest="34"
+                                HeightRequest="34"
+                                CornerRadius="17"
+                                Margin="8"
+                                HorizontalOptions="End"
+                                VerticalOptions="Start"
+                                BackgroundColor="{StaticResource AccentRed}"
+                                TextColor="#0D0D0D"
+                                Clicked="OnDeleteCustomWodClicked" />
+                        </Grid>
+                        <Border.Triggers>
+                            <DataTrigger TargetType="Border" Binding="{Binding IsPendingDelete}" Value="True">
+                                <Setter Property="Opacity" Value="0.7" />
+                            </DataTrigger>
+                        </Border.Triggers>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

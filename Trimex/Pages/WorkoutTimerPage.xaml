@@ -73,6 +73,39 @@
                 VerticalOptions="Center"
                 WidthRequest="220" />
 
+            <Grid
+                InputTransparent="True"
+                ColumnDefinitions="35*,30*,35*"
+                RowDefinitions="35*,30*,35*">
+                <Label
+                    x:Name="WorkoutMinutesWatermarkLabel"
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="96"
+                    HorizontalOptions="End"
+                    HorizontalTextAlignment="End"
+                    Margin="0,8,0,0"
+                    Opacity="0.5"
+                    TextColor="{StaticResource TextPrimary}"
+                    VerticalOptions="Start"
+                    VerticalTextAlignment="Start" />
+
+                <Label
+                    Grid.Row="2"
+                    Grid.Column="0"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="52"
+                    HorizontalOptions="Start"
+                    HorizontalTextAlignment="Start"
+                    Margin="0,0,0,8"
+                    Opacity="0.5"
+                    Text="MIN"
+                    TextColor="{StaticResource TextPrimary}"
+                    VerticalOptions="End"
+                    VerticalTextAlignment="End" />
+            </Grid>
+
             <VerticalStackLayout
                 Spacing="24"
                 VerticalOptions="Center">

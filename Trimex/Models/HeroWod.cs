@@ -70,6 +70,12 @@ public sealed class HeroWod
 
     public bool IsCustom { get; set; }
 
+    [Ignore]
+    public bool IsPendingDelete { get; set; }
+
+    [Ignore]
+    public bool CanShowDelete => IsCustom && IsPendingDelete;
+
     public WorkoutDefinition ToDefinition() =>
         new()
         {

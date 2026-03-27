@@ -10,4 +10,5 @@ public interface IHeroWodRepository
     Task<int> CountAsync();
     Task InsertAllAsync(IEnumerable<HeroWod> wods);
     Task InsertAsync(HeroWod wod);
+    Task DeleteAsync(int uniqueId);
 }

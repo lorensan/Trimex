@@ -40,4 +40,10 @@ public sealed class HeroWodRepository(AppDatabase database) : IHeroWodRepository
     {
         await database.Connection.InsertAsync(wod);
     }
+
+    public async Task DeleteAsync(int uniqueId)
+    {
+        await database.Connection.Table<HeroWod>()
+            .DeleteAsync(wod => wod.UniqueId == uniqueId);
+    }
 }

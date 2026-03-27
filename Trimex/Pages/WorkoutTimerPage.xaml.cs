@@ -29,6 +29,7 @@ public partial class WorkoutTimerPage : ContentPage
 
         WorkoutTitleLabel.Text = configuration.TypeDisplayName;
         WorkoutContextLabel.Text = BuildContextLabel(configuration);
+        WorkoutMinutesWatermarkLabel.Text = BuildWatermarkMinutes(configuration);
 
         var workoutDetails = BuildWorkoutDetails(configuration);
         WorkoutDetailsLabel.Text = workoutDetails;
@@ -485,6 +486,20 @@ public partial class WorkoutTimerPage : ContentPage
         }
 
         return details.ToString();
+    }
+
+    private static string BuildWatermarkMinutes(WorkoutConfigurationRequest configuration)
+    {
+        var totalSeconds = configuration.DurationSeconds > 0
+            ? configuration.DurationSeconds
+            : configuration.TimeCapSeconds.GetValueOrDefault();
+
+        if (totalSeconds <= 0)
+        {
+            return "0";
+        }
+
+        return Math.Max(1, (int)Math.Ceiling(totalSeconds / 60d)).ToString();
     }
 
     private static string FormatClock(TimeSpan value)

@@ -12,6 +12,7 @@ public partial class HeroWodsPage : ContentPage
     private IReadOnlyList<HeroWod> _allWods = [];
     private HeroWod? _selectedWod;
     private double _sheetDragY;
+    private CancellationTokenSource? _longPressCts;
 
     // Filter state
     private bool _filterMen;
@@ -44,6 +45,7 @@ public partial class HeroWodsPage : ContentPage
     private async Task LoadWodsAsync()
     {
         _allWods = await _heroWodRepository.GetAllAsync();
+        ClearPendingDeleteSelection();
         ApplyFilters();
     }
 
@@ -145,7 +147,11 @@ public partial class HeroWodsPage : ContentPage
         FabButton.IsVisible = false;
     }
 
-    private void OnSearchTextChanged(object? sender, TextChangedEventArgs e) => ApplyFilters();
+    private void OnSearchTextChanged(object? sender, TextChangedEventArgs e)
+    {
+        ClearPendingDeleteSelection();
+        ApplyFilters();
+    }
 
     // ── Filtering ────────────────────────────────────────────────────────────
 
@@ -193,13 +199,124 @@ public partial class HeroWodsPage : ContentPage
 
     // ── Card tap & detail sheet ───────────────────────────────────────────────
 
-    private async void OnWodCardTapped(object? sender, TappedEventArgs e)
+    private async void OnWodCardClicked(object? sender, EventArgs e)
     {
         var wod = (sender as VisualElement)?.BindingContext as HeroWod;
-        if (wod is null) return;
+        if (wod is null)
+        {
+            return;
+        }
+
+        if (wod.IsPendingDelete)
+        {
+            return;
+        }
+
+        ClearPendingDeleteSelection();
 
         _selectedWod = wod;
         await ShowDetailSheetAsync(wod);
+    }
+
+    private void OnWodCardPressed(object? sender, EventArgs e)
+    {
+        var wod = (sender as VisualElement)?.BindingContext as HeroWod;
+        if (wod is null || !wod.IsCustom)
+        {
+            return;
+        }
+
+        CancelLongPressDetection();
+
+        var cts = new CancellationTokenSource();
+        _longPressCts = cts;
+        _ = TriggerLongPressSelectionAsync(wod, cts.Token);
+    }
+
+    private void OnWodCardReleased(object? sender, EventArgs e)
+    {
+        CancelLongPressDetection();
+    }
+
+    private async Task TriggerLongPressSelectionAsync(HeroWod wod, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                foreach (var item in _allWods)
+                {
+                    item.IsPendingDelete = item.UniqueId == wod.UniqueId;
+                }
+
+                CancelLongPressDetection();
+                ApplyFilters();
+            });
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
+
+    private void CancelLongPressDetection()
+    {
+        if (_longPressCts is null)
+        {
+            return;
+        }
+
+        _longPressCts.Cancel();
+        _longPressCts.Dispose();
+        _longPressCts = null;
+    }
+
+    private void ClearPendingDeleteSelection()
+    {
+        var changed = false;
+
+        foreach (var item in _allWods)
+        {
+            if (!item.IsPendingDelete)
+            {
+                continue;
+            }
+
+            item.IsPendingDelete = false;
+            changed = true;
+        }
+
+        if (changed)
+        {
+            ApplyFilters();
+        }
+    }
+
+    private async void OnDeleteCustomWodClicked(object? sender, EventArgs e)
+    {
+        var wod = (sender as VisualElement)?.BindingContext as HeroWod;
+        if (wod is null || !wod.IsCustom)
+        {
+            return;
+        }
+
+        var confirm = await DisplayAlert("Remove WOD", $"Delete '{wod.Name}'?", "Delete", "Cancel");
+        if (!confirm)
+        {
+            return;
+        }
+
+        await _heroWodRepository.DeleteAsync(wod.UniqueId);
+
+        _allWods = _allWods.Where(x => x.UniqueId != wod.UniqueId).ToList();
+        _selectedWod = _selectedWod?.UniqueId == wod.UniqueId ? null : _selectedWod;
+        ApplyFilters();
     }
 
     private async Task ShowDetailSheetAsync(HeroWod wod)
@@ -245,10 +362,15 @@ public partial class HeroWodsPage : ContentPage
         OverlayDimmer.IsVisible = false;
         DetailSheet.IsVisible   = false;
         _selectedWod            = null;
+        CancelLongPressDetection();
+        ClearPendingDeleteSelection();
     }
 
     private async void OnDimmerTapped(object? sender, TappedEventArgs e)
-        => await HideDetailSheetAsync();
+    {
+        ClearPendingDeleteSelection();
+        await HideDetailSheetAsync();
+    }
 
     private void OnDetailSheetPanUpdated(object? sender, PanUpdatedEventArgs e)
     {
@@ -284,7 +406,11 @@ public partial class HeroWodsPage : ContentPage
     // ── FAB ──────────────────────────────────────────────────────────────────
 
     private async void OnCreateCustomWodClicked(object? sender, EventArgs e)
-        => await Navigation.PushAsync(_serviceProvider.GetRequiredService<CustomWodCreationPage>());
+    {
+        CancelLongPressDetection();
+        ClearPendingDeleteSelection();
+        await Navigation.PushAsync(_serviceProvider.GetRequiredService<CustomWodCreationPage>());
+    }
 
     // ── Navigation to timer ───────────────────────────────────────────────────
 
