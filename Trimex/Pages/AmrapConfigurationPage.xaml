@@ -72,7 +72,7 @@
                         FontFamily="OpenSansSemibold"
                         FontSize="52"
                         HorizontalTextAlignment="Center"
-                        TextColor="{StaticResource AccentBlue}" />
+                        TextColor="{StaticResource AccentRed}" />
                     <Label
                         x:Name="PickerSlotPlus1"
                         FontFamily="OpenSansSemibold"
@@ -165,7 +165,7 @@
                     <Grid ColumnDefinitions="4,*" ColumnSpacing="12">
                         <BoxView
                             Grid.Column="0"
-                            BackgroundColor="{StaticResource AccentBlue}"
+                            BackgroundColor="{StaticResource AccentRed}"
                             CornerRadius="2"
                             HorizontalOptions="Fill"
                             VerticalOptions="Fill" />
@@ -197,7 +197,9 @@
                 FontFamily="OpenSansSemibold"
                 FontSize="16"
                 HeightRequest="52"
-                Text="START WORKOUT ⚡"
+                Text="START WORKOUT"
+                ImageSource="rayb.png"
+                ContentLayout="Right, 8"
                 TextColor="#000000" />
 
         </Grid>

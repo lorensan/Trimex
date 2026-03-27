@@ -316,7 +316,9 @@
                 FontFamily="OpenSansSemibold"
                 FontSize="16"
                 HeightRequest="52"
-                Text="START WORKOUT ⚡"
+                Text="START WORKOUT"
+                ImageSource="rayb.png"
+                ContentLayout="Right, 8"
                 TextColor="#0D0D0D" />
 
         </Grid>
