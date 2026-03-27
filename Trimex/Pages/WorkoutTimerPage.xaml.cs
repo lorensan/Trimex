@@ -1,3 +1,4 @@
+using System.Text;
 using Trimex.Models;
 using Trimex.Services;
 
@@ -28,6 +29,10 @@ public partial class WorkoutTimerPage : ContentPage
 
         WorkoutTitleLabel.Text = configuration.TypeDisplayName;
         WorkoutContextLabel.Text = BuildContextLabel(configuration);
+
+        var workoutDetails = BuildWorkoutDetails(configuration);
+        WorkoutDetailsLabel.Text = workoutDetails;
+        WorkoutDetailsContainer.IsVisible = !string.IsNullOrWhiteSpace(workoutDetails);
 
         RoundSection.IsVisible = configuration.SupportsRounds;
         RoundButton.Text = "0";
@@ -278,12 +283,34 @@ public partial class WorkoutTimerPage : ContentPage
                    : DateTimeOffset.UtcNow - _currentRunStartedAtUtc.Value);
     }
 
+    private async void OnSlideResetCompleted(object? sender, EventArgs e)
+    {
+        await PlayConfettiAsync("WOD IS OVER");
+        ResetWorkoutSession();
+    }
+
+    private void ResetWorkoutSession()
+    {
+        _timer.Stop();
+        _state = WorkoutTimerState.Idle;
+        _preCountdownStartedAtUtc = null;
+        _currentRunStartedAtUtc = null;
+        _elapsedBeforeCurrentRun = TimeSpan.Zero;
+        _roundCount = 0;
+        RoundButton.Text = "0";
+        ProgressRing.Progress = 0;
+        ResetCueTracking();
+        UpdateVisualState();
+        SlideToReset.Reset();
+    }
+
     private void UpdateVisualState()
     {
         TimerActionButton.Source = PlayIcon;
         PauseActionButton.Source = PauseIcon;
         PauseActionButton.IsVisible = false;
         RoundButton.IsEnabled = _state == WorkoutTimerState.Running;
+        CenterActionShell.IsVisible = true;
 
         switch (_state)
         {
@@ -295,6 +322,7 @@ public partial class WorkoutTimerPage : ContentPage
                 TimerActionButton.IsEnabled = true;
                 TimerActionButton.IsVisible = true;
                 TimerDisplayLayout.IsVisible = false;
+                CenterActionShell.IsVisible = true;
                 break;
             case WorkoutTimerState.PreCountdown:
                 StateValueLabel.Text = "10";
@@ -302,6 +330,7 @@ public partial class WorkoutTimerPage : ContentPage
                 PausedTimeLabel.IsVisible = false;
                 TimerActionButton.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
+                CenterActionShell.IsVisible = false;
                 break;
             case WorkoutTimerState.Running:
                 StateValueLabel.Text = _configuration.CountsDown
@@ -312,6 +341,7 @@ public partial class WorkoutTimerPage : ContentPage
                 PauseActionButton.IsVisible = true;
                 TimerActionButton.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
+                CenterActionShell.IsVisible = false;
                 break;
             case WorkoutTimerState.Paused:
                 StateValueLabel.Text = string.Empty;
@@ -320,6 +350,7 @@ public partial class WorkoutTimerPage : ContentPage
                 TimerActionButton.IsEnabled = true;
                 TimerActionButton.IsVisible = true;
                 TimerDisplayLayout.IsVisible = false;
+                CenterActionShell.IsVisible = true;
                 break;
             case WorkoutTimerState.Completed:
                 StateValueLabel.Text = _configuration.CountsDown ? "00:00" : FormatClock(_elapsedBeforeCurrentRun);
@@ -328,13 +359,32 @@ public partial class WorkoutTimerPage : ContentPage
                 ProgressRing.Progress = 1;
                 TimerActionButton.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
+                CenterActionShell.IsVisible = false;
                 break;
         }
     }
 
-    private async Task PlayConfettiAsync()
+    private async Task PlayConfettiAsync(string? overlayMessage = null)
     {
         ConfettiOverlay.Children.Clear();
+
+        Label? messageLabel = null;
+        if (!string.IsNullOrWhiteSpace(overlayMessage))
+        {
+            messageLabel = new Label
+            {
+                Text = overlayMessage,
+                Style = (Style)Application.Current!.Resources["PageTitleStyle"],
+                FontSize = 32,
+                CharacterSpacing = 2,
+                HorizontalOptions = LayoutOptions.Center,
+                VerticalOptions = LayoutOptions.Center,
+                Opacity = 0
+            };
+
+            ConfettiOverlay.Children.Add(messageLabel);
+            await messageLabel.FadeToAsync(1, 220, Easing.CubicIn);
+        }
 
         var colors = new[]
         {
@@ -346,7 +396,7 @@ public partial class WorkoutTimerPage : ContentPage
 
         var animationTasks = new List<Task>();
 
-        for (var index = 0; index < 16; index++)
+        for (var index = 0; index < 24; index++)
         {
             var particle = new BoxView
             {
@@ -361,8 +411,8 @@ public partial class WorkoutTimerPage : ContentPage
 
             ConfettiOverlay.Children.Add(particle);
 
-            var angle = (Math.PI * 2 * index) / 16;
-            var distance = 90 + Random.Shared.Next(20, 80);
+            var angle = (Math.PI * 2 * index) / 24;
+            var distance = 180 + Random.Shared.Next(40, 220);
             var x = Math.Cos(angle) * distance;
             var y = Math.Sin(angle) * distance;
 
@@ -370,6 +420,12 @@ public partial class WorkoutTimerPage : ContentPage
         }
 
         await Task.WhenAll(animationTasks);
+
+        if (messageLabel is not null)
+        {
+            await messageLabel.FadeToAsync(0, 260, Easing.CubicOut);
+        }
+
         ConfettiOverlay.Children.Clear();
     }
 
@@ -396,6 +452,39 @@ public partial class WorkoutTimerPage : ContentPage
         }
 
         return string.Join("  |  ", parts);
+    }
+
+    private static string BuildWorkoutDetails(WorkoutConfigurationRequest configuration)
+    {
+        var details = new StringBuilder();
+
+        if (!string.IsNullOrWhiteSpace(configuration.HeroWodName))
+        {
+            details.AppendLine(configuration.HeroWodName.Trim());
+        }
+
+        if (!string.IsNullOrWhiteSpace(configuration.WodDescription))
+        {
+            if (details.Length > 0)
+            {
+                details.AppendLine();
+            }
+
+            details.Append(configuration.WodDescription.Trim());
+        }
+
+        if (!string.IsNullOrWhiteSpace(configuration.Notes))
+        {
+            if (details.Length > 0)
+            {
+                details.AppendLine();
+                details.AppendLine();
+            }
+
+            details.Append(configuration.Notes.Trim());
+        }
+
+        return details.ToString();
     }
 
     private static string FormatClock(TimeSpan value)
