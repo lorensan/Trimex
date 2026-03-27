@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-
+695+*2<!DOCTYPE html>
+5
 <html class="dark" lang="en"><head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -23,7 +23,9 @@
                         "secondary-fixed": "#26e6ff",
                         "on-error-container": "#ffd2c8",
                         "surface-dim": "#0e0e0e",
-                        "secondary-container": "#006875",
+   +
+   "secondary-container": "#006875",
+   Ç´¡. HH ,OP.`+
                         "on-secondary": "#004d57",
                         "error": "#ff7351",
                         "primary": "#f3ffca",
@@ -34,25 +36,7 @@
                         "surface-tint": "#f3ffca",
                         "on-secondary-fixed": "#003a42",
                         "surface-variant": "#262626",
-                        "outline": "#767575",
-                        "on-tertiary-fixed-variant": "#685900",
-                        "primary-fixed": "#cafd00",
-                        "secondary-dim": "#00d4ec",
-                        "outline-variant": "#484847",
-                        "surface-bright": "#2c2c2c",
-                        "on-error": "#450900",
-                        "surface-container-highest": "#262626",
-                        "surface": "#0e0e0e",
-                        "on-tertiary-container": "#5d5000",
-                        "on-secondary-fixed-variant": "#005964",
-                        "primary-dim": "#beee00",
-                        "error-container": "#b92902",
-                        "on-primary": "#516700",
-                        "secondary": "#00e3fd",
-                        "primary-fixed-dim": "#beee00",
-                        "tertiary-fixed-dim": "#edd13a",
-                        "on-primary-fixed-variant": "#526900",
-                        "on-background": "#ffffff",
+                        "outline": "#767575",R 5ÑVIJ
                         "surface-container-low": "#131313",
                         "inverse-surface": "#fcf9f8",
                         "surface-container-lowest": "#000000",

@@ -13,6 +13,7 @@ public partial class HeroWodsPage : ContentPage
     private HeroWod? _selectedWod;
     private double _sheetDragY;
     private CancellationTokenSource? _longPressCts;
+    private bool _suppressNextClick;
 
     // Filter state
     private bool _filterMen;
@@ -201,6 +202,12 @@ public partial class HeroWodsPage : ContentPage
 
     private async void OnWodCardClicked(object? sender, EventArgs e)
     {
+        if (_suppressNextClick)
+        {
+            _suppressNextClick = false;
+            return;
+        }
+
         var wod = (sender as VisualElement)?.BindingContext as HeroWod;
         if (wod is null)
         {
@@ -209,6 +216,7 @@ public partial class HeroWodsPage : ContentPage
 
         if (wod.IsPendingDelete)
         {
+            ClearPendingDeleteSelection();
             return;
         }
 
@@ -235,7 +243,6 @@ public partial class HeroWodsPage : ContentPage
 
     private void OnWodCardReleased(object? sender, EventArgs e)
     {
-        CancelLongPressDetection();
     }
 
     private async Task TriggerLongPressSelectionAsync(HeroWod wod, CancellationToken cancellationToken)
@@ -251,12 +258,15 @@ public partial class HeroWodsPage : ContentPage
 
             MainThread.BeginInvokeOnMainThread(() =>
             {
+                _suppressNextClick = true;
+
                 foreach (var item in _allWods)
                 {
                     item.IsPendingDelete = item.UniqueId == wod.UniqueId;
                 }
 
-                CancelLongPressDetection();
+                _longPressCts?.Dispose();
+                _longPressCts = null;
                 ApplyFilters();
             });
         }

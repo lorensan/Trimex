@@ -31,7 +31,7 @@ public sealed class SlideToEndView : ContentView
 
     public SlideToEndView()
     {
-        _thumbIdleColor = GetColor("AccentBlue", Colors.Blue);
+        _thumbIdleColor = GetColor("AccentNeonYellow", Colors.Yellow);
         _thumbSlidingColor = GetColor("AccentRed", Colors.Red);
 
         var trackBorder = new Border
@@ -64,7 +64,7 @@ public sealed class SlideToEndView : ContentView
             FontAttributes = FontAttributes.Bold,
             HorizontalTextAlignment = TextAlignment.Center,
             VerticalTextAlignment = TextAlignment.Center,
-            TextColor = Colors.White,
+            TextColor = Color.FromArgb("#0D0D0D"),
             InputTransparent = true
         };
 

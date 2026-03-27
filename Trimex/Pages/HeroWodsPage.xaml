@@ -276,19 +276,17 @@
                                 Pressed="OnWodCardPressed"
                                 Released="OnWodCardReleased" />
 
-                            <Button
+                            <ImageButton
                                 IsVisible="{Binding CanShowDelete}"
-                                Text="X"
-                                FontFamily="OpenSansSemibold"
-                                FontSize="16"
+                                Source="del.png"
+                                Aspect="AspectFit"
                                 WidthRequest="34"
                                 HeightRequest="34"
-                                CornerRadius="17"
                                 Margin="8"
+                                Padding="0"
                                 HorizontalOptions="End"
                                 VerticalOptions="Start"
-                                BackgroundColor="{StaticResource AccentRed}"
-                                TextColor="#0D0D0D"
+                                BackgroundColor="Transparent"
                                 Clicked="OnDeleteCustomWodClicked" />
                         </Grid>
                         <Border.Triggers>

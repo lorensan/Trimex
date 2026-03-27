@@ -30,17 +30,13 @@ public partial class WorkoutTimerPage : ContentPage
         WorkoutTitleLabel.Text = configuration.TypeDisplayName;
         WorkoutContextLabel.Text = BuildContextLabel(configuration);
         WorkoutMinutesWatermarkLabel.Text = BuildWatermarkMinutes(configuration);
-
         var workoutDetails = BuildWorkoutDetails(configuration);
         WorkoutDetailsLabel.Text = workoutDetails;
-        WorkoutDetailsContainer.IsVisible = !string.IsNullOrWhiteSpace(workoutDetails);
+        DetailsButton.IsVisible = !string.IsNullOrWhiteSpace(workoutDetails);
+        WorkoutDetailsContainer.IsVisible = false;
 
         RoundSection.IsVisible = configuration.SupportsRounds;
-        RoundButton.Text = "0";
-
-        ProgressRing.AccentColor = configuration.Type == WorkoutTypes.ForTime
-            ? Color.FromArgb("#FF3B3B")
-            : Color.FromArgb("#423BFF");
+        RoundButton.Text = "00";
 
         _timer = Dispatcher.CreateTimer();
         _timer.Interval = TimeSpan.FromMilliseconds(200);
@@ -93,6 +89,13 @@ public partial class WorkoutTimerPage : ContentPage
 
     private async void OnEndClicked(object? sender, EventArgs e)
     {
+        if (_state is WorkoutTimerState.Idle or WorkoutTimerState.Completed)
+        {
+            _timer.Stop();
+            await Navigation.PopAsync();
+            return;
+        }
+
         var shouldEnd = await DisplayAlertAsync("End workout", "Do you want to stop the current workout and go back?", "Yes", "No");
 
         if (!shouldEnd)
@@ -104,10 +107,20 @@ public partial class WorkoutTimerPage : ContentPage
         await Navigation.PopAsync();
     }
 
+    private void OnDetailsClicked(object? sender, EventArgs e)
+    {
+        if (!DetailsButton.IsVisible)
+        {
+            return;
+        }
+
+        WorkoutDetailsContainer.IsVisible = !WorkoutDetailsContainer.IsVisible;
+    }
+
     private async void OnRoundClicked(object? sender, EventArgs e)
     {
         _roundCount++;
-        RoundButton.Text = _roundCount.ToString();
+        RoundButton.Text = _roundCount.ToString("00");
         await PlayConfettiAsync();
     }
 
@@ -298,7 +311,7 @@ public partial class WorkoutTimerPage : ContentPage
         _currentRunStartedAtUtc = null;
         _elapsedBeforeCurrentRun = TimeSpan.Zero;
         _roundCount = 0;
-        RoundButton.Text = "0";
+        RoundButton.Text = "00";
         ProgressRing.Progress = 0;
         ResetCueTracking();
         UpdateVisualState();
@@ -311,6 +324,7 @@ public partial class WorkoutTimerPage : ContentPage
         PauseActionButton.Source = PauseIcon;
         PauseActionButton.IsVisible = false;
         RoundButton.IsEnabled = _state == WorkoutTimerState.Running;
+        RoundButton.Opacity = _state == WorkoutTimerState.Running ? 1 : 0.55;
         CenterActionShell.IsVisible = true;
 
         switch (_state)
@@ -438,23 +452,6 @@ public partial class WorkoutTimerPage : ContentPage
             particle.FadeToAsync(0, 1200, Easing.CubicIn));
     }
 
-    private static string BuildContextLabel(WorkoutConfigurationRequest configuration)
-    {
-        var parts = new List<string> { configuration.DurationLabel };
-
-        if (!string.IsNullOrWhiteSpace(configuration.HeroWodName))
-        {
-            parts.Add(configuration.HeroWodName);
-        }
-
-        if (!string.IsNullOrWhiteSpace(configuration.Notes))
-        {
-            parts.Add(configuration.Notes);
-        }
-
-        return string.Join("  |  ", parts);
-    }
-
     private static string BuildWorkoutDetails(WorkoutConfigurationRequest configuration)
     {
         var details = new StringBuilder();
@@ -500,6 +497,22 @@ public partial class WorkoutTimerPage : ContentPage
         }
 
         return Math.Max(1, (int)Math.Ceiling(totalSeconds / 60d)).ToString();
+    }
+
+    private static string BuildContextLabel(WorkoutConfigurationRequest configuration)
+    {
+        var totalSeconds = configuration.DurationSeconds > 0
+            ? configuration.DurationSeconds
+            : configuration.TimeCapSeconds.GetValueOrDefault();
+
+        if (totalSeconds > 0)
+        {
+            return configuration.CountsDown
+                ? $"{FormatClock(TimeSpan.FromSeconds(totalSeconds))} MINUTES"
+                : $"{FormatClock(TimeSpan.FromSeconds(totalSeconds))} CAP";
+        }
+
+        return configuration.TypeDisplayName.ToUpperInvariant();
     }
 
     private static string FormatClock(TimeSpan value)

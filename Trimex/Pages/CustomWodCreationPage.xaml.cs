@@ -73,23 +73,24 @@ public partial class CustomWodCreationPage : ContentPage
             VerticalOptions = LayoutOptions.Center
         };
 
-        var removeLabel = new Label
+        var removeButton = new Image
         {
-            Text            = "×",
-            TextColor       = Color.FromArgb("#8A8A8A"),
-            FontSize        = 22,
-            Padding         = new Thickness(12, 0),
-            VerticalOptions = LayoutOptions.Center
+            Source          = "del.png",
+            HeightRequest   = 22,
+            WidthRequest    = 22,
+            Aspect          = Aspect.AspectFit,
+            VerticalOptions = LayoutOptions.Center,
+            Margin          = new Thickness(12, 0)
         };
 
         var tap = new TapGestureRecognizer();
         tap.Tapped += (_, _) => RemoveExercise(exercise);
-        removeLabel.GestureRecognizers.Add(tap);
+        removeButton.GestureRecognizers.Add(tap);
 
         Grid.SetColumn(exerciseLabel, 0);
-        Grid.SetColumn(removeLabel, 1);
+        Grid.SetColumn(removeButton, 1);
         grid.Children.Add(exerciseLabel);
-        grid.Children.Add(removeLabel);
+        grid.Children.Add(removeButton);
 
         var wrapper = new Border
         {
