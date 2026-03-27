@@ -31,46 +31,72 @@
                     TextColor="{StaticResource TextSecondary}" />
             </VerticalStackLayout>
 
-            <!-- Rounds Card -->
+            <!-- Rounds Carousel -->
             <Border
                 Grid.Row="1"
                 BackgroundColor="{StaticResource SurfaceContainerLow}"
-                Padding="16,12"
+                Padding="0"
                 Stroke="{StaticResource BorderColor}"
                 StrokeThickness="1">
                 <Border.StrokeShape>
                     <RoundRectangle CornerRadius="16" />
                 </Border.StrokeShape>
                 <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnRoundsTapped" />
+                    <PanGestureRecognizer PanUpdated="OnRoundsPanUpdated" />
                 </Border.GestureRecognizers>
-                <VerticalStackLayout Spacing="2" VerticalOptions="Center">
+                <VerticalStackLayout HorizontalOptions="Center" Spacing="2" VerticalOptions="Center">
                     <Label
                         CharacterSpacing="2"
                         FontFamily="OpenSansSemibold"
                         FontSize="10"
+                        HorizontalTextAlignment="Center"
                         Text="ROUNDS"
                         TextColor="{StaticResource TextSecondary}" />
-                    <HorizontalStackLayout Spacing="6">
-                        <Label
-                            x:Name="RoundsNumberLabel"
-                            FontFamily="OpenSansSemibold"
-                            FontSize="44"
-                            Text="8"
-                            TextColor="{StaticResource AccentNeonYellow}"
-                            VerticalOptions="End" />
-                        <Label
-                            FontFamily="OpenSansSemibold"
-                            FontSize="16"
-                            Margin="0,0,0,4"
-                            Text="SETS"
-                            TextColor="{StaticResource TextSecondary}"
-                            VerticalOptions="End" />
-                    </HorizontalStackLayout>
+                    <Label
+                        x:Name="RoundsSlotMinus2"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="12"
+                        HorizontalTextAlignment="Center"
+                        Opacity="0.3"
+                        TextColor="{StaticResource MutedText}" />
+                    <Label
+                        x:Name="RoundsSlotMinus1"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="20"
+                        HorizontalTextAlignment="Center"
+                        Opacity="0.5"
+                        TextColor="{StaticResource TextSecondary}" />
+                    <Label
+                        x:Name="RoundsNumberLabel"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="36"
+                        HorizontalTextAlignment="Center"
+                        TextColor="{StaticResource AccentNeonYellow}" />
+                    <Label
+                        x:Name="RoundsSlotPlus1"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="20"
+                        HorizontalTextAlignment="Center"
+                        Opacity="0.5"
+                        TextColor="{StaticResource TextSecondary}" />
+                    <Label
+                        x:Name="RoundsSlotPlus2"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="12"
+                        HorizontalTextAlignment="Center"
+                        Opacity="0.3"
+                        TextColor="{StaticResource MutedText}" />
+                    <Label
+                        CharacterSpacing="2"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="8"
+                        HorizontalTextAlignment="Center"
+                        Text="SWIPE UP OR DOWN"
+                        TextColor="{StaticResource MutedText}" />
                 </VerticalStackLayout>
             </Border>
 
-            <!-- Work Time Card -->
+            <!-- Work Time Carousel -->
             <Border
                 Grid.Row="2"
                 BackgroundColor="{StaticResource SurfaceContainerLow}"
@@ -81,7 +107,7 @@
                     <RoundRectangle CornerRadius="16" />
                 </Border.StrokeShape>
                 <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnWorkTimeTapped" />
+                    <PanGestureRecognizer PanUpdated="OnWorkPanUpdated" />
                 </Border.GestureRecognizers>
                 <Grid ColumnDefinitions="5,*">
                     <BoxView
@@ -89,8 +115,8 @@
                         BackgroundColor="{StaticResource AccentNeonYellow}"
                         HorizontalOptions="Fill"
                         VerticalOptions="Fill" />
-                    <VerticalStackLayout Grid.Column="1" Padding="16,12" Spacing="4" VerticalOptions="Center">
-                        <HorizontalStackLayout Spacing="6">
+                    <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="2" VerticalOptions="Center">
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="6">
                             <Label
                                 FontFamily="OpenSansSemibold"
                                 FontSize="14"
@@ -106,16 +132,51 @@
                                 VerticalOptions="Center" />
                         </HorizontalStackLayout>
                         <Label
+                            x:Name="WorkSlotMinus2"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="12"
+                            HorizontalTextAlignment="Center"
+                            Opacity="0.3"
+                            TextColor="{StaticResource MutedText}" />
+                        <Label
+                            x:Name="WorkSlotMinus1"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="20"
+                            HorizontalTextAlignment="Center"
+                            Opacity="0.5"
+                            TextColor="{StaticResource TextSecondary}" />
+                        <Label
                             x:Name="WorkTimeDisplayLabel"
                             FontFamily="OpenSansSemibold"
                             FontSize="36"
-                            Text="00:20"
-                            TextColor="{StaticResource TextPrimary}" />
+                            HorizontalTextAlignment="Center"
+                            TextColor="{StaticResource AccentNeonYellow}" />
+                        <Label
+                            x:Name="WorkSlotPlus1"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="20"
+                            HorizontalTextAlignment="Center"
+                            Opacity="0.5"
+                            TextColor="{StaticResource TextSecondary}" />
+                        <Label
+                            x:Name="WorkSlotPlus2"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="12"
+                            HorizontalTextAlignment="Center"
+                            Opacity="0.3"
+                            TextColor="{StaticResource MutedText}" />
+                        <Label
+                            CharacterSpacing="2"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="8"
+                            HorizontalTextAlignment="Center"
+                            Text="SWIPE UP OR DOWN"
+                            TextColor="{StaticResource MutedText}" />
                     </VerticalStackLayout>
                 </Grid>
             </Border>
 
-            <!-- Rest Time Card -->
+            <!-- Rest Time Carousel -->
             <Border
                 Grid.Row="3"
                 BackgroundColor="{StaticResource SurfaceContainerLow}"
@@ -126,7 +187,7 @@
                     <RoundRectangle CornerRadius="16" />
                 </Border.StrokeShape>
                 <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnRestTimeTapped" />
+                    <PanGestureRecognizer PanUpdated="OnRestPanUpdated" />
                 </Border.GestureRecognizers>
                 <Grid ColumnDefinitions="5,*">
                     <BoxView
@@ -134,8 +195,8 @@
                         BackgroundColor="{StaticResource AccentPurple}"
                         HorizontalOptions="Fill"
                         VerticalOptions="Fill" />
-                    <VerticalStackLayout Grid.Column="1" Padding="16,12" Spacing="4" VerticalOptions="Center">
-                        <HorizontalStackLayout Spacing="6">
+                    <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="2" VerticalOptions="Center">
+                        <HorizontalStackLayout HorizontalOptions="Center" Spacing="6">
                             <Label
                                 FontFamily="OpenSansSemibold"
                                 FontSize="14"
@@ -151,11 +212,46 @@
                                 VerticalOptions="Center" />
                         </HorizontalStackLayout>
                         <Label
+                            x:Name="RestSlotMinus2"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="12"
+                            HorizontalTextAlignment="Center"
+                            Opacity="0.3"
+                            TextColor="{StaticResource MutedText}" />
+                        <Label
+                            x:Name="RestSlotMinus1"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="20"
+                            HorizontalTextAlignment="Center"
+                            Opacity="0.5"
+                            TextColor="{StaticResource TextSecondary}" />
+                        <Label
                             x:Name="RestTimeDisplayLabel"
                             FontFamily="OpenSansSemibold"
                             FontSize="36"
-                            Text="00:10"
-                            TextColor="{StaticResource TextPrimary}" />
+                            HorizontalTextAlignment="Center"
+                            TextColor="{StaticResource AccentPurple}" />
+                        <Label
+                            x:Name="RestSlotPlus1"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="20"
+                            HorizontalTextAlignment="Center"
+                            Opacity="0.5"
+                            TextColor="{StaticResource TextSecondary}" />
+                        <Label
+                            x:Name="RestSlotPlus2"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="12"
+                            HorizontalTextAlignment="Center"
+                            Opacity="0.3"
+                            TextColor="{StaticResource MutedText}" />
+                        <Label
+                            CharacterSpacing="2"
+                            FontFamily="OpenSansSemibold"
+                            FontSize="8"
+                            HorizontalTextAlignment="Center"
+                            Text="SWIPE UP OR DOWN"
+                            TextColor="{StaticResource MutedText}" />
                     </VerticalStackLayout>
                 </Grid>
             </Border>
@@ -224,150 +320,5 @@
                 TextColor="#0D0D0D" />
 
         </Grid>
-
-        <!-- Rounds overlay -->
-        <Grid
-            x:Name="RoundsOverlay"
-            BackgroundColor="{StaticResource Overlay}"
-            IsVisible="False">
-            <Grid.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnRoundsOverlayBackgroundTapped" />
-            </Grid.GestureRecognizers>
-            <Border
-                Padding="20"
-                BackgroundColor="{StaticResource Surface}"
-                HeightRequest="300"
-                HorizontalOptions="Center"
-                Stroke="{StaticResource BorderColor}"
-                StrokeThickness="1"
-                VerticalOptions="Center"
-                WidthRequest="300">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="20" />
-                </Border.StrokeShape>
-                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="16">
-                    <Label
-                        Grid.Row="0"
-                        FontFamily="OpenSansSemibold"
-                        FontSize="18"
-                        HorizontalTextAlignment="Center"
-                        Text="Select Rounds"
-                        TextColor="{StaticResource TextPrimary}" />
-                    <ScrollView Grid.Row="1">
-                        <VerticalStackLayout
-                            x:Name="RoundsItemsLayout"
-                            HorizontalOptions="Center"
-                            Spacing="4" />
-                    </ScrollView>
-                    <Button
-                        Grid.Row="2"
-                        BackgroundColor="{StaticResource SurfaceAlt}"
-                        Clicked="OnRoundsOverlayCancelClicked"
-                        CornerRadius="14"
-                        FontFamily="OpenSansSemibold"
-                        FontSize="16"
-                        HeightRequest="44"
-                        Text="Cancel"
-                        TextColor="{StaticResource TextPrimary}" />
-                </Grid>
-            </Border>
-        </Grid>
-
-        <!-- Work Time overlay -->
-        <Grid
-            x:Name="WorkTimeOverlay"
-            BackgroundColor="{StaticResource Overlay}"
-            IsVisible="False">
-            <Grid.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnWorkTimeOverlayBackgroundTapped" />
-            </Grid.GestureRecognizers>
-            <Border
-                Padding="20"
-                BackgroundColor="{StaticResource Surface}"
-                HeightRequest="300"
-                HorizontalOptions="Center"
-                Stroke="{StaticResource BorderColor}"
-                StrokeThickness="1"
-                VerticalOptions="Center"
-                WidthRequest="300">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="20" />
-                </Border.StrokeShape>
-                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="16">
-                    <Label
-                        Grid.Row="0"
-                        FontFamily="OpenSansSemibold"
-                        FontSize="18"
-                        HorizontalTextAlignment="Center"
-                        Text="Select Work Time"
-                        TextColor="{StaticResource TextPrimary}" />
-                    <ScrollView Grid.Row="1">
-                        <VerticalStackLayout
-                            x:Name="WorkTimeItemsLayout"
-                            HorizontalOptions="Center"
-                            Spacing="4" />
-                    </ScrollView>
-                    <Button
-                        Grid.Row="2"
-                        BackgroundColor="{StaticResource SurfaceAlt}"
-                        Clicked="OnWorkTimeOverlayCancelClicked"
-                        CornerRadius="14"
-                        FontFamily="OpenSansSemibold"
-                        FontSize="16"
-                        HeightRequest="44"
-                        Text="Cancel"
-                        TextColor="{StaticResource TextPrimary}" />
-                </Grid>
-            </Border>
-        </Grid>
-
-        <!-- Rest Time overlay -->
-        <Grid
-            x:Name="RestTimeOverlay"
-            BackgroundColor="{StaticResource Overlay}"
-            IsVisible="False">
-            <Grid.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnRestTimeOverlayBackgroundTapped" />
-            </Grid.GestureRecognizers>
-            <Border
-                Padding="20"
-                BackgroundColor="{StaticResource Surface}"
-                HeightRequest="300"
-                HorizontalOptions="Center"
-                Stroke="{StaticResource BorderColor}"
-                StrokeThickness="1"
-                VerticalOptions="Center"
-                WidthRequest="300">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="20" />
-                </Border.StrokeShape>
-                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="16">
-                    <Label
-                        Grid.Row="0"
-                        FontFamily="OpenSansSemibold"
-                        FontSize="18"
-                        HorizontalTextAlignment="Center"
-                        Text="Select Rest Time"
-                        TextColor="{StaticResource TextPrimary}" />
-                    <ScrollView Grid.Row="1">
-                        <VerticalStackLayout
-                            x:Name="RestTimeItemsLayout"
-                            HorizontalOptions="Center"
-                            Spacing="4" />
-                    </ScrollView>
-                    <Button
-                        Grid.Row="2"
-                        BackgroundColor="{StaticResource SurfaceAlt}"
-                        Clicked="OnRestTimeOverlayCancelClicked"
-                        CornerRadius="14"
-                        FontFamily="OpenSansSemibold"
-                        FontSize="16"
-                        HeightRequest="44"
-                        Text="Cancel"
-                        TextColor="{StaticResource TextPrimary}" />
-                </Grid>
-            </Border>
-        </Grid>
-
     </Grid>
 </ContentPage>

@@ -37,7 +37,7 @@
                 ColumnDefinitions="*,*"
                 ColumnSpacing="12">
 
-                <!-- Duration Card -->
+                <!-- Duration Carousel -->
                 <Border
                     Grid.Column="0"
                     BackgroundColor="{StaticResource SurfaceContainerLow}"
@@ -48,7 +48,7 @@
                         <RoundRectangle CornerRadius="16" />
                     </Border.StrokeShape>
                     <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnDurationTapped" />
+                        <PanGestureRecognizer PanUpdated="OnDurationPanUpdated" />
                     </Border.GestureRecognizers>
                     <Grid ColumnDefinitions="5,*">
                         <BoxView
@@ -58,32 +58,62 @@
                             VerticalOptions="Fill" />
                         <VerticalStackLayout
                             Grid.Column="1"
-                            Padding="14,20"
-                            Spacing="6"
+                            HorizontalOptions="Center"
+                            Spacing="2"
                             VerticalOptions="Center">
                             <Label
                                 CharacterSpacing="2"
                                 FontFamily="OpenSansSemibold"
                                 FontSize="9"
+                                HorizontalTextAlignment="Center"
                                 Text="DURATION"
+                                TextColor="{StaticResource TextSecondary}" />
+                            <Label
+                                x:Name="DurationSlotMinus2"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="10"
+                                HorizontalTextAlignment="Center"
+                                Opacity="0.3"
+                                TextColor="{StaticResource MutedText}" />
+                            <Label
+                                x:Name="DurationSlotMinus1"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="16"
+                                HorizontalTextAlignment="Center"
+                                Opacity="0.5"
                                 TextColor="{StaticResource TextSecondary}" />
                             <Label
                                 x:Name="DurationDisplayLabel"
                                 FontFamily="OpenSansSemibold"
-                                FontSize="32"
-                                Text="00:30"
+                                FontSize="28"
+                                HorizontalTextAlignment="Center"
                                 TextColor="{StaticResource AccentGold}" />
+                            <Label
+                                x:Name="DurationSlotPlus1"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="16"
+                                HorizontalTextAlignment="Center"
+                                Opacity="0.5"
+                                TextColor="{StaticResource TextSecondary}" />
+                            <Label
+                                x:Name="DurationSlotPlus2"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="10"
+                                HorizontalTextAlignment="Center"
+                                Opacity="0.3"
+                                TextColor="{StaticResource MutedText}" />
                             <Label
                                 CharacterSpacing="2"
                                 FontFamily="OpenSansSemibold"
-                                FontSize="8"
-                                Text="TAP TO EDIT"
+                                FontSize="7"
+                                HorizontalTextAlignment="Center"
+                                Text="SWIPE"
                                 TextColor="{StaticResource MutedText}" />
                         </VerticalStackLayout>
                     </Grid>
                 </Border>
 
-                <!-- Rounds Card -->
+                <!-- Rounds Carousel -->
                 <Border
                     Grid.Column="1"
                     BackgroundColor="{StaticResource SurfaceContainerLow}"
@@ -94,7 +124,7 @@
                         <RoundRectangle CornerRadius="16" />
                     </Border.StrokeShape>
                     <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnRoundsTapped" />
+                        <PanGestureRecognizer PanUpdated="OnRoundsPanUpdated" />
                     </Border.GestureRecognizers>
                     <Grid ColumnDefinitions="5,*">
                         <BoxView
@@ -104,26 +134,56 @@
                             VerticalOptions="Fill" />
                         <VerticalStackLayout
                             Grid.Column="1"
-                            Padding="14,20"
-                            Spacing="6"
+                            HorizontalOptions="Center"
+                            Spacing="2"
                             VerticalOptions="Center">
                             <Label
                                 CharacterSpacing="2"
                                 FontFamily="OpenSansSemibold"
                                 FontSize="9"
+                                HorizontalTextAlignment="Center"
                                 Text="ROUNDS"
+                                TextColor="{StaticResource TextSecondary}" />
+                            <Label
+                                x:Name="RoundsSlotMinus2"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="12"
+                                HorizontalTextAlignment="Center"
+                                Opacity="0.3"
+                                TextColor="{StaticResource MutedText}" />
+                            <Label
+                                x:Name="RoundsSlotMinus1"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="20"
+                                HorizontalTextAlignment="Center"
+                                Opacity="0.5"
                                 TextColor="{StaticResource TextSecondary}" />
                             <Label
                                 x:Name="RoundsDisplayLabel"
                                 FontFamily="OpenSansSemibold"
-                                FontSize="52"
-                                Text="10"
-                                TextColor="{StaticResource TextPrimary}" />
+                                FontSize="36"
+                                HorizontalTextAlignment="Center"
+                                TextColor="{StaticResource AccentGold}" />
+                            <Label
+                                x:Name="RoundsSlotPlus1"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="20"
+                                HorizontalTextAlignment="Center"
+                                Opacity="0.5"
+                                TextColor="{StaticResource TextSecondary}" />
+                            <Label
+                                x:Name="RoundsSlotPlus2"
+                                FontFamily="OpenSansSemibold"
+                                FontSize="12"
+                                HorizontalTextAlignment="Center"
+                                Opacity="0.3"
+                                TextColor="{StaticResource MutedText}" />
                             <Label
                                 CharacterSpacing="2"
                                 FontFamily="OpenSansSemibold"
-                                FontSize="8"
-                                Text="TAP TO ADJUST"
+                                FontSize="7"
+                                HorizontalTextAlignment="Center"
+                                Text="SWIPE"
                                 TextColor="{StaticResource MutedText}" />
                         </VerticalStackLayout>
                     </Grid>
@@ -232,102 +292,5 @@
             </VerticalStackLayout>
 
         </Grid>
-
-        <!-- Duration overlay -->
-        <Grid
-            x:Name="DurationOverlay"
-            BackgroundColor="{StaticResource Overlay}"
-            IsVisible="False">
-            <Grid.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnDurationOverlayBackgroundTapped" />
-            </Grid.GestureRecognizers>
-            <Border
-                Padding="20"
-                BackgroundColor="{StaticResource Surface}"
-                HeightRequest="300"
-                HorizontalOptions="Center"
-                Stroke="{StaticResource BorderColor}"
-                StrokeThickness="1"
-                VerticalOptions="Center"
-                WidthRequest="300">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="20" />
-                </Border.StrokeShape>
-                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="16">
-                    <Label
-                        Grid.Row="0"
-                        FontFamily="OpenSansSemibold"
-                        FontSize="18"
-                        HorizontalTextAlignment="Center"
-                        Text="Select Duration"
-                        TextColor="{StaticResource TextPrimary}" />
-                    <ScrollView Grid.Row="1">
-                        <VerticalStackLayout
-                            x:Name="DurationItemsLayout"
-                            HorizontalOptions="Center"
-                            Spacing="4" />
-                    </ScrollView>
-                    <Button
-                        Grid.Row="2"
-                        BackgroundColor="{StaticResource SurfaceAlt}"
-                        Clicked="OnDurationOverlayCancelClicked"
-                        CornerRadius="14"
-                        FontFamily="OpenSansSemibold"
-                        FontSize="16"
-                        HeightRequest="44"
-                        Text="Cancel"
-                        TextColor="{StaticResource TextPrimary}" />
-                </Grid>
-            </Border>
-        </Grid>
-
-        <!-- Rounds overlay -->
-        <Grid
-            x:Name="RoundsOverlay"
-            BackgroundColor="{StaticResource Overlay}"
-            IsVisible="False">
-            <Grid.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnRoundsOverlayBackgroundTapped" />
-            </Grid.GestureRecognizers>
-            <Border
-                Padding="20"
-                BackgroundColor="{StaticResource Surface}"
-                HeightRequest="300"
-                HorizontalOptions="Center"
-                Stroke="{StaticResource BorderColor}"
-                StrokeThickness="1"
-                VerticalOptions="Center"
-                WidthRequest="300">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="20" />
-                </Border.StrokeShape>
-                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="16">
-                    <Label
-                        Grid.Row="0"
-                        FontFamily="OpenSansSemibold"
-                        FontSize="18"
-                        HorizontalTextAlignment="Center"
-                        Text="Select Rounds"
-                        TextColor="{StaticResource TextPrimary}" />
-                    <ScrollView Grid.Row="1">
-                        <VerticalStackLayout
-                            x:Name="RoundsItemsLayout"
-                            HorizontalOptions="Center"
-                            Spacing="4" />
-                    </ScrollView>
-                    <Button
-                        Grid.Row="2"
-                        BackgroundColor="{StaticResource SurfaceAlt}"
-                        Clicked="OnRoundsOverlayCancelClicked"
-                        CornerRadius="14"
-                        FontFamily="OpenSansSemibold"
-                        FontSize="16"
-                        HeightRequest="44"
-                        Text="Cancel"
-                        TextColor="{StaticResource TextPrimary}" />
-                </Grid>
-            </Border>
-        </Grid>
-
     </Grid>
 </ContentPage>

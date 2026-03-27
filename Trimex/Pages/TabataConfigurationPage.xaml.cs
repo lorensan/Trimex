@@ -4,71 +4,129 @@ namespace Trimex.Pages;
 
 public partial class TabataConfigurationPage : ContentPage
 {
-    private int _rounds = 8;
-    private int _workSeconds = 20;
-    private int _restSeconds = 10;
+    private const double PanThreshold = 30;
+    private const double Friction = 0.93;
+    private const double MinInertiaVelocity = 50;
+    private const int InertiaIntervalMs = 16;
+
+    private static readonly int[] TimeSteps = BuildTimeSteps();
+
+    private readonly PickerState _roundsPicker;
+    private readonly PickerState _workPicker;
+    private readonly PickerState _restPicker;
 
     public TabataConfigurationPage()
     {
         InitializeComponent();
-        BuildRoundsOverlayItems();
-        BuildTimeOverlayItems(WorkTimeItemsLayout, OnWorkTimeItemSelected);
-        BuildTimeOverlayItems(RestTimeItemsLayout, OnRestTimeItemSelected);
-        UpdateDisplays();
+
+        _roundsPicker = new PickerState(0, 99, 7);
+        _workPicker = new PickerState(0, TimeSteps.Length - 1, Array.IndexOf(TimeSteps, 20));
+        _restPicker = new PickerState(0, TimeSteps.Length - 1, Array.IndexOf(TimeSteps, 10));
+
+        UpdateAllDisplays();
     }
 
-    // --- Rounds overlay ---
+    // --- Pan handlers ---
 
-    private void OnRoundsTapped(object? sender, TappedEventArgs e) =>
-        RoundsOverlay.IsVisible = true;
+    private void OnRoundsPanUpdated(object? sender, PanUpdatedEventArgs e) =>
+        HandlePan(_roundsPicker, e);
 
-    private void OnRoundsOverlayBackgroundTapped(object? sender, TappedEventArgs e) =>
-        RoundsOverlay.IsVisible = false;
+    private void OnWorkPanUpdated(object? sender, PanUpdatedEventArgs e) =>
+        HandlePan(_workPicker, e);
 
-    private void OnRoundsOverlayCancelClicked(object? sender, EventArgs e) =>
-        RoundsOverlay.IsVisible = false;
+    private void OnRestPanUpdated(object? sender, PanUpdatedEventArgs e) =>
+        HandlePan(_restPicker, e);
 
-    private void OnRoundsItemSelected(int rounds)
+    // --- Shared pan + inertia ---
+
+    private void HandlePan(PickerState state, PanUpdatedEventArgs e)
     {
-        _rounds = rounds;
-        UpdateDisplays();
-        RoundsOverlay.IsVisible = false;
+        switch (e.StatusType)
+        {
+            case GestureStatus.Started:
+                StopInertia(state);
+                state.LastPanY = 0;
+                state.PanAccumulator = 0;
+                state.VelocityY = 0;
+                state.LastPanTime = DateTime.UtcNow;
+                break;
+
+            case GestureStatus.Running:
+                var delta = e.TotalY - state.LastPanY;
+                state.LastPanY = e.TotalY;
+                state.PanAccumulator += delta;
+
+                var now = DateTime.UtcNow;
+                var dt = (now - state.LastPanTime).TotalSeconds;
+                state.LastPanTime = now;
+
+                if (dt is > 0 and < 0.3)
+                    state.VelocityY = state.VelocityY * 0.3 + (delta / dt) * 0.7;
+
+                ApplySteps(state);
+                break;
+
+            case GestureStatus.Completed:
+            case GestureStatus.Canceled:
+                if (Math.Abs(state.VelocityY) > MinInertiaVelocity)
+                    StartInertia(state);
+                else
+                    state.VelocityY = 0;
+
+                state.PanAccumulator = 0;
+                state.LastPanY = 0;
+                break;
+        }
     }
 
-    // --- Work time overlay ---
-
-    private void OnWorkTimeTapped(object? sender, TappedEventArgs e) =>
-        WorkTimeOverlay.IsVisible = true;
-
-    private void OnWorkTimeOverlayBackgroundTapped(object? sender, TappedEventArgs e) =>
-        WorkTimeOverlay.IsVisible = false;
-
-    private void OnWorkTimeOverlayCancelClicked(object? sender, EventArgs e) =>
-        WorkTimeOverlay.IsVisible = false;
-
-    private void OnWorkTimeItemSelected(int seconds)
+    private void ApplySteps(PickerState state)
     {
-        _workSeconds = seconds;
-        UpdateDisplays();
-        WorkTimeOverlay.IsVisible = false;
+        var changed = false;
+
+        while (state.PanAccumulator <= -PanThreshold)
+        {
+            state.PanAccumulator += PanThreshold;
+            if (state.Index < state.MaxIndex) { state.Index++; changed = true; }
+        }
+
+        while (state.PanAccumulator >= PanThreshold)
+        {
+            state.PanAccumulator -= PanThreshold;
+            if (state.Index > state.MinIndex) { state.Index--; changed = true; }
+        }
+
+        if (changed) UpdateAllDisplays();
     }
 
-    // --- Rest time overlay ---
-
-    private void OnRestTimeTapped(object? sender, TappedEventArgs e) =>
-        RestTimeOverlay.IsVisible = true;
-
-    private void OnRestTimeOverlayBackgroundTapped(object? sender, TappedEventArgs e) =>
-        RestTimeOverlay.IsVisible = false;
-
-    private void OnRestTimeOverlayCancelClicked(object? sender, EventArgs e) =>
-        RestTimeOverlay.IsVisible = false;
-
-    private void OnRestTimeItemSelected(int seconds)
+    private void StartInertia(PickerState state)
     {
-        _restSeconds = seconds;
-        UpdateDisplays();
-        RestTimeOverlay.IsVisible = false;
+        StopInertia(state);
+        state.InertiaAccumulator = 0;
+
+        state.InertiaTimer = Dispatcher.CreateTimer();
+        state.InertiaTimer.Interval = TimeSpan.FromMilliseconds(InertiaIntervalMs);
+        state.InertiaTimer.Tick += (_, _) =>
+        {
+            state.InertiaAccumulator += state.VelocityY * (InertiaIntervalMs / 1000.0);
+            state.VelocityY *= Friction;
+
+            ApplySteps(state);
+
+            var hitBound = (state.Index <= state.MinIndex && state.VelocityY > 0)
+                        || (state.Index >= state.MaxIndex && state.VelocityY < 0);
+
+            if (Math.Abs(state.VelocityY) < MinInertiaVelocity || hitBound)
+                StopInertia(state);
+        };
+        state.InertiaTimer.Start();
+    }
+
+    private static void StopInertia(PickerState state)
+    {
+        if (state.InertiaTimer is null) return;
+        state.InertiaTimer.Stop();
+        state.InertiaTimer = null;
+        state.VelocityY = 0;
     }
 
     // --- Navigation ---
@@ -77,9 +135,9 @@ public partial class TabataConfigurationPage : ContentPage
     {
         var request = new TabataConfigurationRequest
         {
-            Rounds = _rounds,
-            WorkSeconds = _workSeconds,
-            RestSeconds = _restSeconds
+            Rounds = _roundsPicker.Index + 1,
+            WorkSeconds = TimeSteps[_workPicker.Index],
+            RestSeconds = TimeSteps[_restPicker.Index]
         };
 
         await Navigation.PushAsync(new TabataTimerPage(request));
@@ -87,12 +145,31 @@ public partial class TabataConfigurationPage : ContentPage
 
     // --- Display helpers ---
 
-    private void UpdateDisplays()
+    private void UpdateAllDisplays()
     {
-        RoundsNumberLabel.Text = _rounds.ToString();
-        WorkTimeDisplayLabel.Text = FormatMmSs(_workSeconds);
-        RestTimeDisplayLabel.Text = FormatMmSs(_restSeconds);
-        TotalDurationLabel.Text = FormatMmSs(_rounds * (_workSeconds + _restSeconds));
+        var rounds = _roundsPicker.Index + 1;
+        var workSeconds = TimeSteps[_workPicker.Index];
+        var restSeconds = TimeSteps[_restPicker.Index];
+
+        RoundsNumberLabel.Text = rounds.ToString();
+        RoundsSlotMinus2.Text = rounds - 2 >= 1 ? (rounds - 2).ToString() : "";
+        RoundsSlotMinus1.Text = rounds - 1 >= 1 ? (rounds - 1).ToString() : "";
+        RoundsSlotPlus1.Text = rounds + 1 <= 100 ? (rounds + 1).ToString() : "";
+        RoundsSlotPlus2.Text = rounds + 2 <= 100 ? (rounds + 2).ToString() : "";
+
+        WorkTimeDisplayLabel.Text = FormatMmSs(workSeconds);
+        WorkSlotMinus2.Text = _workPicker.Index - 2 >= 0 ? FormatMmSs(TimeSteps[_workPicker.Index - 2]) : "";
+        WorkSlotMinus1.Text = _workPicker.Index - 1 >= 0 ? FormatMmSs(TimeSteps[_workPicker.Index - 1]) : "";
+        WorkSlotPlus1.Text = _workPicker.Index + 1 < TimeSteps.Length ? FormatMmSs(TimeSteps[_workPicker.Index + 1]) : "";
+        WorkSlotPlus2.Text = _workPicker.Index + 2 < TimeSteps.Length ? FormatMmSs(TimeSteps[_workPicker.Index + 2]) : "";
+
+        RestTimeDisplayLabel.Text = FormatMmSs(restSeconds);
+        RestSlotMinus2.Text = _restPicker.Index - 2 >= 0 ? FormatMmSs(TimeSteps[_restPicker.Index - 2]) : "";
+        RestSlotMinus1.Text = _restPicker.Index - 1 >= 0 ? FormatMmSs(TimeSteps[_restPicker.Index - 1]) : "";
+        RestSlotPlus1.Text = _restPicker.Index + 1 < TimeSteps.Length ? FormatMmSs(TimeSteps[_restPicker.Index + 1]) : "";
+        RestSlotPlus2.Text = _restPicker.Index + 2 < TimeSteps.Length ? FormatMmSs(TimeSteps[_restPicker.Index + 2]) : "";
+
+        TotalDurationLabel.Text = FormatMmSs(rounds * (workSeconds + restSeconds));
     }
 
     private static string FormatMmSs(int totalSeconds)
@@ -102,59 +179,36 @@ public partial class TabataConfigurationPage : ContentPage
         return $"{minutes:00}:{seconds:00}";
     }
 
-    private void BuildRoundsOverlayItems()
-    {
-        for (var r = 1; r <= 100; r++)
-        {
-            var rounds = r;
-            var label = new Label
-            {
-                Text = rounds.ToString(),
-                FontSize = 17,
-                FontFamily = "OpenSansSemibold",
-                TextColor = Color.FromArgb("#FFFFFF"),
-                HorizontalTextAlignment = TextAlignment.Center,
-                Padding = new Thickness(0, 10)
-            };
-
-            var tap = new TapGestureRecognizer();
-            tap.Tapped += (_, _) => OnRoundsItemSelected(rounds);
-            label.GestureRecognizers.Add(tap);
-            RoundsItemsLayout.Children.Add(label);
-        }
-    }
-
-    private void BuildTimeOverlayItems(VerticalStackLayout layout, Action<int> onSelected)
-    {
-        // 5s to 55s by 5s increments
-        for (var s = 5; s < 60; s += 5)
-            AddTimeItem(layout, s, onSelected);
-
-        // 1:00 to 15:00 by 30s increments
-        for (var s = 60; s <= 900; s += 30)
-            AddTimeItem(layout, s, onSelected);
-    }
-
-    private static void AddTimeItem(VerticalStackLayout layout, int seconds, Action<int> onSelected)
-    {
-        var label = new Label
-        {
-            Text = FormatDurationLabel(seconds),
-            FontSize = 17,
-            FontFamily = "OpenSansSemibold",
-            TextColor = Color.FromArgb("#FFFFFF"),
-            HorizontalTextAlignment = TextAlignment.Center,
-            Padding = new Thickness(0, 10)
-        };
-
-        var tap = new TapGestureRecognizer();
-        tap.Tapped += (_, _) => onSelected(seconds);
-        label.GestureRecognizers.Add(tap);
-        layout.Children.Add(label);
-    }
-
     internal static string FormatDurationLabel(int seconds) =>
         seconds < 60
             ? $"{seconds} seconds"
             : $"{seconds / 60:00}:{seconds % 60:00}";
+
+    private static int[] BuildTimeSteps()
+    {
+        var values = new List<int>();
+        for (var s = 5; s < 60; s += 5) values.Add(s);
+        for (var s = 60; s <= 900; s += 30) values.Add(s);
+        return values.ToArray();
+    }
+
+    private sealed class PickerState
+    {
+        public int Index;
+        public readonly int MinIndex;
+        public readonly int MaxIndex;
+        public double LastPanY;
+        public double PanAccumulator;
+        public double VelocityY;
+        public DateTime LastPanTime;
+        public IDispatcherTimer? InertiaTimer;
+        public double InertiaAccumulator;
+
+        public PickerState(int minIndex, int maxIndex, int initialIndex)
+        {
+            MinIndex = minIndex;
+            MaxIndex = maxIndex;
+            Index = initialIndex;
+        }
+    }
 }

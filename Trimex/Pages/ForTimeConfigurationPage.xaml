@@ -32,7 +32,7 @@
                     TextColor="{StaticResource TextSecondary}" />
             </VerticalStackLayout>
 
-            <!-- Time Limit Card -->
+            <!-- Carousel Number Picker -->
             <Border
                 Grid.Row="1"
                 BackgroundColor="{StaticResource SurfaceContainerLow}"
@@ -43,29 +43,58 @@
                     <RoundRectangle CornerRadius="20" />
                 </Border.StrokeShape>
                 <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnTimeCapTapped" />
+                    <PanGestureRecognizer PanUpdated="OnPickerPanUpdated" />
                 </Border.GestureRecognizers>
-                <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                <VerticalStackLayout HorizontalOptions="Center" Spacing="4" VerticalOptions="Center">
                     <Label
                         CharacterSpacing="2"
                         FontFamily="OpenSansSemibold"
                         FontSize="10"
                         HorizontalTextAlignment="Center"
-                        Text="TIME LIMIT"
+                        Margin="0,0,0,8"
+                        Text="TIME LIMIT (MINUTES)"
+                        TextColor="{StaticResource TextSecondary}" />
+                    <Label
+                        x:Name="PickerSlotMinus2"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="18"
+                        HorizontalTextAlignment="Center"
+                        Opacity="0.3"
+                        TextColor="{StaticResource MutedText}" />
+                    <Label
+                        x:Name="PickerSlotMinus1"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="28"
+                        HorizontalTextAlignment="Center"
+                        Opacity="0.5"
                         TextColor="{StaticResource TextSecondary}" />
                     <Label
                         x:Name="TimeCapDisplayLabel"
                         FontFamily="OpenSansSemibold"
                         FontSize="52"
                         HorizontalTextAlignment="Center"
-                        Text="15:00"
                         TextColor="{StaticResource AccentRed}" />
+                    <Label
+                        x:Name="PickerSlotPlus1"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="28"
+                        HorizontalTextAlignment="Center"
+                        Opacity="0.5"
+                        TextColor="{StaticResource TextSecondary}" />
+                    <Label
+                        x:Name="PickerSlotPlus2"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="18"
+                        HorizontalTextAlignment="Center"
+                        Opacity="0.3"
+                        TextColor="{StaticResource MutedText}" />
                     <Label
                         CharacterSpacing="2"
                         FontFamily="OpenSansSemibold"
                         FontSize="9"
                         HorizontalTextAlignment="Center"
-                        Text="TAP TO CHANGE"
+                        Margin="0,8,0,0"
+                        Text="SWIPE UP OR DOWN"
                         TextColor="{StaticResource MutedText}" />
                 </VerticalStackLayout>
             </Border>
@@ -133,7 +162,7 @@
                     FontFamily="OpenSansRegular"
                     FontSize="11"
                     HorizontalTextAlignment="Center"
-                    Text="Select 0 min in the picker for a manual stop with no cap."
+                    Text="Swipe the picker or use quick select to set your time limit."
                     TextColor="{StaticResource MutedText}" />
             </VerticalStackLayout>
 
@@ -149,54 +178,6 @@
                 Text="START WORKOUT ⚡"
                 TextColor="#000000" />
 
-        </Grid>
-
-        <!--  Floating overlay for time selection  -->
-        <Grid
-            x:Name="TimeCapOverlay"
-            BackgroundColor="{StaticResource Overlay}"
-            IsVisible="False">
-            <Grid.GestureRecognizers>
-                <TapGestureRecognizer Tapped="OnOverlayBackgroundTapped" />
-            </Grid.GestureRecognizers>
-            <Border
-                Padding="20"
-                BackgroundColor="{StaticResource Surface}"
-                HeightRequest="300"
-                HorizontalOptions="Center"
-                Stroke="{StaticResource BorderColor}"
-                StrokeThickness="1"
-                VerticalOptions="Center"
-                WidthRequest="300">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="20" />
-                </Border.StrokeShape>
-                <Grid RowDefinitions="Auto,*,Auto" RowSpacing="16">
-                    <Label
-                        Grid.Row="0"
-                        FontFamily="OpenSansSemibold"
-                        FontSize="18"
-                        HorizontalTextAlignment="Center"
-                        Text="Select Time Limit"
-                        TextColor="{StaticResource TextPrimary}" />
-                    <ScrollView Grid.Row="1">
-                        <VerticalStackLayout
-                            x:Name="TimeCapItemsLayout"
-                            HorizontalOptions="Center"
-                            Spacing="4" />
-                    </ScrollView>
-                    <Button
-                        Grid.Row="2"
-                        BackgroundColor="{StaticResource SurfaceAlt}"
-                        Clicked="OnOverlayCancelClicked"
-                        CornerRadius="14"
-                        FontFamily="OpenSansSemibold"
-                        FontSize="16"
-                        HeightRequest="44"
-                        Text="Cancel"
-                        TextColor="{StaticResource TextPrimary}" />
-                </Grid>
-            </Border>
         </Grid>
     </Grid>
 </ContentPage>
