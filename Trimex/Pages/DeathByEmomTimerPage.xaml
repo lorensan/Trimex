@@ -69,25 +69,39 @@
                                 Clicked="OnTimerActionClicked"
                                 HeightRequest="112"
                                 HorizontalOptions="Center"
-                                IsVisible="False"
+                                IsVisible="True"
                                 Margin="0,8,0,0"
                                 Source="pause.png"
                                 VerticalOptions="Center"
                                 WidthRequest="112" />
                         </VerticalStackLayout>
                     </Grid>
-
-                    <ImageButton
-                        x:Name="TimerActionButton"
-                        Padding="0"
-                        Aspect="AspectFit"
-                        BackgroundColor="Transparent"
-                        Clicked="OnTimerActionClicked"
-                        HeightRequest="156"
+                    <Grid
+                        x:Name="CenterActionShell"
                         HorizontalOptions="Center"
-                        Source="play.png"
                         VerticalOptions="Center"
-                        WidthRequest="156" />
+                        HeightRequest="320"
+                        WidthRequest="320">
+                        <Image
+                            x:Name="TimerActionImage"
+                            Aspect="AspectFit"
+                            HeightRequest="450"
+                            HorizontalOptions="Center"
+                            InputTransparent="True"
+                            Source="play.png"
+                            VerticalOptions="Center"
+                            WidthRequest="450" />
+                        <ImageButton
+                            x:Name="TimerActionButton"
+                            Padding="0"
+                            Aspect="AspectFit"
+                            BackgroundColor="Transparent"
+                            Clicked="OnTimerActionClicked"
+                            HeightRequest="320"
+                            HorizontalOptions="Center"
+                            VerticalOptions="Center"
+                            WidthRequest="320" />
+                    </Grid>
                 </Grid>
 
             </VerticalStackLayout>

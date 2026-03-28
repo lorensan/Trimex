@@ -3,19 +3,89 @@
     x:Class="Trimex.Pages.DeathByEmomPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:Trimex.Controls"
+    BackgroundColor="{StaticResource AppBackground}"
     NavigationPage.HasNavigationBar="False">
 
-    <Grid>
-        <Image Source="background.jpg" Aspect="AspectFill" InputTransparent="True" />
+    <Grid
+        BackgroundColor="{StaticResource AppBackground}"
+        RowDefinitions="Auto,Auto,*,Auto,Auto">
 
-        <!-- Content centered vertically -->
-        <VerticalStackLayout Padding="24,40,24,40" Spacing="18" VerticalOptions="Center">
+        <!-- Row 0 · Top Navigation Bar -->
+        <Grid
+            Grid.Row="0"
+            ColumnDefinitions="48,*,48"
+            HeightRequest="64"
+            Padding="16,0">
+            <Label
+                Grid.Column="1"
+                FontAttributes="Bold,Italic"
+                FontFamily="OpenSansSemibold"
+                FontSize="20"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="TRIMEX"
+                TextColor="{StaticResource AccentNeonYellow}"
+                VerticalOptions="Center" />
+        </Grid>
 
-            <Label Style="{StaticResource PageTitleStyle}" Text="EMOM" />
-            <Label Style="{StaticResource HeroSubtitleStyle}" Text="Death by EMOM" />
+        <!-- Row 1 · Title + Subtitle -->
+        <VerticalStackLayout
+            Grid.Row="1"
+            HorizontalOptions="Center"
+            Padding="24,0"
+            Spacing="4">
+            <Label
+                x:Name="WorkoutTitleLabel"
+                FontAttributes="Bold"
+                FontFamily="OpenSansSemibold"
+                FontSize="48"
+                HorizontalTextAlignment="Center"
+                Text="EMOM"
+                TextColor="{StaticResource TextPrimary}" />
+            <Grid
+                ColumnDefinitions="32,Auto,32"
+                ColumnSpacing="12"
+                HorizontalOptions="Center">
+                <BoxView
+                    Color="{StaticResource AccentGold}"
+                    HeightRequest="1"
+                    HorizontalOptions="Fill"
+                    Opacity="0.3"
+                    VerticalOptions="Center" />
+                <Label
+                    x:Name="WorkoutContextLabel"
+                    Grid.Column="1"
+                    CharacterSpacing="3"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="16"
+                    HorizontalTextAlignment="Center"
+                    LineBreakMode="TailTruncation"
+                    MaxLines="1"
+                    Text="Death by EMOM"
+                    TextColor="{StaticResource TextSecondary}" />
+                <BoxView
+                    Grid.Column="2"
+                    Color="{StaticResource AccentGold}"
+                    HeightRequest="1"
+                    HorizontalOptions="Fill"
+                    Opacity="0.3"
+                    VerticalOptions="Center" />
+            </Grid>
+        </VerticalStackLayout>
 
-            <!-- Duration Carousel -->
-            <Border Style="{StaticResource CardBorderStyle}">
+        <!-- Row 2 · Central Timer (carousel) -->
+        <Grid
+            Grid.Row="2"
+            Padding="24,0">
+            <Border
+                BackgroundColor="{StaticResource SurfaceContainerLow}"
+                Padding="0"
+                Stroke="{StaticResource BorderColor}"
+                StrokeThickness="1">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20" />
+                </Border.StrokeShape>
                 <Border.GestureRecognizers>
                     <PanGestureRecognizer PanUpdated="OnPickerPanUpdated" />
                 </Border.GestureRecognizers>
@@ -72,14 +142,17 @@
                         TextColor="{StaticResource MutedText}" />
                 </VerticalStackLayout>
             </Border>
+        </Grid>
 
-            <!-- START -->
-            <Button
-                Clicked="OnStartClicked"
-                Style="{StaticResource GreenButtonStyle}"
-                Text="START" />
+        <!-- Row 3 · Metrics Grid (empty for now) -->
+        <Grid Grid.Row="3" Padding="24,0" />
 
-        </VerticalStackLayout>
-
-            </Grid>
-        </ContentPage>
+        <!-- Row 4 · Start Button -->
+        <Button
+            Grid.Row="4"
+            Clicked="OnStartClicked"
+            Style="{StaticResource GreenButtonStyle}"
+            Text="START"
+            Margin="24,16,24,32" />
+    </Grid>
+</ContentPage>

@@ -229,12 +229,12 @@
                     <Image
                         x:Name="TimerActionImage"
                         Aspect="AspectFit"
-                        HeightRequest="412"
+                        HeightRequest="450"
                         HorizontalOptions="Center"
                         InputTransparent="True"
                         Source="play.png"
                         VerticalOptions="Center"
-                        WidthRequest="412" />
+                        WidthRequest="450" />
 
                     <ImageButton
                         x:Name="TimerActionButton"

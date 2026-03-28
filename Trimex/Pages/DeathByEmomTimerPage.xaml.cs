@@ -249,6 +249,7 @@ public partial class DeathByEmomTimerPage : ContentPage
                 ProgressRing.Progress = 0;
                 TimerActionButton.IsEnabled = true;
                 TimerActionButton.IsVisible = true;
+                TimerActionImage.IsVisible = true;
                 TimerDisplayLayout.IsVisible = false;
                 RoundLabel.Text = "Round 1";
                 break;
@@ -257,6 +258,7 @@ public partial class DeathByEmomTimerPage : ContentPage
                 StateValueLabel.Text = "10";
                 StateHintLabel.Text = "Tap to cancel";
                 TimerActionButton.IsVisible = false;
+                TimerActionImage.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
                 break;
 
@@ -264,6 +266,7 @@ public partial class DeathByEmomTimerPage : ContentPage
                 StateHintLabel.Text = "Tap to pause";
                 PauseActionButton.IsVisible = true;
                 TimerActionButton.IsVisible = false;
+                TimerActionImage.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
                 break;
 
@@ -272,6 +275,7 @@ public partial class DeathByEmomTimerPage : ContentPage
                 StateHintLabel.Text = string.Empty;
                 TimerActionButton.IsEnabled = true;
                 TimerActionButton.IsVisible = true;
+                TimerActionImage.IsVisible = true;
                 TimerDisplayLayout.IsVisible = false;
                 break;
 
@@ -279,6 +283,7 @@ public partial class DeathByEmomTimerPage : ContentPage
                 StateValueLabel.Text = string.Empty;
                 StateHintLabel.Text = "Slide to go back.";
                 TimerActionButton.IsVisible = false;
+                TimerActionImage.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
                 break;
         }

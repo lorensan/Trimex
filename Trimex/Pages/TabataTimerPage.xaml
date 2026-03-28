@@ -8,112 +8,237 @@
     NavigationPage.HasNavigationBar="False">
 
     <Grid
-        Padding="24,20,24,24"
         BackgroundColor="{StaticResource AppBackground}"
-        RowDefinitions="Auto,*,Auto">
+        RowDefinitions="Auto,Auto,*,Auto,Auto">
 
-        <!-- Header -->
-        <VerticalStackLayout Grid.Row="0" Spacing="8">
-            <Label Style="{StaticResource PageTitleStyle}" Text="TABATA" />
-            <Label x:Name="WorkoutContextLabel" Style="{StaticResource HeroSubtitleStyle}" />
-        </VerticalStackLayout>
+        <!-- Row 0 · Top Navigation Bar -->
+        <Grid
+            Grid.Row="0"
+            ColumnDefinitions="48,*,48"
+            HeightRequest="64"
+            Padding="16,0">
+            <Label
+                Grid.Column="1"
+                FontAttributes="Bold,Italic"
+                FontFamily="OpenSansSemibold"
+                FontSize="20"
+                HorizontalOptions="Center"
+                HorizontalTextAlignment="Center"
+                Text="TRIMEX"
+                TextColor="{StaticResource AccentNeonYellow}"
+                VerticalOptions="Center" />
+        </Grid>
 
-        <!-- Main area -->
-        <Grid Grid.Row="1">
-            <VerticalStackLayout Spacing="12" VerticalOptions="Center">
-
-                <!-- Round indicator -->
+        <!-- Row 1 · Title + Subtitle -->
+        <VerticalStackLayout
+            Grid.Row="1"
+            HorizontalOptions="Center"
+            Padding="24,0"
+            Spacing="4">
+            <Label
+                x:Name="WorkoutTitleLabel"
+                FontAttributes="Bold"
+                FontFamily="OpenSansSemibold"
+                FontSize="48"
+                HorizontalTextAlignment="Center"
+                Text="TABATA"
+                TextColor="{StaticResource TextPrimary}" />
+            <Grid
+                ColumnDefinitions="32,Auto,32"
+                ColumnSpacing="12"
+                HorizontalOptions="Center">
+                <BoxView
+                    Color="{StaticResource AccentPurple}"
+                    HeightRequest="1"
+                    HorizontalOptions="Fill"
+                    Opacity="0.3"
+                    VerticalOptions="Center" />
                 <Label
-                    x:Name="RoundLabel"
-                    FontFamily="OpenSansSemibold"
-                    FontSize="20"
-                    HorizontalTextAlignment="Center"
-                    TextColor="{StaticResource AccentGreen}" />
-
-                <!-- Phase label (WORK / REST) -->
-                <Label
-                    x:Name="PhaseLabel"
+                    x:Name="WorkoutContextLabel"
+                    Grid.Column="1"
+                    CharacterSpacing="3"
                     FontFamily="OpenSansSemibold"
                     FontSize="16"
                     HorizontalTextAlignment="Center"
-                    TextColor="{StaticResource AccentGreen}" />
+                    LineBreakMode="TailTruncation"
+                    MaxLines="1"
+                    TextColor="{StaticResource TextSecondary}" />
+                <BoxView
+                    Grid.Column="2"
+                    Color="{StaticResource AccentPurple}"
+                    HeightRequest="1"
+                    HorizontalOptions="Fill"
+                    Opacity="0.3"
+                    VerticalOptions="Center" />
+            </Grid>
+            <Border
+                x:Name="WorkoutDetailsContainer"
+                BackgroundColor="{StaticResource SurfaceContainerLow}"
+                IsVisible="False"
+                Margin="0,8,0,0"
+                MaximumHeightRequest="120"
+                Padding="14,10"
+                Stroke="{StaticResource BorderColor}"
+                StrokeShape="RoundRectangle 14"
+                StrokeThickness="1">
+                <ScrollView VerticalScrollBarVisibility="Never">
+                    <Label
+                        x:Name="WorkoutDetailsLabel"
+                        FontSize="14"
+                        LineBreakMode="WordWrap"
+                        TextColor="{StaticResource TextSecondary}" />
+                </ScrollView>
+            </Border>
+        </VerticalStackLayout>
 
-                <!-- Circle timer -->
-                <Grid
-                    HeightRequest="320"
+        <!-- Watermark "XX" (rounds) -->
+        <Label
+            x:Name="WorkoutMinutesWatermarkLabel"
+            Grid.Row="0"
+            Grid.RowSpan="5"
+            FontAttributes="Bold"
+            FontFamily="OpenSansSemibold"
+            FontSize="300"
+            HorizontalOptions="End"
+            InputTransparent="True"
+            Margin="0,0,10,0"
+            Opacity="0.02"
+            TextColor="{StaticResource TextPrimary}"
+            VerticalOptions="Start" />
+        <Label
+            Grid.Row="0"
+            Grid.RowSpan="5"
+            FontAttributes="Bold"
+            FontFamily="OpenSansSemibold"
+            FontSize="150"
+            HorizontalOptions="Start"
+            InputTransparent="True"
+            Margin="10,0,20,100"
+            Opacity="0.02"
+            Text="MIN"
+            TextColor="{StaticResource TextPrimary}"
+            VerticalOptions="End" />
+
+        <!-- Row 2 · Central Timer -->
+        <Grid
+            Grid.Row="2"
+            Padding="24,0">
+            <Grid
+                HeightRequest="340"
+                HorizontalOptions="Center"
+                VerticalOptions="Center"
+                WidthRequest="340">
+                <controls:CircularProgressView
+                    x:Name="ProgressRing"
+                    AccentColor="{StaticResource AccentPurple}"
+                    HeightRequest="330"
                     HorizontalOptions="Center"
-                    WidthRequest="320">
-                    <controls:CircularProgressView x:Name="ProgressRing" />
-
-                    <Grid
-                        x:Name="TimerDisplayLayout"
-                        HeightRequest="220"
+                    TrackColor="{StaticResource SurfaceContainerHighest}"
+                    VerticalOptions="Center"
+                    WidthRequest="330" />
+                <Grid
+                    x:Name="TimerDisplayLayout"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnStateTapped" />
+                    </Grid.GestureRecognizers>
+                    <VerticalStackLayout
                         HorizontalOptions="Center"
-                        IsVisible="False"
-                        VerticalOptions="Center"
-                        WidthRequest="220">
-                        <Grid.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnStateTapped" />
-                        </Grid.GestureRecognizers>
-                        <VerticalStackLayout
+                        Spacing="4"
+                        VerticalOptions="Center">
+                        <Label
+                            x:Name="StateValueLabel"
+                            FontSize="40"
+                            MaxLines="1"
+                            Style="{StaticResource TimerValueStyle}" />
+                        <Label
+                            x:Name="StateHintLabel"
+                            CharacterSpacing="1.5"
+                            FontSize="11"
+                            LineBreakMode="TailTruncation"
+                            MaxLines="1"
+                            Style="{StaticResource HeroSubtitleStyle}" />
+                        <Label
+                            x:Name="PausedTimeLabel"
+                            HorizontalTextAlignment="Center"
+                            IsVisible="False"
+                            LineBreakMode="NoWrap"
+                            MaxLines="1"
+                            Style="{StaticResource ValueTextStyle}" />
+                        <ImageButton
+                            x:Name="PauseActionButton"
+                            Padding="0"
+                            Aspect="AspectFit"
+                            BackgroundColor="Transparent"
+                            Clicked="OnTimerActionClicked"
+                            CornerRadius="85"
+                            HeightRequest="169"
                             HorizontalOptions="Center"
-                            Spacing="4"
-                            VerticalOptions="Center">
-                            <Label
-                                x:Name="StateValueLabel"
-                                FontSize="46"
-                                MaxLines="1"
-                                Style="{StaticResource TimerValueStyle}" />
-                            <Label
-                                x:Name="StateHintLabel"
-                                LineBreakMode="TailTruncation"
-                                MaxLines="1"
-                                Style="{StaticResource HeroSubtitleStyle}" />
-                            <ImageButton
-                                x:Name="PauseActionButton"
-                                Padding="0"
-                                Aspect="AspectFit"
-                                BackgroundColor="Transparent"
-                                Clicked="OnTimerActionClicked"
-                                HeightRequest="112"
-                                HorizontalOptions="Center"
-                                IsVisible="False"
-                                Margin="0,8,0,0"
-                                Source="pause.png"
-                                VerticalOptions="Center"
-                                WidthRequest="112" />
-                        </VerticalStackLayout>
-                    </Grid>
-
+                            IsVisible="False"
+                            Source="pause.png"
+                            VerticalOptions="Center"
+                            WidthRequest="169" />
+                    </VerticalStackLayout>
+                </Grid>
+                <Grid
+                    x:Name="CenterActionShell"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center">
+                    <Image
+                        x:Name="TimerActionImage"
+                        Aspect="AspectFit"
+                        HeightRequest="412"
+                        HorizontalOptions="Center"
+                        InputTransparent="True"
+                        Source="play.png"
+                        VerticalOptions="Center"
+                        WidthRequest="412" />
                     <ImageButton
                         x:Name="TimerActionButton"
                         Padding="0"
                         Aspect="AspectFit"
                         BackgroundColor="Transparent"
                         Clicked="OnTimerActionClicked"
-                        HeightRequest="156"
+                        CornerRadius="137"
+                        HeightRequest="274"
                         HorizontalOptions="Center"
-                        Source="play.png"
                         VerticalOptions="Center"
-                        WidthRequest="156" />
+                        WidthRequest="274" />
                 </Grid>
+            </Grid>
+        </Grid>
 
-                <!-- Exercise description (hero WOD only) -->
+        <!-- Row 3 · Metrics Grid (round/phase) -->
+        <Grid
+            Grid.Row="3"
+            Padding="24,0">
+            <VerticalStackLayout Spacing="0">
                 <Label
-                    x:Name="ExerciseLabel"
+                    x:Name="RoundLabel"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="20"
                     HorizontalTextAlignment="Center"
-                    IsVisible="False"
-                    Padding="8,0"
-                    Style="{StaticResource HeroSubtitleStyle}" />
-
+                    TextColor="{StaticResource AccentGreen}" />
+                <Label
+                    x:Name="PhaseLabel"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="16"
+                    HorizontalTextAlignment="Center"
+                    TextColor="{StaticResource AccentGreen}" />
             </VerticalStackLayout>
         </Grid>
 
-        <!-- Slide to end -->
+        <!-- Row 4 · Slide to End -->
         <controls:SlideToEndView
-            Grid.Row="2"
+            Grid.Row="4"
             x:Name="SlideToEnd"
-            SlideCompleted="OnSlideCompleted" />
-
+            Margin="24,16,24,32"
+            SlideCompleted="OnSlideCompleted"
+            TrackText="SLIDE TO END" />
+        <Grid
+            x:Name="ConfettiOverlay"
+            Grid.RowSpan="5"
+            InputTransparent="True" />
     </Grid>
 </ContentPage>

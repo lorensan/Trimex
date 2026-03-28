@@ -30,6 +30,25 @@
                     HorizontalTextAlignment="Center"
                     Text="AS FAST AS YOU CAN"
                     TextColor="{StaticResource TextSecondary}" />
+                <!-- Hero WOD description box (hidden by default) -->
+                <Border
+                    x:Name="HeroWodDetailsContainer"
+                    BackgroundColor="{StaticResource SurfaceContainerLow}"
+                    IsVisible="False"
+                    Margin="0,8,0,0"
+                    MaximumHeightRequest="120"
+                    Padding="14,10"
+                    Stroke="{StaticResource BorderColor}"
+                    StrokeShape="RoundRectangle 14"
+                    StrokeThickness="1">
+                    <ScrollView VerticalScrollBarVisibility="Never">
+                        <Label
+                            x:Name="HeroWodDetailsLabel"
+                            FontSize="14"
+                            LineBreakMode="WordWrap"
+                            TextColor="{StaticResource TextSecondary}" />
+                    </ScrollView>
+                </Border>
             </VerticalStackLayout>
 
             <!-- Carousel Number Picker -->
