@@ -11,7 +11,6 @@ namespace Trimex
             Items.Add(new ShellContent
             {
                 Route = nameof(HomePage),
-                Title = "Trimex",
                 Content = homePage
             });
         }

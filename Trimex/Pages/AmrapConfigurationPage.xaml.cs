@@ -82,6 +82,7 @@ public partial class AmrapConfigurationPage : ContentPage
             {
                 _selectedMinutes++;
                 UpdateCarouselDisplay();
+                HapticFeedback.Default.Perform(HapticFeedbackType.Click);
             }
         }
 
@@ -92,6 +93,7 @@ public partial class AmrapConfigurationPage : ContentPage
             {
                 _selectedMinutes--;
                 UpdateCarouselDisplay();
+                HapticFeedback.Default.Perform(HapticFeedbackType.Click);
             }
         }
     }

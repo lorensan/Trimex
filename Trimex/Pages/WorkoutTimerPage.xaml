@@ -218,6 +218,7 @@
                             WidthRequest="169" />
                     </VerticalStackLayout>
                 </Grid>
+                
 
                 <!-- Play button (Idle / Paused) — no background circle -->
                 <Grid

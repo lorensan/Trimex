@@ -76,6 +76,7 @@ public partial class DeathByEmomPage : ContentPage
             {
                 _pickerIndex++;
                 UpdateCarouselDisplay();
+                HapticFeedback.Default.Perform(HapticFeedbackType.Click);
             }
         }
 
@@ -86,6 +87,7 @@ public partial class DeathByEmomPage : ContentPage
             {
                 _pickerIndex--;
                 UpdateCarouselDisplay();
+                HapticFeedback.Default.Perform(HapticFeedbackType.Click);
             }
         }
     }

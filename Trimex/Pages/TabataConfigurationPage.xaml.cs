@@ -95,7 +95,11 @@ public partial class TabataConfigurationPage : ContentPage
             if (state.Index > state.MinIndex) { state.Index--; changed = true; }
         }
 
-        if (changed) UpdateAllDisplays();
+        if (changed)
+        {
+            UpdateAllDisplays();
+            HapticFeedback.Default.Perform(HapticFeedbackType.Click);
+        }
     }
 
     private void StartInertia(PickerState state)

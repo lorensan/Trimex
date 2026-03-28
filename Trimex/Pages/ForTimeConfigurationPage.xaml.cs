@@ -80,6 +80,7 @@ public partial class ForTimeConfigurationPage : ContentPage
             {
                 _selectedMinutes++;
                 UpdateCarouselDisplay();
+                HapticFeedback.Default.Perform(HapticFeedbackType.Click);
             }
         }
 
@@ -90,6 +91,7 @@ public partial class ForTimeConfigurationPage : ContentPage
             {
                 _selectedMinutes--;
                 UpdateCarouselDisplay();
+                HapticFeedback.Default.Perform(HapticFeedbackType.Click);
             }
         }
     }

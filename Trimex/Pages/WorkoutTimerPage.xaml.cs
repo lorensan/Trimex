@@ -25,7 +25,6 @@ public partial class WorkoutTimerPage : ContentPage
         InitializeComponent();
 
         _configuration = configuration;
-        Title = configuration.TypeDisplayName;
 
         WorkoutTitleLabel.Text = configuration.TypeDisplayName;
         WorkoutContextLabel.Text = BuildContextLabel(configuration);

@@ -6,6 +6,5 @@
     FlyoutBehavior="Disabled"
     Shell.BackgroundColor="{StaticResource AppBackground}"
     Shell.ForegroundColor="{StaticResource TextPrimary}"
-    Shell.NavBarHasShadow="False"
-    Shell.TitleColor="{StaticResource TextPrimary}">
+    Shell.NavBarHasShadow="False">
 </Shell>

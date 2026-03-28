@@ -6,35 +6,4 @@
     Shell.NavBarIsVisible="False"
     NavigationPage.HasNavigationBar="False"
     BackgroundColor="Black">
-
-    <Grid>
-        <Image Source="background.jpg" Aspect="AspectFill" />
-
-        <Grid BackgroundColor="#99000000">
-            <VerticalStackLayout
-                HorizontalOptions="Center"
-                VerticalOptions="Center"
-                Spacing="12">
-
-                <Label
-                    x:Name="TitleLabel"
-                    Text="TRIMEX"
-                    FontFamily="OpenSansSemibold"
-                    FontSize="48"
-                    TextColor="White"
-                    HorizontalTextAlignment="Center"
-                    Opacity="0" />
-
-                <Label
-                    x:Name="SubtitleLabel"
-                    Text="configure your training timming as you like"
-                    FontFamily="OpenSansRegular"
-                    FontSize="16"
-                    TextColor="#B8B8B8"
-                    HorizontalTextAlignment="Center"
-                    Opacity="0" />
-
-            </VerticalStackLayout>
-        </Grid>
-    </Grid>
 </ContentPage>
