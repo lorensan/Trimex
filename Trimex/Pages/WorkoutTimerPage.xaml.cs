@@ -31,8 +31,7 @@ public partial class WorkoutTimerPage : ContentPage
         WorkoutMinutesWatermarkLabel.Text = BuildWatermarkMinutes(configuration);
         var workoutDetails = BuildWorkoutDetails(configuration);
         WorkoutDetailsLabel.Text = workoutDetails;
-        DetailsButton.IsVisible = !string.IsNullOrWhiteSpace(workoutDetails);
-        WorkoutDetailsContainer.IsVisible = false;
+        WorkoutDetailsContainer.IsVisible = !string.IsNullOrWhiteSpace(workoutDetails);
 
         RoundSection.IsVisible = configuration.SupportsRounds;
         RoundButton.Text = "00";
@@ -104,16 +103,6 @@ public partial class WorkoutTimerPage : ContentPage
 
         _timer.Stop();
         await Navigation.PopAsync();
-    }
-
-    private void OnDetailsClicked(object? sender, EventArgs e)
-    {
-        if (!DetailsButton.IsVisible)
-        {
-            return;
-        }
-
-        WorkoutDetailsContainer.IsVisible = !WorkoutDetailsContainer.IsVisible;
     }
 
     private async void OnRoundClicked(object? sender, EventArgs e)

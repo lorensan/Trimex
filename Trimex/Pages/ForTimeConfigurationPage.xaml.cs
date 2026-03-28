@@ -24,10 +24,11 @@ public partial class ForTimeConfigurationPage : ContentPage
     private IDispatcherTimer? _inertiaTimer;
     private double _inertiaAccumulator;
 
-    public ForTimeConfigurationPage(IHeroWodRepository heroWodRepository, IWorkoutNoteRepository workoutNoteRepository)
+    public ForTimeConfigurationPage(IHeroWodRepository heroWodRepository, IWorkoutNoteRepository workoutNoteRepository, bool showHeroWodDetails = false)
     {
         InitializeComponent();
 
+        HeroWodDetailsContainer.IsVisible = showHeroWodDetails;
         UpdateCarouselDisplay();
     }
 

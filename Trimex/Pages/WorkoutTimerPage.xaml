@@ -7,16 +7,14 @@
     BackgroundColor="{StaticResource AppBackground}"
     NavigationPage.HasNavigationBar="False">
 
-    <Grid
-        BackgroundColor="{StaticResource AppBackground}"
-        RowDefinitions="Auto,Auto,*,Auto,Auto">
+    <Grid BackgroundColor="{StaticResource AppBackground}" RowDefinitions="Auto,Auto,*,Auto,Auto">
 
-        <!-- ═══ Row 0 · Top Navigation Bar ═══ -->
+        <!--  ═══ Row 0 · Top Navigation Bar ═══  -->
         <Grid
             Grid.Row="0"
+            Padding="16,0"
             ColumnDefinitions="48,*,48"
-            HeightRequest="64"
-            Padding="16,0">
+            HeightRequest="64">
 
 
             <Label
@@ -29,28 +27,13 @@
                 Text="TRIMEX"
                 TextColor="{StaticResource AccentNeonYellow}"
                 VerticalOptions="Center" />
-
-            <Button
-                x:Name="DetailsButton"
-                Grid.Column="2"
-                BackgroundColor="Transparent"
-                Clicked="OnDetailsClicked"
-                CornerRadius="20"
-                FontSize="20"
-                HeightRequest="40"
-                HorizontalOptions="Center"
-                Padding="0"
-                Text="⚙"
-                TextColor="{StaticResource TextSecondary}"
-                VerticalOptions="Center"
-                WidthRequest="40" />
         </Grid>
 
-        <!-- ═══ Row 1 · Title + Subtitle ═══ -->
+        <!--  ═══ Row 1 · Title + Subtitle ═══  -->
         <VerticalStackLayout
             Grid.Row="1"
-            HorizontalOptions="Center"
             Padding="24,0"
+            HorizontalOptions="Center"
             Spacing="4">
 
             <Label
@@ -67,11 +50,11 @@
                 HorizontalOptions="Center">
 
                 <BoxView
-                    Color="{StaticResource AccentNeonYellow}"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     Opacity="0."
-                    VerticalOptions="Center" />
+                    VerticalOptions="Center"
+                    Color="{StaticResource AccentNeonYellow}" />
 
                 <Label
                     x:Name="WorkoutContextLabel"
@@ -86,20 +69,20 @@
 
                 <BoxView
                     Grid.Column="2"
-                    Color="{StaticResource AccentNeonYellow}"
                     HeightRequest="1"
                     HorizontalOptions="Fill"
                     Opacity="0.3"
-                    VerticalOptions="Center" />
+                    VerticalOptions="Center"
+                    Color="{StaticResource AccentNeonYellow}" />
             </Grid>
 
             <Border
                 x:Name="WorkoutDetailsContainer"
+                Margin="0,8,0,0"
+                Padding="14,10"
                 BackgroundColor="{StaticResource SurfaceContainerLow}"
                 IsVisible="False"
-                Margin="0,8,0,0"
                 MaximumHeightRequest="120"
-                Padding="14,10"
                 Stroke="{StaticResource BorderColor}"
                 StrokeShape="RoundRectangle 14"
                 StrokeThickness="1">
@@ -114,49 +97,47 @@
             </Border>
         </VerticalStackLayout>
 
-        <!-- ═══ Watermark "15" — top-right screen corner ═══ -->
+        <!--  ═══ Watermark "15" — top-right screen corner ═══  -->
         <Label
             x:Name="WorkoutMinutesWatermarkLabel"
             Grid.Row="0"
             Grid.RowSpan="5"
+            Margin="0,0,10,0"
             FontAttributes="Bold"
             FontFamily="OpenSansSemibold"
             FontSize="300"
             HorizontalOptions="End"
             InputTransparent="True"
-            Margin="0,0,10,0"
             Opacity="0.02"
             TextColor="{StaticResource TextPrimary}"
             VerticalOptions="Start" />
 
-        <!-- ═══ Watermark "MIN" — bottom-left screen corner ═══ -->
+        <!--  ═══ Watermark "MIN" — bottom-left screen corner ═══  -->
         <Label
             Grid.Row="0"
             Grid.RowSpan="5"
+            Margin="10,0,20,100"
             FontAttributes="Bold"
             FontFamily="OpenSansSemibold"
             FontSize="150"
             HorizontalOptions="Start"
             InputTransparent="True"
-            Margin="10,0,20,100"
             Opacity="0.02"
             Text="MIN"
             TextColor="{StaticResource TextPrimary}"
             VerticalOptions="End" />
 
-        <!-- ═══ Row 2 · Central Timer (star row — centered) ═══ -->
-        <Grid
-            Grid.Row="2"
-            Padding="24,0">
+        <!--  ═══ Row 2 · Central Timer (star row — centered) ═══  -->
+        <Grid Grid.Row="2" Padding="24,0">
 
-            <!-- Timer ring assembly -->
+            <!--  Timer ring assembly  -->
             <Grid
                 HeightRequest="340"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
                 WidthRequest="340">
 
-                <!-- Progress ring -->
+                <!--  Progress ring  -->
                 <controls:CircularProgressView
                     x:Name="ProgressRing"
                     AccentColor="{StaticResource AccentNeonYellow}"
@@ -166,7 +147,7 @@
                     VerticalOptions="Center"
                     WidthRequest="330" />
 
-                <!-- Timer display (centered inside progress ring) -->
+                <!--  Timer display (centered inside progress ring)  -->
                 <Grid
                     x:Name="TimerDisplayLayout"
                     HorizontalOptions="Center"
@@ -218,9 +199,9 @@
                             WidthRequest="169" />
                     </VerticalStackLayout>
                 </Grid>
-                
 
-                <!-- Play button (Idle / Paused) — no background circle -->
+
+                <!--  Play button (Idle / Paused) — no background circle  -->
                 <Grid
                     x:Name="CenterActionShell"
                     HorizontalOptions="Center"
@@ -251,10 +232,8 @@
             </Grid>
         </Grid>
 
-        <!-- ═══ Row 3 · Metrics Grid ═══ -->
-        <Grid
-            Grid.Row="3"
-            Padding="24,0">
+        <!--  ═══ Row 3 · Metrics Grid ═══  -->
+        <Grid Grid.Row="3" Padding="24,0">
 
             <VerticalStackLayout
                 x:Name="RoundSection"
@@ -262,8 +241,8 @@
                 Spacing="0">
 
                 <Border
-                    BackgroundColor="{StaticResource SurfaceContainerLow}"
                     Padding="20"
+                    BackgroundColor="{StaticResource SurfaceContainerLow}"
                     Stroke="{StaticResource BorderColor}"
                     StrokeShape="RoundRectangle 16"
                     StrokeThickness="1">
@@ -278,6 +257,7 @@
                         <HorizontalStackLayout Spacing="4" VerticalOptions="End">
                             <Button
                                 x:Name="RoundButton"
+                                Padding="0"
                                 BackgroundColor="Transparent"
                                 Clicked="OnRoundClicked"
                                 CornerRadius="0"
@@ -288,7 +268,6 @@
                                 HorizontalOptions="Start"
                                 IsEnabled="False"
                                 MinimumWidthRequest="0"
-                                Padding="0"
                                 Text="00"
                                 TextColor="{StaticResource TextPrimary}" />
 
@@ -303,15 +282,15 @@
             </VerticalStackLayout>
         </Grid>
 
-        <!-- ═══ Row 4 · Slide to Reset ═══ -->
+        <!--  ═══ Row 4 · Slide to Reset ═══  -->
         <controls:SlideToEndView
-            Grid.Row="4"
             x:Name="SlideToReset"
+            Grid.Row="4"
             Margin="24,16,24,32"
             SlideCompleted="OnSlideResetCompleted"
             TrackText="SLIDE TO RESET" />
 
-        <!-- ═══ Confetti overlay ═══ -->
+        <!--  ═══ Confetti overlay ═══  -->
         <Grid
             x:Name="ConfettiOverlay"
             Grid.RowSpan="5"
