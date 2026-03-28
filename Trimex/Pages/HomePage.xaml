@@ -3,7 +3,8 @@
     x:Class="Trimex.Pages.HomePage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Trimex">
+    Title="Trimex"
+    NavigationPage.HasNavigationBar="False">
 
     <Grid>
         <Image Aspect="AspectFill" InputTransparent="True" Source="background.jpg" />

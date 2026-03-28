@@ -183,7 +183,7 @@
 
                         <Label
                             x:Name="StateValueLabel"
-                            FontSize="50"
+                            FontSize="40"
                             MaxLines="1"
                             Style="{StaticResource TimerValueStyle}" />
 
@@ -209,12 +209,13 @@
                             Aspect="AspectFit"
                             BackgroundColor="Transparent"
                             Clicked="OnTimerActionClicked"
-                            HeightRequest="264"
+                            CornerRadius="85"
+                            HeightRequest="169"
                             HorizontalOptions="Center"
                             IsVisible="False"
                             Source="pause.png"
                             VerticalOptions="Center"
-                            WidthRequest="264" />
+                            WidthRequest="169" />
                     </VerticalStackLayout>
                 </Grid>
 
@@ -224,17 +225,27 @@
                     HorizontalOptions="Center"
                     VerticalOptions="Center">
 
+                    <Image
+                        x:Name="TimerActionImage"
+                        Aspect="AspectFit"
+                        HeightRequest="412"
+                        HorizontalOptions="Center"
+                        InputTransparent="True"
+                        Source="play.png"
+                        VerticalOptions="Center"
+                        WidthRequest="412" />
+
                     <ImageButton
                         x:Name="TimerActionButton"
                         Padding="0"
                         Aspect="AspectFit"
                         BackgroundColor="Transparent"
                         Clicked="OnTimerActionClicked"
-                        HeightRequest="264"
+                        CornerRadius="137"
+                        HeightRequest="274"
                         HorizontalOptions="Center"
-                        Source="play.png"
                         VerticalOptions="Center"
-                        WidthRequest="264" />
+                        WidthRequest="274" />
                 </Grid>
             </Grid>
         </Grid>

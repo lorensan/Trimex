@@ -3,7 +3,8 @@
     x:Class="Trimex.Pages.CustomWodCreationPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="Custom WOD">
+    Title="Custom WOD"
+    NavigationPage.HasNavigationBar="False">
 
     <ScrollView>
         <VerticalStackLayout Padding="24,20,24,40" Spacing="32">

@@ -55,7 +55,7 @@ public static class TimerCueService
     private static void PlayBeep()
     {
 #if ANDROID
-        ToneGeneratorInstance.Value.StartTone(Tone.PropBeep, 120);
+        ToneGeneratorInstance.Value.StartTone(Tone.PropBeep2, 120);
 #elif IOS || MACCATALYST
         BeepSound.PlaySystemSound();
 #elif WINDOWS

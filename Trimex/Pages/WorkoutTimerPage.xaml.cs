@@ -320,7 +320,7 @@ public partial class WorkoutTimerPage : ContentPage
 
     private void UpdateVisualState()
     {
-        TimerActionButton.Source = PlayIcon;
+        TimerActionImage.Source = PlayIcon;
         PauseActionButton.Source = PauseIcon;
         PauseActionButton.IsVisible = false;
         RoundButton.IsEnabled = _state == WorkoutTimerState.Running;
