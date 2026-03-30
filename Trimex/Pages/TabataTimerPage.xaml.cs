@@ -83,7 +83,7 @@ public partial class TabataTimerPage : ContentPage
         _timer.Stop();
         _state = WorkoutTimerState.Completed;
         _currentRunStartedAtUtc = null;
-        WorkoutContextLabel.Text = "Session ended. Great work!";
+        // Do not overwrite the subtitle
         _ = TimerCueService.PlayCompletionSequenceAsync();
         UpdateVisualState();
     }
@@ -296,6 +296,7 @@ public partial class TabataTimerPage : ContentPage
         PauseActionButton.Source = PauseIcon;
         PauseActionButton.IsVisible = false;
 
+        // Do not hide or clear WorkoutContextLabel
         switch (_state)
         {
             case WorkoutTimerState.Idle:
@@ -307,7 +308,6 @@ public partial class TabataTimerPage : ContentPage
                 ProgressRing.Progress = 0;
                 TimerActionButton.IsEnabled = true;
                 TimerActionButton.IsVisible = true;
-                TimerActionImage.IsVisible = true;
                 TimerDisplayLayout.IsVisible = false;
                 break;
 
@@ -316,7 +316,6 @@ public partial class TabataTimerPage : ContentPage
                 StateValueLabel.TextColor = Colors.White;
                 StateHintLabel.Text = "Tap to cancel";
                 TimerActionButton.IsVisible = false;
-                TimerActionImage.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
                 break;
 
@@ -324,7 +323,6 @@ public partial class TabataTimerPage : ContentPage
                 StateHintLabel.Text = "Tap to pause";
                 PauseActionButton.IsVisible = true;
                 TimerActionButton.IsVisible = false;
-                TimerActionImage.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
                 break;
 
@@ -333,7 +331,6 @@ public partial class TabataTimerPage : ContentPage
                 StateHintLabel.Text = string.Empty;
                 TimerActionButton.IsEnabled = true;
                 TimerActionButton.IsVisible = true;
-                TimerActionImage.IsVisible = true;
                 TimerDisplayLayout.IsVisible = false;
                 RoundLabel.Text = $"Round {_currentDisplayRound} / {_configuration.Rounds}";
                 break;
@@ -348,7 +345,6 @@ public partial class TabataTimerPage : ContentPage
                 ProgressRing.Progress = 1;
                 ProgressRing.AccentColor = WorkColor;
                 TimerActionButton.IsVisible = false;
-                TimerActionImage.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
                 break;
         }

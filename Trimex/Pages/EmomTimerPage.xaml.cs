@@ -264,7 +264,6 @@ public partial class EmomTimerPage : ContentPage
                 ProgressRing.Progress = 0;
                 TimerActionButton.IsEnabled = true;
                 TimerActionButton.IsVisible = true;
-                TimerActionImage.IsVisible = true;
                 TimerDisplayLayout.IsVisible = false;
                 RoundLabel.Text = $"Round 1 of {_configuration.Rounds}";
                 break;
@@ -273,7 +272,6 @@ public partial class EmomTimerPage : ContentPage
                 StateValueLabel.Text = "10";
                 StateHintLabel.Text = "Tap to cancel";
                 TimerActionButton.IsVisible = false;
-                TimerActionImage.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
                 break;
 
@@ -281,7 +279,6 @@ public partial class EmomTimerPage : ContentPage
                 StateHintLabel.Text = "Tap the time or pause";
                 PauseActionButton.IsVisible = true;
                 TimerActionButton.IsVisible = false;
-                TimerActionImage.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
                 break;
 
@@ -290,7 +287,6 @@ public partial class EmomTimerPage : ContentPage
                 StateHintLabel.Text = string.Empty;
                 TimerActionButton.IsEnabled = true;
                 TimerActionButton.IsVisible = true;
-                TimerActionImage.IsVisible = true;
                 TimerDisplayLayout.IsVisible = false;
                 RoundLabel.Text = $"Round {_currentRound} of {_configuration.Rounds}";
                 break;
@@ -300,7 +296,6 @@ public partial class EmomTimerPage : ContentPage
                 StateHintLabel.Text = "Workout completed.";
                 ProgressRing.Progress = 1;
                 TimerActionButton.IsVisible = false;
-                TimerActionImage.IsVisible = false;
                 TimerDisplayLayout.IsVisible = true;
                 RoundLabel.Text = $"Round {_configuration.Rounds} of {_configuration.Rounds}";
                 break;
@@ -326,5 +321,12 @@ public partial class EmomTimerPage : ContentPage
         Running,
         Paused,
         Completed
+    }
+
+    private async void OnSlideCompleted(object? sender, EventArgs e)
+    {
+        // Optionally show confetti or a message, then navigate back
+        await DisplayAlert("Workout ended", "You have ended the EMOM workout.", "OK");
+        await Navigation.PopAsync();
     }
 }
