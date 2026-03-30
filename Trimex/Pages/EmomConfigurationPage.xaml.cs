@@ -19,7 +19,7 @@ public partial class EmomConfigurationPage : ContentPage
         InitializeComponent();
 
         _durationPicker = new PickerState(0, DurationSteps.Length - 1, Array.IndexOf(DurationSteps, 30));
-        _roundsPicker = new PickerState(0, 9, 9);
+        _roundsPicker = new PickerState(0, 99, 99);
 
         UpdateAllDisplays();
     }

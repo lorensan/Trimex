@@ -1,6 +1,7 @@
 using System.Text;
 using Trimex.Models;
 using Trimex.Services;
+using Microsoft.Maui.Essentials;
 
 namespace Trimex.Pages;
 
@@ -527,5 +528,18 @@ public partial class WorkoutTimerPage : ContentPage
         Running,
         Paused,
         Completed
+    }
+
+    // Handler for tap on metrics grid (AMRAP rounds)
+    private void OnMetricsGridTapped(object sender, EventArgs e)
+    {
+        try
+        {
+            Microsoft.Maui.Devices.Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(40));
+        }
+        catch
+        {
+            // Vibration may not be supported on all platforms; ignore errors
+        }
     }
 }

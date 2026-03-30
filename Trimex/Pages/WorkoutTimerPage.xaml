@@ -254,28 +254,37 @@
         <!-- ═══ Row 3 · Metrics Grid ═══ -->
         <Grid
             Grid.Row="3"
-            Padding="24,0">
+            Padding="24,0"
+            HorizontalOptions="Center"
+            VerticalOptions="Center"
+            BackgroundColor="{StaticResource Surface}">
 
             <VerticalStackLayout
                 x:Name="RoundSection"
                 IsVisible="False"
-                Spacing="0">
+                Spacing="0"
+                HorizontalOptions="Center"
+                VerticalOptions="Center">
 
                 <Border
+                    x:Name="RoundMetricsBorder"
                     BackgroundColor="{StaticResource SurfaceContainerLow}"
                     Padding="20"
                     Stroke="{StaticResource BorderColor}"
                     StrokeShape="RoundRectangle 16"
                     StrokeThickness="1">
-
-                    <VerticalStackLayout Spacing="4">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnMetricsGridTapped" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
                         <Label
                             CharacterSpacing="2"
                             FontSize="10"
                             Style="{StaticResource MutedCaptionStyle}"
-                            Text="ROUNDS" />
-
-                        <HorizontalStackLayout Spacing="4" VerticalOptions="End">
+                            Text="ROUNDS"
+                            HorizontalTextAlignment="Center"
+                            HorizontalOptions="Center" />
+                        <HorizontalStackLayout Spacing="4" VerticalOptions="Center" HorizontalOptions="Center">
                             <Button
                                 x:Name="RoundButton"
                                 BackgroundColor="Transparent"
@@ -285,18 +294,19 @@
                                 FontFamily="OpenSansSemibold"
                                 FontSize="30"
                                 HeightRequest="42"
-                                HorizontalOptions="Start"
+                                HorizontalOptions="Center"
                                 IsEnabled="False"
                                 MinimumWidthRequest="0"
                                 Padding="0"
                                 Text="00"
                                 TextColor="{StaticResource TextPrimary}" />
-
                             <Label
                                 FontSize="12"
                                 Style="{StaticResource MutedCaptionStyle}"
                                 Text="TOTAL"
-                                VerticalTextAlignment="End" />
+                                VerticalTextAlignment="Center"
+                                HorizontalTextAlignment="Center"
+                                HorizontalOptions="Center" />
                         </HorizontalStackLayout>
                     </VerticalStackLayout>
                 </Border>
