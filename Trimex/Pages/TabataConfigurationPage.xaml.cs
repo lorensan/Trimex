@@ -63,7 +63,7 @@ public partial class TabataConfigurationPage : ContentPage
                 if (dt is > 0 and < 0.3)
                     state.VelocityY = state.VelocityY * 0.3 + (delta / dt) * 0.7;
 
-                ApplySteps(state);
+                ApplySteps(ref state.PanAccumulator, state);
                 break;
 
             case GestureStatus.Completed:
@@ -79,19 +79,19 @@ public partial class TabataConfigurationPage : ContentPage
         }
     }
 
-    private void ApplySteps(PickerState state)
+    private void ApplySteps(ref double accumulator, PickerState state)
     {
         var changed = false;
 
-        while (state.PanAccumulator <= -PanThreshold)
+        while (accumulator <= -PanThreshold)
         {
-            state.PanAccumulator += PanThreshold;
+            accumulator += PanThreshold;
             if (state.Index < state.MaxIndex) { state.Index++; changed = true; }
         }
 
-        while (state.PanAccumulator >= PanThreshold)
+        while (accumulator >= PanThreshold)
         {
-            state.PanAccumulator -= PanThreshold;
+            accumulator -= PanThreshold;
             if (state.Index > state.MinIndex) { state.Index--; changed = true; }
         }
 
@@ -114,7 +114,7 @@ public partial class TabataConfigurationPage : ContentPage
             state.InertiaAccumulator += state.VelocityY * (InertiaIntervalMs / 1000.0);
             state.VelocityY *= Friction;
 
-            ApplySteps(state);
+            ApplySteps(ref state.InertiaAccumulator, state);
 
             var hitBound = (state.Index <= state.MinIndex && state.VelocityY > 0)
                         || (state.Index >= state.MaxIndex && state.VelocityY < 0);
