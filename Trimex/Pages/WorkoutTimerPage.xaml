@@ -302,5 +302,81 @@
             x:Name="ConfettiOverlay"
             Grid.RowSpan="5"
             InputTransparent="True" />
+
+        <!--  ═══ Post-WOD save modal overlay ═══  -->
+        <BoxView
+            x:Name="SaveModalDimmer"
+            Grid.RowSpan="5"
+            Color="#CC000000"
+            IsVisible="False">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnSaveModalDimmerTapped" />
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <Border
+            x:Name="SaveModalContainer"
+            Grid.RowSpan="5"
+            Margin="24"
+            Padding="20"
+            BackgroundColor="{StaticResource Surface}"
+            HorizontalOptions="Center"
+            IsVisible="False"
+            StrokeShape="RoundRectangle 20"
+            Stroke="{StaticResource BorderColor}"
+            StrokeThickness="1"
+            VerticalOptions="Center"
+            MaximumWidthRequest="400">
+            <VerticalStackLayout Spacing="16">
+                <Label
+                    Text="SAVE RESULT"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="20"
+                    TextColor="{StaticResource AccentNeonYellow}"
+                    HorizontalTextAlignment="Center" />
+
+                <Label
+                    x:Name="SaveModalTimeLabel"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="16"
+                    TextColor="{StaticResource TextSecondary}"
+                    HorizontalTextAlignment="Center" />
+
+                <Border
+                    BackgroundColor="{StaticResource SurfaceContainerLow}"
+                    Padding="12"
+                    StrokeShape="RoundRectangle 12"
+                    Stroke="{StaticResource BorderColor}"
+                    StrokeThickness="1">
+                    <Editor
+                        x:Name="SaveModalNotesEditor"
+                        Placeholder="Add notes..."
+                        BackgroundColor="Transparent"
+                        HeightRequest="100"
+                        TextColor="{StaticResource TextSecondary}"
+                        PlaceholderColor="{StaticResource MutedText}" />
+                </Border>
+
+                <Button
+                    Text="SAVE"
+                    BackgroundColor="{StaticResource AccentNeonYellow}"
+                    TextColor="#0D0D0D"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="16"
+                    CornerRadius="22"
+                    HeightRequest="50"
+                    Clicked="OnSaveModalSaveClicked" />
+
+                <Button
+                    Text="CANCEL"
+                    BackgroundColor="{StaticResource SurfaceContainerHighest}"
+                    TextColor="{StaticResource TextSecondary}"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="14"
+                    CornerRadius="22"
+                    HeightRequest="44"
+                    Clicked="OnSaveModalCancelClicked" />
+            </VerticalStackLayout>
+        </Border>
     </Grid>
 </ContentPage>

@@ -16,6 +16,7 @@ public sealed class DatabaseInitializer(AppDatabase database, IHeroWodRepository
 
         await database.Connection.CreateTableAsync<HeroWod>();
         await database.Connection.CreateTableAsync<WorkoutNote>();
+        await database.Connection.CreateTableAsync<HeroWodHistory>();
 
         if (await heroWodRepository.CountAsync() == 0)
         {

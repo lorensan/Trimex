@@ -71,6 +71,12 @@
  	</ItemGroup>
 
  	<ItemGroup>
+ 	  <MauiXaml Update="Pages\HeroWodHistoryModal.xaml">
+ 	    <Generator>MSBuild:Compile</Generator>
+ 	  </MauiXaml>
+ 	</ItemGroup>
+
+ 	<ItemGroup>
  	  <None Update="Pages\SplashPage.xaml">
  	    <Generator>MSBuild:Compile</Generator>
  	  </None>
