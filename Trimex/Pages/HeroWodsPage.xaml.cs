@@ -55,7 +55,7 @@ public partial class HeroWodsPage : ContentPage
         ApplyFilters();
     }
 
-    // ── Chip handlers ────────────────────────────────────────────────────────
+    // ── Chip handlers ───────────────────────────────────────────────────────────────────────
 
     private void OnMenChipTapped(object? sender, TappedEventArgs e)
     {
@@ -159,7 +159,7 @@ public partial class HeroWodsPage : ContentPage
         ApplyFilters();
     }
 
-    // ── Filtering ────────────────────────────────────────────────────────────
+    // ── Filtering ───────────────────────────────────────────────────────────────────────
 
     private void ApplyFilters()
     {
@@ -244,14 +244,10 @@ public partial class HeroWodsPage : ContentPage
 
         var cts = new CancellationTokenSource();
         _longPressCts = cts;
-        _ = TriggerLongPressSelectionAsync(wod, cts.Token);
+        _ = TriggerLongPressSelectionAsync(wod, cts.Token, sender as VisualElement);
     }
 
-    private void OnWodCardReleased(object? sender, EventArgs e)
-    {
-    }
-
-    private async Task TriggerLongPressSelectionAsync(HeroWod wod, CancellationToken cancellationToken)
+    private async Task TriggerLongPressSelectionAsync(HeroWod wod, CancellationToken cancellationToken, VisualElement? card = null)
     {
         try
         {
@@ -281,58 +277,10 @@ public partial class HeroWodsPage : ContentPage
         }
     }
 
-    private void CancelLongPressDetection()
+    private void OnWodCardReleased(object? sender, EventArgs e)
     {
-        if (_longPressCts is null)
-        {
-            return;
-        }
-
-        _longPressCts.Cancel();
-        _longPressCts.Dispose();
-        _longPressCts = null;
-    }
-
-    private void ClearPendingDeleteSelection()
-    {
-        var changed = false;
-
-        foreach (var item in _allWods)
-        {
-            if (!item.IsPendingDelete)
-            {
-                continue;
-            }
-
-            item.IsPendingDelete = false;
-            changed = true;
-        }
-
-        if (changed)
-        {
-            ApplyFilters();
-        }
-    }
-
-    private async void OnDeleteCustomWodClicked(object? sender, EventArgs e)
-    {
-        var wod = (sender as VisualElement)?.BindingContext as HeroWod;
-        if (wod is null || !wod.IsCustom)
-        {
-            return;
-        }
-
-        var confirm = await DisplayAlert("Remove WOD", $"Delete '{wod.Name}'?", "Delete", "Cancel");
-        if (!confirm)
-        {
-            return;
-        }
-
-        await _heroWodRepository.DeleteAsync(wod.UniqueId);
-
-        _allWods = _allWods.Where(x => x.UniqueId != wod.UniqueId).ToList();
-        _selectedWod = _selectedWod?.UniqueId == wod.UniqueId ? null : _selectedWod;
-        ApplyFilters();
+        // No-op: do not delay delete icon until release
+        CancelLongPressDetection();
     }
 
     private async Task ShowDetailSheetAsync(HeroWod wod)
@@ -431,7 +379,7 @@ public partial class HeroWodsPage : ContentPage
         }
     }
 
-    // ── FAB ──────────────────────────────────────────────────────────────────
+    // FAB 
 
     private async void OnCreateCustomWodClicked(object? sender, EventArgs e)
     {
@@ -440,7 +388,7 @@ public partial class HeroWodsPage : ContentPage
         await Navigation.PushAsync(_serviceProvider.GetRequiredService<CustomWodCreationPage>());
     }
 
-    // ── Navigation to timer ───────────────────────────────────────────────────
+    // Navigation to timer 
 
     private async void OnGoToTimerClicked(object? sender, EventArgs e)
     {
@@ -497,7 +445,6 @@ public partial class HeroWodsPage : ContentPage
         }
     };
 
-    // ── Chip helper ───────────────────────────────────────────────────────────
 
     private static void SetChipActive(Border chipBorder, Label chipLabel, bool active)
     {
@@ -505,7 +452,7 @@ public partial class HeroWodsPage : ContentPage
         chipBorder.BackgroundColor = active ? Color.FromArgb("#DAFF6E") : Color.FromArgb("#262626");
     }
 
-    // ── History modal ─────────────────────────────────────────────────────────
+    // History modal
 
     private async void OnHistoryIconTapped(object? sender, TappedEventArgs e)
     {
@@ -558,5 +505,34 @@ public partial class HeroWodsPage : ContentPage
         HistoryDimmer.IsVisible = false;
         HistoryModal.IsVisible = false;
         _historyCache = [];
+    }
+
+    private void ClearPendingDeleteSelection()
+    {
+        var changed = false;
+        foreach (var item in _allWods)
+        {
+            if (item.IsPendingDelete)
+            {
+                item.IsPendingDelete = false;
+                changed = true;
+            }
+        }
+        if (changed)
+            ApplyFilters();
+    }
+
+    private void CancelLongPressDetection()
+    {
+        if (_longPressCts is null)
+            return;
+        _longPressCts.Cancel();
+        _longPressCts.Dispose();
+        _longPressCts = null;
+    }
+
+    private void OnDeleteCustomWodClicked(object? sender, EventArgs e)
+    {
+        // TODO: Implement custom WOD deletion logic here
     }
 }
