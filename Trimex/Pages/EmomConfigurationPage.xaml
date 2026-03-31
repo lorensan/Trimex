@@ -22,13 +22,37 @@
                     HorizontalTextAlignment="Center"
                     Text="EMOM"
                     TextColor="{StaticResource TextPrimary}" />
-                <Label
-                    CharacterSpacing="2"
-                    FontFamily="OpenSansRegular"
-                    FontSize="10"
+                <Grid
+                ColumnDefinitions="32,Auto,32"
+                ColumnSpacing="12"
+                HorizontalOptions="Center">
+                    <BoxView
+                    Color="{StaticResource AccentGold}"
+                    HeightRequest="1"
+                    HorizontalOptions="Fill"
+                    Opacity="0.3"
+                    VerticalOptions="Center" />
+                    
+                    <Label
+                    x:Name="WorkoutContextLabel"
+                    Grid.Column="1"
+                    CharacterSpacing="3"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="16"
                     HorizontalTextAlignment="Center"
-                    Text="EVERY MINUTE ON THE MINUTE"
+                    LineBreakMode="TailTruncation"
+                    MaxLines="1"
+                    Text="Every Minute On the Minute"
                     TextColor="{StaticResource TextSecondary}" />
+                    
+                    <BoxView
+                    Grid.Column="2"
+                    Color="{StaticResource AccentGold}"
+                    HeightRequest="1"
+                    HorizontalOptions="Fill"
+                    Opacity="0.3"
+                    VerticalOptions="Center" />
+                </Grid>
             </VerticalStackLayout>
 
             <!-- Bento Grid: Duration | Rounds -->
@@ -53,13 +77,13 @@
                     <Grid ColumnDefinitions="5,*">
                         <BoxView
                             Grid.Column="0"
-                            BackgroundColor="{StaticResource AccentGold}"
+                            BackgroundColor="{StaticResource AccentRed}"
                             HorizontalOptions="Fill"
                             VerticalOptions="Fill" />
                         <VerticalStackLayout
                             Grid.Column="1"
                             HorizontalOptions="Center"
-                            Spacing="2"
+                            Spacing="1"
                             VerticalOptions="Center">
                             <Label
                                 CharacterSpacing="2"
@@ -286,7 +310,9 @@
                     FontFamily="OpenSansSemibold"
                     FontSize="16"
                     HeightRequest="52"
-                    Text="START WORKOUT ⚡"
+                    Text="START WORKOUT"
+                    ImageSource="rayb.png"
+                    ContentLayout="Right, 8"
                     TextColor="#000000" />
 
             </VerticalStackLayout>
