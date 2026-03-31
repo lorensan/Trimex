@@ -3,218 +3,219 @@
     x:Class="Trimex.Pages.HeroWodsPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:Trimex.Controls"
     xmlns:models="clr-namespace:Trimex.Models"
     NavigationPage.HasNavigationBar="False">
 
     <Grid RowDefinitions="Auto,*">
 
-        <!-- ═══ FILTER AREA ═══════════════════════════════════════════════ -->
+        <!--  ═══ FILTER AREA ═══════════════════════════════════════════════  -->
         <VerticalStackLayout
             Grid.Row="0"
-            BackgroundColor="{StaticResource AppBackground}"
             Padding="20,16,20,10"
+            BackgroundColor="{StaticResource AppBackground}"
             Spacing="12">
 
             <Label
-                Text="HERO WODs"
+                HorizontalOptions="Start"
                 Style="{StaticResource PageTitleStyle}"
-                TextColor="#CAFD00"
-                HorizontalOptions="Start" />
+                Text="HERO WODs"
+                TextColor="#CAFD00" />
 
-            <!-- Search bar -->
+            <!--  Search bar  -->
             <Border
-                BackgroundColor="{StaticResource SurfaceContainerLow}"
                 Padding="14,0"
-                StrokeShape="RoundRectangle 20"
+                BackgroundColor="{StaticResource SurfaceContainerLow}"
                 Stroke="#3A3A3A"
+                StrokeShape="RoundRectangle 20"
                 StrokeThickness="1">
                 <Grid ColumnDefinitions="Auto,*" ColumnSpacing="8">
                     <Label
                         Grid.Column="0"
-                        Text="⌕"
                         FontSize="20"
+                        Text="⌕"
                         TextColor="{StaticResource MutedText}"
                         VerticalOptions="Center" />
                     <Entry
                         x:Name="SearchEntry"
                         Grid.Column="1"
-                        Placeholder="Search hero WOD..."
                         BackgroundColor="Transparent"
+                        Placeholder="Search hero WOD..."
                         ReturnType="Search"
                         TextChanged="OnSearchTextChanged" />
                 </Grid>
             </Border>
 
-            <!-- All filter chips in one scrollable row -->
-            <ScrollView Orientation="Horizontal" HorizontalScrollBarVisibility="Never">
+            <!--  All filter chips in one scrollable row  -->
+            <ScrollView HorizontalScrollBarVisibility="Never" Orientation="Horizontal">
                 <HorizontalStackLayout Spacing="8">
                     <Border
                         x:Name="MenChipBorder"
-                        BackgroundColor="#262626"
                         Padding="16,7"
-                        StrokeShape="RoundRectangle 20"
-                        Stroke="Transparent">
+                        BackgroundColor="#262626"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 20">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnMenChipTapped" />
                         </Border.GestureRecognizers>
                         <Label
                             x:Name="MenChipLabel"
-                            Text="Men"
                             FontFamily="OpenSansSemibold"
                             FontSize="13"
+                            Text="Men"
                             TextColor="#8A8A8A" />
                     </Border>
                     <Border
                         x:Name="WomenChipBorder"
-                        BackgroundColor="#262626"
                         Padding="16,7"
-                        StrokeShape="RoundRectangle 20"
-                        Stroke="Transparent">
+                        BackgroundColor="#262626"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 20">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnWomenChipTapped" />
                         </Border.GestureRecognizers>
                         <Label
                             x:Name="WomenChipLabel"
-                            Text="Women"
                             FontFamily="OpenSansSemibold"
                             FontSize="13"
+                            Text="Women"
                             TextColor="#8A8A8A" />
                     </Border>
                     <Border
                         x:Name="Under1HChipBorder"
-                        BackgroundColor="#262626"
                         Padding="16,7"
-                        StrokeShape="RoundRectangle 20"
-                        Stroke="Transparent">
+                        BackgroundColor="#262626"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 20">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnUnder1HChipTapped" />
                         </Border.GestureRecognizers>
                         <Label
                             x:Name="Under1HChipLabel"
-                            Text="Under 1H"
                             FontFamily="OpenSansSemibold"
                             FontSize="13"
+                            Text="Under 1H"
                             TextColor="#8A8A8A" />
                     </Border>
                     <Border
                         x:Name="NoTimeLimitChipBorder"
-                        BackgroundColor="#262626"
                         Padding="16,7"
-                        StrokeShape="RoundRectangle 20"
-                        Stroke="Transparent">
+                        BackgroundColor="#262626"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 20">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnNoTimeLimitChipTapped" />
                         </Border.GestureRecognizers>
                         <Label
                             x:Name="NoTimeLimitChipLabel"
-                            Text="No Time Limit"
                             FontFamily="OpenSansSemibold"
                             FontSize="13"
+                            Text="No Time Limit"
                             TextColor="#8A8A8A" />
                     </Border>
                     <Border
                         x:Name="AmrapTypeChipBorder"
-                        BackgroundColor="#262626"
                         Padding="16,7"
-                        StrokeShape="RoundRectangle 20"
-                        Stroke="Transparent">
+                        BackgroundColor="#262626"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 20">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnAmrapTypeChipTapped" />
                         </Border.GestureRecognizers>
                         <Label
                             x:Name="AmrapTypeChipLabel"
-                            Text="AMRAP"
                             FontFamily="OpenSansSemibold"
                             FontSize="13"
+                            Text="AMRAP"
                             TextColor="#8A8A8A" />
                     </Border>
                     <Border
                         x:Name="ForTimeTypeChipBorder"
-                        BackgroundColor="#262626"
                         Padding="16,7"
-                        StrokeShape="RoundRectangle 20"
-                        Stroke="Transparent">
+                        BackgroundColor="#262626"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 20">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnForTimeTypeChipTapped" />
                         </Border.GestureRecognizers>
                         <Label
                             x:Name="ForTimeTypeChipLabel"
-                            Text="FOR TIME"
                             FontFamily="OpenSansSemibold"
                             FontSize="13"
+                            Text="FOR TIME"
                             TextColor="#8A8A8A" />
                     </Border>
                     <Border
                         x:Name="EmomTypeChipBorder"
-                        BackgroundColor="#262626"
                         Padding="16,7"
-                        StrokeShape="RoundRectangle 20"
-                        Stroke="Transparent">
+                        BackgroundColor="#262626"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 20">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnEmomTypeChipTapped" />
                         </Border.GestureRecognizers>
                         <Label
                             x:Name="EmomTypeChipLabel"
-                            Text="EMOM"
                             FontFamily="OpenSansSemibold"
                             FontSize="13"
+                            Text="EMOM"
                             TextColor="#8A8A8A" />
                     </Border>
                     <Border
                         x:Name="TabataTypeChipBorder"
-                        BackgroundColor="#262626"
                         Padding="16,7"
-                        StrokeShape="RoundRectangle 20"
-                        Stroke="Transparent">
+                        BackgroundColor="#262626"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 20">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnTabataTypeChipTapped" />
                         </Border.GestureRecognizers>
                         <Label
                             x:Name="TabataTypeChipLabel"
-                            Text="Tabata"
                             FontFamily="OpenSansSemibold"
                             FontSize="13"
+                            Text="Tabata"
                             TextColor="#8A8A8A" />
                     </Border>
                     <Border
                         x:Name="CustomTypeChipBorder"
-                        BackgroundColor="#262626"
                         Padding="16,7"
-                        StrokeShape="RoundRectangle 20"
-                        Stroke="Transparent">
+                        BackgroundColor="#262626"
+                        Stroke="Transparent"
+                        StrokeShape="RoundRectangle 20">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer Tapped="OnCustomTypeChipTapped" />
                         </Border.GestureRecognizers>
                         <Label
                             x:Name="CustomTypeChipLabel"
-                            Text="CUSTOM"
                             FontFamily="OpenSansSemibold"
                             FontSize="13"
+                            Text="CUSTOM"
                             TextColor="#8A8A8A" />
                     </Border>
                 </HorizontalStackLayout>
             </ScrollView>
 
-            <!-- THE LEGENDS title + count -->
+            <!--  THE LEGENDS title + count  -->
             <HorizontalStackLayout Spacing="8" VerticalOptions="Center">
                 <Label
-                    Text="THE LEGENDS"
-                    TextColor="#CAFD00"
+                    FontAttributes="Italic"
                     FontFamily="OpenSansSemibold"
                     FontSize="20"
-                    FontAttributes="Italic"
+                    Text="THE LEGENDS"
+                    TextColor="#CAFD00"
                     VerticalOptions="Center" />
                 <Label
                     x:Name="ResultsCountLabel"
-                    Text=""
                     FontSize="13"
+                    Text=""
                     TextColor="#474646"
                     VerticalOptions="Center" />
             </HorizontalStackLayout>
 
         </VerticalStackLayout>
 
-        <!-- ═══ WODs GRID ══════════════════════════════════════════════════ -->
+        <!--  ═══ WODs GRID ══════════════════════════════════════════════════  -->
         <CollectionView
             x:Name="WodsCollectionView"
             Grid.Row="1"
@@ -222,75 +223,78 @@
             SelectionMode="None">
             <CollectionView.ItemsLayout>
                 <GridItemsLayout
+                    HorizontalItemSpacing="8"
                     Orientation="Vertical"
                     Span="2"
-                    HorizontalItemSpacing="8"
                     VerticalItemSpacing="8" />
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:HeroWod">
                     <Border
+                        Margin="2,2,2,2"
                         BackgroundColor="#131313"
-                        StrokeShape="RoundRectangle 16"
                         Stroke="Transparent"
-                        Margin="2,2,2,2">
+                        StrokeShape="RoundRectangle 16">
                         <Grid>
                             <VerticalStackLayout Padding="14,12" Spacing="7">
-                                <!-- Type badge -->
+                                <!--  Type badge  -->
                                 <Border
-                                    BackgroundColor="{Binding TypeBadgeBgColor}"
                                     Padding="8,3"
-                                    StrokeShape="RoundRectangle 6"
+                                    BackgroundColor="{Binding TypeBadgeBgColor}"
+                                    HorizontalOptions="Start"
                                     Stroke="Transparent"
-                                    HorizontalOptions="Start">
+                                    StrokeShape="RoundRectangle 6">
                                     <Label
-                                        Text="{Binding TypeBadge}"
-                                        TextColor="{Binding TypeBadgeTextColor}"
                                         FontFamily="OpenSansSemibold"
-                                        FontSize="10" />
+                                        FontSize="10"
+                                        Text="{Binding TypeBadge}"
+                                        TextColor="{Binding TypeBadgeTextColor}" />
                                 </Border>
-                                <!-- WOD Name -->
+                                <!--  WOD Name  -->
                                 <Label
-                                    Text="{Binding Name}"
-                                    TextColor="#009FB2"
                                     FontFamily="OpenSansSemibold"
                                     FontSize="22"
-                                    LineBreakMode="TailTruncation" />
-                                <!-- Gender -->
+                                    LineBreakMode="TailTruncation"
+                                    Text="{Binding Name}"
+                                    TextColor="#009FB2" />
+                                <!--  Gender  -->
                                 <Label
+                                    FontSize="12"
                                     Text="{Binding GenderCategory}"
-                                    TextColor="{StaticResource MutedText}"
-                                    FontSize="12" />
-                                <!-- Duration -->
+                                    TextColor="{StaticResource MutedText}" />
+                                <!--  Duration  -->
                                 <Label
+                                    FontSize="12"
                                     Text="{Binding DurationDisplay}"
-                                    TextColor="{StaticResource TextSecondary}"
-                                    FontSize="12" />
+                                    TextColor="{StaticResource TextSecondary}" />
                             </VerticalStackLayout>
 
                             <Button
                                 BackgroundColor="Transparent"
                                 BorderWidth="0"
-                                CornerRadius="16"
                                 Clicked="OnWodCardClicked"
+                                CornerRadius="16"
                                 Pressed="OnWodCardPressed"
                                 Released="OnWodCardReleased" />
 
                             <ImageButton
-                                IsVisible="{Binding CanShowDelete}"
-                                Source="del.png"
-                                Aspect="AspectFit"
-                                WidthRequest="34"
-                                HeightRequest="34"
                                 Margin="8"
                                 Padding="0"
-                                HorizontalOptions="End"
-                                VerticalOptions="Start"
+                                Aspect="AspectFit"
                                 BackgroundColor="Transparent"
-                                Clicked="OnDeleteCustomWodClicked" />
+                                Clicked="OnDeleteCustomWodClicked"
+                                HeightRequest="34"
+                                HorizontalOptions="End"
+                                IsVisible="{Binding CanShowDelete}"
+                                Source="del.png"
+                                VerticalOptions="Start"
+                                WidthRequest="34" />
                         </Grid>
                         <Border.Triggers>
-                            <DataTrigger TargetType="Border" Binding="{Binding IsPendingDelete}" Value="True">
+                            <DataTrigger
+                                Binding="{Binding IsPendingDelete}"
+                                TargetType="Border"
+                                Value="True">
                                 <Setter Property="Opacity" Value="0.7" />
                             </DataTrigger>
                         </Border.Triggers>
@@ -299,158 +303,252 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <!-- ═══ OVERLAY DIMMER (above grid, below sheet) ══════════════════ -->
+        <!--  ═══ OVERLAY DIMMER (above grid, below sheet) ══════════════════  -->
         <BoxView
             x:Name="OverlayDimmer"
-            Color="#80000000"
             Grid.RowSpan="2"
-            IsVisible="False">
+            IsVisible="False"
+            Color="#80000000">
             <BoxView.GestureRecognizers>
                 <TapGestureRecognizer Tapped="OnDimmerTapped" />
             </BoxView.GestureRecognizers>
         </BoxView>
 
-        <!-- ═══ FAB — create custom WOD (visible only in CUSTOM mode) ═════ -->
+        <!--  ═══ FAB — create custom WOD (visible only in CUSTOM mode) ═════  -->
         <Button
             x:Name="FabButton"
             Grid.RowSpan="2"
-            VerticalOptions="End"
-            HorizontalOptions="End"
             Margin="0,0,24,32"
-            IsVisible="False"
-            Text="+"
+            BackgroundColor="#CAFD00"
+            Clicked="OnCreateCustomWodClicked"
+            CornerRadius="30"
             FontFamily="OpenSansSemibold"
             FontSize="28"
-            TextColor="#0D0D0D"
-            BackgroundColor="#CAFD00"
-            WidthRequest="60"
             HeightRequest="60"
-            CornerRadius="30"
-            Clicked="OnCreateCustomWodClicked" />
+            HorizontalOptions="End"
+            IsVisible="False"
+            Text="+"
+            TextColor="#0D0D0D"
+            VerticalOptions="End"
+            WidthRequest="60" />
 
-        <!-- ═══ DETAIL BOTTOM SHEET (top of stacking order) ══════════════ -->
+        <!--  ═══ DETAIL BOTTOM SHEET (top of stacking order) ══════════════  -->
         <Border
             x:Name="DetailSheet"
             Grid.RowSpan="2"
-            VerticalOptions="End"
-            IsVisible="False"
             BackgroundColor="#0E0E0E"
+            IsVisible="False"
+            Stroke="Transparent"
             StrokeShape="RoundRectangle 24,24,0,0"
-            Stroke="Transparent">
+            VerticalOptions="End">
             <Border.GestureRecognizers>
                 <PanGestureRecognizer PanUpdated="OnDetailSheetPanUpdated" />
             </Border.GestureRecognizers>
             <VerticalStackLayout Spacing="0">
 
-                <!-- ── Drag handle + WOD header (outside ScrollView — always swipeable) ── -->
-                <VerticalStackLayout Padding="24,16,24,20" Spacing="16">
+                <!--  ── Drag handle + WOD header (outside ScrollView — always swipeable) ──  -->
+                <Grid
+                    Padding="24,16,24,20"
+                    ColumnDefinitions="*,Auto"
+                    RowDefinitions="Auto,Auto">
 
-                    <!-- Handle bar -->
+                    <!--  Handle bar  -->
                     <BoxView
-                        Color="#262626"
-                        WidthRequest="40"
+                        Grid.ColumnSpan="2"
+                        CornerRadius="2"
                         HeightRequest="4"
                         HorizontalOptions="Center"
-                        CornerRadius="2" />
+                        WidthRequest="40"
+                        Color="#262626" />
 
-                    <!-- Header: type badge + hero name -->
-                    <VerticalStackLayout Spacing="6">
+                    <!--  Header: type badge + hero name  -->
+                    <VerticalStackLayout
+                        Grid.Row="1"
+                        Margin="0,16,0,0"
+                        Spacing="6">
                         <Border
                             x:Name="DetailTypeBadge"
-                            BackgroundColor="#1A2900"
                             Padding="10,4"
-                            StrokeShape="RoundRectangle 6"
+                            BackgroundColor="#1A2900"
+                            HorizontalOptions="Start"
                             Stroke="Transparent"
-                            HorizontalOptions="Start">
+                            StrokeShape="RoundRectangle 6">
                             <Label
                                 x:Name="DetailTypeLabel"
-                                Text="FOR TIME"
-                                TextColor="#CAFD00"
                                 FontFamily="OpenSansSemibold"
-                                FontSize="11" />
+                                FontSize="11"
+                                Text="FOR TIME"
+                                TextColor="#CAFD00" />
                         </Border>
                         <Label
                             x:Name="DetailNameLabel"
-                            Text="MURPH"
-                            TextColor="#009FB2"
                             FontFamily="OpenSansSemibold"
-                            FontSize="30" />
+                            FontSize="30"
+                            Text="MURPH"
+                            TextColor="#009FB2" />
                         <Label
                             x:Name="DetailGenderLabel"
+                            FontSize="13"
                             Text="Men"
-                            TextColor="{StaticResource MutedText}"
-                            FontSize="13" />
+                            TextColor="{StaticResource MutedText}" />
                     </VerticalStackLayout>
 
-                </VerticalStackLayout>
+                    <!--  History icon  -->
+                    <Image
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        HeightRequest="32"
+                        WidthRequest="32"
+                        Source="history.png"
+                        HorizontalOptions="End"
+                        VerticalOptions="Start">
+                        <Image.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnHistoryIconTapped" />
+                        </Image.GestureRecognizers>
+                    </Image>
 
-                <!-- ── Scrollable content ── -->
+                </Grid>
+
+                <!--  ── Scrollable content ──  -->
                 <ScrollView Padding="24,0,24,36">
                     <VerticalStackLayout Spacing="20">
 
-                        <!-- Exercises list -->
-                        <VerticalStackLayout x:Name="ExercisesLayout" Spacing="5" />
+                        <!--  Exercises list  -->
+                        <VerticalStackLayout x:Name="ExercisesLayout" Spacing="10" />
 
-                        <!-- Metrics row -->
+                        <!--  Metrics row  -->
                         <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
                             <Border
                                 Grid.Column="0"
-                                BackgroundColor="{StaticResource SurfaceContainerLow}"
                                 Padding="14,12"
-                                StrokeShape="RoundRectangle 12"
-                                Stroke="Transparent">
+                                BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                Stroke="Transparent"
+                                StrokeShape="RoundRectangle 12">
                                 <VerticalStackLayout Spacing="3">
                                     <Label
-                                        Text="TIME TARGET"
-                                        FontSize="10"
                                         FontFamily="OpenSansSemibold"
+                                        FontSize="10"
+                                        Text="TIME TARGET"
                                         TextColor="{StaticResource MutedText}" />
                                     <Label
                                         x:Name="TimeTargetLabel"
-                                        Text="—"
                                         FontFamily="OpenSansSemibold"
                                         FontSize="16"
-                                        TextColor="{StaticResource TextPrimary}"
-                                        LineBreakMode="TailTruncation" />
+                                        LineBreakMode="TailTruncation"
+                                        Text="—"
+                                        TextColor="{StaticResource TextPrimary}" />
                                 </VerticalStackLayout>
                             </Border>
                             <Border
                                 Grid.Column="1"
-                                BackgroundColor="{StaticResource SurfaceContainerLow}"
                                 Padding="14,12"
-                                StrokeShape="RoundRectangle 12"
-                                Stroke="Transparent">
+                                BackgroundColor="{StaticResource SurfaceContainerLow}"
+                                Stroke="Transparent"
+                                StrokeShape="RoundRectangle 12">
                                 <VerticalStackLayout Spacing="3">
                                     <Label
-                                        Text="LAST RECORD"
-                                        FontSize="10"
                                         FontFamily="OpenSansSemibold"
+                                        FontSize="10"
+                                        Text="LAST RECORD"
                                         TextColor="{StaticResource MutedText}" />
                                     <Label
                                         x:Name="LastRecordLabel"
-                                        Text="—"
                                         FontFamily="OpenSansSemibold"
                                         FontSize="16"
-                                        TextColor="{StaticResource TextPrimary}"
-                                        LineBreakMode="TailTruncation" />
+                                        LineBreakMode="TailTruncation"
+                                        Text="—"
+                                        TextColor="{StaticResource TextPrimary}" />
                                 </VerticalStackLayout>
                             </Border>
                         </Grid>
 
-                        <!-- GO TO WORKOUT TIMER -->
+                        <!--  GO TO WORKOUT TIMER  -->
                         <Button
                             x:Name="GoToTimerButton"
-                            Text="GO TO WORKOUT TIMER"
                             BackgroundColor="#CAFD00"
-                            TextColor="#0D0D0D"
+                            Clicked="OnGoToTimerClicked"
+                            CornerRadius="22"
                             FontFamily="OpenSansSemibold"
                             FontSize="16"
-                            CornerRadius="22"
                             HeightRequest="56"
-                            Clicked="OnGoToTimerClicked" />
+                            Text="GO TO WORKOUT TIMER"
+                            TextColor="#0D0D0D" />
 
                     </VerticalStackLayout>
                 </ScrollView>
+
+            </VerticalStackLayout>
+        </Border>
+
+        <!--  ═══ HISTORY MODAL OVERLAY ════════════════════════════════════  -->
+        <BoxView
+            x:Name="HistoryDimmer"
+            Grid.RowSpan="2"
+            IsVisible="False"
+            Color="#CC000000">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnHistoryDimmerTapped" />
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <Border
+            x:Name="HistoryModal"
+            Grid.RowSpan="2"
+            Margin="16"
+            Padding="20"
+            BackgroundColor="{StaticResource Surface}"
+            HorizontalOptions="Fill"
+            IsVisible="False"
+            MaximumHeightRequest="520"
+            Stroke="{StaticResource BorderColor}"
+            StrokeShape="RoundRectangle 20"
+            StrokeThickness="1"
+            VerticalOptions="Center">
+            <VerticalStackLayout Spacing="14">
+
+                <Label
+                    x:Name="HistoryModalTitle"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="18"
+                    HorizontalTextAlignment="Center"
+                    Text="HISTORY"
+                    TextColor="{StaticResource AccentNeonYellow}" />
+
+                <!--  Empty state  -->
+                <Label
+                    x:Name="HistoryEmptyLabel"
+                    FontSize="14"
+                    HorizontalTextAlignment="Center"
+                    IsVisible="False"
+                    Text="No history yet"
+                    TextColor="{StaticResource MutedText}" />
+
+                <!--  Chart  -->
+                <controls:HistoryChartView
+                    x:Name="HistoryChart"
+                    HeightRequest="200"
+                    IsVisible="False"
+                    PointSelected="OnHistoryPointSelected" />
+
+                <!--  Notes panel  -->
+                <Border
+                    x:Name="HistoryNotesContainer"
+                    Padding="14,10"
+                    BackgroundColor="{StaticResource SurfaceContainerLow}"
+                    IsVisible="False"
+                    MaximumHeightRequest="120"
+                    Stroke="{StaticResource BorderColor}"
+                    StrokeShape="RoundRectangle 12"
+                    StrokeThickness="1">
+                    <ScrollView VerticalScrollBarVisibility="Default">
+                        <Label
+                            x:Name="HistoryNotesLabel"
+                            FontSize="13"
+                            LineBreakMode="WordWrap"
+                            Text="No notes available"
+                            TextColor="{StaticResource TextSecondary}" />
+                    </ScrollView>
+                </Border>
 
             </VerticalStackLayout>
         </Border>

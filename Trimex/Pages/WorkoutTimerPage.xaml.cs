@@ -245,7 +245,15 @@ public partial class WorkoutTimerPage : ContentPage
         _elapsedBeforeCurrentRun = finalTime;
         _ = TimerCueService.PlayCompletionSequenceAsync();
         UpdateVisualState();
-        _ = DisplayAlertAsync("Workout completed", "Timer finished. You can go back or start a new workout from the main menu.", "OK");
+
+        if (!string.IsNullOrWhiteSpace(_configuration.HeroWodName))
+        {
+            ShowSaveModal((int)finalTime.TotalSeconds);
+        }
+        else
+        {
+            _ = DisplayAlertAsync("Workout completed", "Timer finished. You can go back or start a new workout from the main menu.", "OK");
+        }
     }
 
     private void TryPlayPreCountdownCue(int remainingSeconds)
@@ -288,8 +296,26 @@ public partial class WorkoutTimerPage : ContentPage
 
     private async void OnSlideResetCompleted(object? sender, EventArgs e)
     {
+        _timer.Stop();
+
+        if (_currentRunStartedAtUtc is not null)
+        {
+            _elapsedBeforeCurrentRun += DateTimeOffset.UtcNow - _currentRunStartedAtUtc.Value;
+            _currentRunStartedAtUtc = null;
+        }
+
+        var finalElapsed = _elapsedBeforeCurrentRun;
+
         await PlayConfettiAsync("WOD IS OVER");
-        ResetWorkoutSession();
+
+        if (!string.IsNullOrWhiteSpace(_configuration.HeroWodName))
+        {
+            ShowSaveModal((int)finalElapsed.TotalSeconds);
+        }
+        else
+        {
+            ResetWorkoutSession();
+        }
     }
 
     private void ResetWorkoutSession()
@@ -530,5 +556,55 @@ public partial class WorkoutTimerPage : ContentPage
         {
             // Vibration may not be supported on all platforms; ignore errors
         }
+    }
+
+    // ── Post-WOD save modal ──────────────────────────────────────────────────
+
+    private int _completedDurationSeconds;
+
+    private void ShowSaveModal(int durationSeconds)
+    {
+        _completedDurationSeconds = durationSeconds;
+        var minutes = durationSeconds / 60;
+        var seconds = durationSeconds % 60;
+        SaveModalTimeLabel.Text = $"Time: {minutes:00}:{seconds:00}";
+        SaveModalNotesEditor.Text = string.Empty;
+        SaveModalDimmer.IsVisible = true;
+        SaveModalContainer.IsVisible = true;
+    }
+
+    private void HideSaveModal()
+    {
+        SaveModalDimmer.IsVisible = false;
+        SaveModalContainer.IsVisible = false;
+    }
+
+    private async void OnSaveModalSaveClicked(object? sender, EventArgs e)
+    {
+        var entry = new Models.HeroWodHistory
+        {
+            WodName = _configuration.HeroWodName,
+            Date = DateTime.UtcNow,
+            DurationSeconds = _completedDurationSeconds,
+            Notes = SaveModalNotesEditor.Text?.Trim() ?? string.Empty
+        };
+
+        var repository = IPlatformApplication.Current!.Services.GetRequiredService<Services.IHeroWodHistoryRepository>();
+        await repository.InsertAsync(entry);
+
+        HideSaveModal();
+        ResetWorkoutSession();
+    }
+
+    private void OnSaveModalCancelClicked(object? sender, EventArgs e)
+    {
+        HideSaveModal();
+        ResetWorkoutSession();
+    }
+
+    private void OnSaveModalDimmerTapped(object? sender, TappedEventArgs e)
+    {
+        HideSaveModal();
+        ResetWorkoutSession();
     }
 }

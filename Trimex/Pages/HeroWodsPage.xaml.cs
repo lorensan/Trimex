@@ -1,3 +1,4 @@
+using Trimex.Controls;
 using Trimex.Models;
 using Trimex.Services;
 
@@ -7,6 +8,7 @@ public partial class HeroWodsPage : ContentPage
 {
     private readonly IHeroWodRepository _heroWodRepository;
     private readonly IWorkoutNoteRepository _workoutNoteRepository;
+    private readonly IHeroWodHistoryRepository _heroWodHistoryRepository;
     private readonly IServiceProvider _serviceProvider;
 
     private IReadOnlyList<HeroWod> _allWods = [];
@@ -14,6 +16,7 @@ public partial class HeroWodsPage : ContentPage
     private double _sheetDragY;
     private CancellationTokenSource? _longPressCts;
     private bool _suppressNextClick;
+    private IReadOnlyList<HeroWodHistory> _historyCache = [];
 
     // Filter state
     private bool _filterMen;
@@ -29,11 +32,13 @@ public partial class HeroWodsPage : ContentPage
     public HeroWodsPage(
         IHeroWodRepository heroWodRepository,
         IWorkoutNoteRepository workoutNoteRepository,
+        IHeroWodHistoryRepository heroWodHistoryRepository,
         IServiceProvider serviceProvider)
     {
         InitializeComponent();
         _heroWodRepository = heroWodRepository;
         _workoutNoteRepository = workoutNoteRepository;
+        _heroWodHistoryRepository = heroWodHistoryRepository;
         _serviceProvider = serviceProvider;
     }
 
@@ -50,7 +55,7 @@ public partial class HeroWodsPage : ContentPage
         ApplyFilters();
     }
 
-    // ── Chip handlers ────────────────────────────────────────────────────────
+    // ── Chip handlers ───────────────────────────────────────────────────────────────────────
 
     private void OnMenChipTapped(object? sender, TappedEventArgs e)
     {
@@ -154,7 +159,7 @@ public partial class HeroWodsPage : ContentPage
         ApplyFilters();
     }
 
-    // ── Filtering ────────────────────────────────────────────────────────────
+    // ── Filtering ───────────────────────────────────────────────────────────────────────
 
     private void ApplyFilters()
     {
@@ -223,6 +228,7 @@ public partial class HeroWodsPage : ContentPage
         ClearPendingDeleteSelection();
 
         _selectedWod = wod;
+        _historyCache = await _heroWodHistoryRepository.GetByWodNameAsync(wod.Name);
         await ShowDetailSheetAsync(wod);
     }
 
@@ -238,14 +244,10 @@ public partial class HeroWodsPage : ContentPage
 
         var cts = new CancellationTokenSource();
         _longPressCts = cts;
-        _ = TriggerLongPressSelectionAsync(wod, cts.Token);
+        _ = TriggerLongPressSelectionAsync(wod, cts.Token, sender as VisualElement);
     }
 
-    private void OnWodCardReleased(object? sender, EventArgs e)
-    {
-    }
-
-    private async Task TriggerLongPressSelectionAsync(HeroWod wod, CancellationToken cancellationToken)
+    private async Task TriggerLongPressSelectionAsync(HeroWod wod, CancellationToken cancellationToken, VisualElement? card = null)
     {
         try
         {
@@ -275,58 +277,10 @@ public partial class HeroWodsPage : ContentPage
         }
     }
 
-    private void CancelLongPressDetection()
+    private void OnWodCardReleased(object? sender, EventArgs e)
     {
-        if (_longPressCts is null)
-        {
-            return;
-        }
-
-        _longPressCts.Cancel();
-        _longPressCts.Dispose();
-        _longPressCts = null;
-    }
-
-    private void ClearPendingDeleteSelection()
-    {
-        var changed = false;
-
-        foreach (var item in _allWods)
-        {
-            if (!item.IsPendingDelete)
-            {
-                continue;
-            }
-
-            item.IsPendingDelete = false;
-            changed = true;
-        }
-
-        if (changed)
-        {
-            ApplyFilters();
-        }
-    }
-
-    private async void OnDeleteCustomWodClicked(object? sender, EventArgs e)
-    {
-        var wod = (sender as VisualElement)?.BindingContext as HeroWod;
-        if (wod is null || !wod.IsCustom)
-        {
-            return;
-        }
-
-        var confirm = await DisplayAlert("Remove WOD", $"Delete '{wod.Name}'?", "Delete", "Cancel");
-        if (!confirm)
-        {
-            return;
-        }
-
-        await _heroWodRepository.DeleteAsync(wod.UniqueId);
-
-        _allWods = _allWods.Where(x => x.UniqueId != wod.UniqueId).ToList();
-        _selectedWod = _selectedWod?.UniqueId == wod.UniqueId ? null : _selectedWod;
-        ApplyFilters();
+        // No-op: do not delay delete icon until release
+        CancelLongPressDetection();
     }
 
     private async Task ShowDetailSheetAsync(HeroWod wod)
@@ -350,8 +304,20 @@ public partial class HeroWodsPage : ContentPage
             });
         }
 
-        var lastRecord = await _workoutNoteRepository.GetLatestAsync(wod.Type, wod.UniqueId);
-        LastRecordLabel.Text = string.IsNullOrWhiteSpace(lastRecord?.Notes) ? "—" : lastRecord.Notes;
+        var lastHistory = _historyCache
+            .Where(h => string.Equals(h.WodName, wod.Name, StringComparison.OrdinalIgnoreCase))
+            .OrderByDescending(h => h.Date)
+            .FirstOrDefault();
+
+        if (lastHistory != null && lastHistory.DurationSeconds > 0)
+        {
+            var minutes = lastHistory.DurationSeconds / 60.0;
+            LastRecordLabel.Text = $"{minutes:0.#} min";
+        }
+        else
+        {
+            LastRecordLabel.Text = "—";
+        }
 
         OverlayDimmer.IsVisible  = true;
         OverlayDimmer.Opacity    = 0;
@@ -413,7 +379,7 @@ public partial class HeroWodsPage : ContentPage
         }
     }
 
-    // ── FAB ──────────────────────────────────────────────────────────────────
+    // FAB 
 
     private async void OnCreateCustomWodClicked(object? sender, EventArgs e)
     {
@@ -422,7 +388,7 @@ public partial class HeroWodsPage : ContentPage
         await Navigation.PushAsync(_serviceProvider.GetRequiredService<CustomWodCreationPage>());
     }
 
-    // ── Navigation to timer ───────────────────────────────────────────────────
+    // Navigation to timer 
 
     private async void OnGoToTimerClicked(object? sender, EventArgs e)
     {
@@ -479,11 +445,94 @@ public partial class HeroWodsPage : ContentPage
         }
     };
 
-    // ── Chip helper ───────────────────────────────────────────────────────────
 
     private static void SetChipActive(Border chipBorder, Label chipLabel, bool active)
     {
         chipLabel.TextColor        = active ? Color.FromArgb("#00363D") : Color.FromArgb("#8A8A8A");
         chipBorder.BackgroundColor = active ? Color.FromArgb("#DAFF6E") : Color.FromArgb("#262626");
+    }
+
+    // History modal
+
+    private async void OnHistoryIconTapped(object? sender, TappedEventArgs e)
+    {
+        if (_selectedWod is null)
+            return;
+
+        _historyCache = await _heroWodHistoryRepository.GetByWodNameAsync(_selectedWod.Name);
+        HistoryModalTitle.Text = $"{_selectedWod.Name.ToUpperInvariant()} HISTORY";
+
+        if (_historyCache.Count == 0)
+        {
+            HistoryEmptyLabel.IsVisible = true;
+            HistoryChart.IsVisible = false;
+            HistoryNotesContainer.IsVisible = false;
+        }
+        else
+        {
+            HistoryEmptyLabel.IsVisible = false;
+            HistoryChart.IsVisible = true;
+            HistoryNotesContainer.IsVisible = true;
+            HistoryChart.DataPoints = _historyCache;
+            HistoryNotesLabel.Text = "Select a point to see notes";
+        }
+
+        HistoryDimmer.IsVisible = true;
+        HistoryModal.IsVisible = true;
+    }
+
+    private void OnHistoryPointSelected(object? sender, int index)
+    {
+        if (index < 0 || index >= _historyCache.Count)
+            return;
+
+        var entry = _historyCache[index];
+        var minutes = entry.DurationSeconds / 60;
+        var seconds = entry.DurationSeconds % 60;
+        var dateText = entry.Date.ToLocalTime().ToString("MMM dd, yyyy");
+        var notes = string.IsNullOrWhiteSpace(entry.Notes) ? "No notes available" : entry.Notes;
+
+        HistoryNotesLabel.Text = $"{dateText} — {minutes:00}:{seconds:00}\n{notes}";
+    }
+
+    private void OnHistoryDimmerTapped(object? sender, TappedEventArgs e)
+    {
+        HideHistoryModal();
+    }
+
+    private void HideHistoryModal()
+    {
+        HistoryDimmer.IsVisible = false;
+        HistoryModal.IsVisible = false;
+        _historyCache = [];
+    }
+
+    private void ClearPendingDeleteSelection()
+    {
+        var changed = false;
+        foreach (var item in _allWods)
+        {
+            if (item.IsPendingDelete)
+            {
+                item.IsPendingDelete = false;
+                changed = true;
+            }
+        }
+        if (changed)
+            ApplyFilters();
+    }
+
+    private void CancelLongPressDetection()
+    {
+        if (_longPressCts is null)
+            return;
+        _longPressCts.Cancel();
+        _longPressCts.Dispose();
+        _longPressCts = null;
+    }
+
+    private void OnDeleteCustomWodClicked(object? sender, EventArgs e)
+    {
+        // TODO: Implement custom WOD deletion logic here
     }
 }
