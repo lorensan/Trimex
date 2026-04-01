@@ -14,8 +14,6 @@ public partial class HeroWodsPage : ContentPage
     private IReadOnlyList<HeroWod> _allWods = [];
     private HeroWod? _selectedWod;
     private double _sheetDragY;
-    private CancellationTokenSource? _longPressCts;
-    private bool _suppressNextClick;
     private IReadOnlyList<HeroWodHistory> _historyCache = [];
 
     // Filter state
@@ -51,7 +49,6 @@ public partial class HeroWodsPage : ContentPage
     private async Task LoadWodsAsync()
     {
         _allWods = await _heroWodRepository.GetAllAsync();
-        ClearPendingDeleteSelection();
         ApplyFilters();
     }
 
@@ -155,7 +152,6 @@ public partial class HeroWodsPage : ContentPage
 
     private void OnSearchTextChanged(object? sender, TextChangedEventArgs e)
     {
-        ClearPendingDeleteSelection();
         ApplyFilters();
     }
 
@@ -207,80 +203,15 @@ public partial class HeroWodsPage : ContentPage
 
     private async void OnWodCardClicked(object? sender, EventArgs e)
     {
-        if (_suppressNextClick)
-        {
-            _suppressNextClick = false;
-            return;
-        }
-
         var wod = (sender as VisualElement)?.BindingContext as HeroWod;
         if (wod is null)
         {
             return;
         }
 
-        if (wod.IsPendingDelete)
-        {
-            ClearPendingDeleteSelection();
-            return;
-        }
-
-        ClearPendingDeleteSelection();
-
         _selectedWod = wod;
         _historyCache = await _heroWodHistoryRepository.GetByWodNameAsync(wod.Name);
         await ShowDetailSheetAsync(wod);
-    }
-
-    private void OnWodCardPressed(object? sender, EventArgs e)
-    {
-        var wod = (sender as VisualElement)?.BindingContext as HeroWod;
-        if (wod is null || !wod.IsCustom)
-        {
-            return;
-        }
-
-        CancelLongPressDetection();
-
-        var cts = new CancellationTokenSource();
-        _longPressCts = cts;
-        _ = TriggerLongPressSelectionAsync(wod, cts.Token, sender as VisualElement);
-    }
-
-    private async Task TriggerLongPressSelectionAsync(HeroWod wod, CancellationToken cancellationToken, VisualElement? card = null)
-    {
-        try
-        {
-            await Task.Delay(TimeSpan.FromSeconds(2), cancellationToken);
-
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return;
-            }
-
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                _suppressNextClick = true;
-
-                foreach (var item in _allWods)
-                {
-                    item.IsPendingDelete = item.UniqueId == wod.UniqueId;
-                }
-
-                _longPressCts?.Dispose();
-                _longPressCts = null;
-                ApplyFilters();
-            });
-        }
-        catch (OperationCanceledException)
-        {
-        }
-    }
-
-    private void OnWodCardReleased(object? sender, EventArgs e)
-    {
-        // No-op: do not delay delete icon until release
-        CancelLongPressDetection();
     }
 
     private async Task ShowDetailSheetAsync(HeroWod wod)
@@ -291,6 +222,7 @@ public partial class HeroWodsPage : ContentPage
         DetailNameLabel.Text            = wod.Name.ToUpperInvariant();
         DetailGenderLabel.Text = wod.IsCustom ? "Custom WOD" : wod.GenderCategory;
         TimeTargetLabel.Text   = wod.DurationDisplay;
+        DetailDeleteCustomWodButton.IsVisible = wod.IsCustom;
 
         ExercisesLayout.Children.Clear();
         foreach (var line in wod.ExerciseLines)
@@ -338,13 +270,10 @@ public partial class HeroWodsPage : ContentPage
         OverlayDimmer.IsVisible = false;
         DetailSheet.IsVisible   = false;
         _selectedWod            = null;
-        CancelLongPressDetection();
-        ClearPendingDeleteSelection();
     }
 
     private async void OnDimmerTapped(object? sender, TappedEventArgs e)
     {
-        ClearPendingDeleteSelection();
         await HideDetailSheetAsync();
     }
 
@@ -383,8 +312,6 @@ public partial class HeroWodsPage : ContentPage
 
     private async void OnCreateCustomWodClicked(object? sender, EventArgs e)
     {
-        CancelLongPressDetection();
-        ClearPendingDeleteSelection();
         await Navigation.PushAsync(_serviceProvider.GetRequiredService<CustomWodCreationPage>());
     }
 
@@ -429,6 +356,34 @@ public partial class HeroWodsPage : ContentPage
             CountsDown      = false,
             SupportsRounds  = false
         },
+        WorkoutTypes.Emom => new WorkoutConfigurationRequest
+        {
+            Type            = WorkoutTypes.Emom,
+            TypeDisplayName = WorkoutTypes.ToDisplayName(wod.Type),
+            DurationSeconds = wod.Duration ?? wod.TimeCap ?? 0,
+            TimeCapSeconds  = wod.TimeCap,
+            DurationLabel   = wod.DurationDisplay,
+            Notes           = wod.Notes,
+            HeroWodUniqueId = wod.UniqueId,
+            HeroWodName     = wod.Name,
+            WodDescription  = wod.WodDescription,
+            CountsDown      = true,
+            SupportsRounds  = false
+        },
+        WorkoutTypes.Tabata => new WorkoutConfigurationRequest
+        {
+            Type            = WorkoutTypes.Tabata,
+            TypeDisplayName = WorkoutTypes.ToDisplayName(wod.Type),
+            DurationSeconds = wod.Duration ?? wod.TimeCap ?? 0,
+            TimeCapSeconds  = wod.TimeCap,
+            DurationLabel   = wod.DurationDisplay,
+            Notes           = wod.Notes,
+            HeroWodUniqueId = wod.UniqueId,
+            HeroWodName     = wod.Name,
+            WodDescription  = wod.WodDescription,
+            CountsDown      = true,
+            SupportsRounds  = false
+        },
         _ => new WorkoutConfigurationRequest
         {
             Type            = wod.Type,
@@ -445,16 +400,7 @@ public partial class HeroWodsPage : ContentPage
         }
     };
 
-
-    private static void SetChipActive(Border chipBorder, Label chipLabel, bool active)
-    {
-        chipLabel.TextColor        = active ? Color.FromArgb("#00363D") : Color.FromArgb("#8A8A8A");
-        chipBorder.BackgroundColor = active ? Color.FromArgb("#DAFF6E") : Color.FromArgb("#262626");
-    }
-
-    // History modal
-
-    private async void OnHistoryIconTapped(object? sender, TappedEventArgs e)
+    private async void OnHistoryIconClicked(object? sender, EventArgs e)
     {
         if (_selectedWod is null)
             return;
@@ -522,17 +468,33 @@ public partial class HeroWodsPage : ContentPage
             ApplyFilters();
     }
 
-    private void CancelLongPressDetection()
+    private async void OnDeleteCustomWodClicked(object? sender, EventArgs e)
     {
-        if (_longPressCts is null)
+        if (_selectedWod is null || !_selectedWod.IsCustom)
+        {
             return;
-        _longPressCts.Cancel();
-        _longPressCts.Dispose();
-        _longPressCts = null;
+        }
+
+        var wodToDelete = _selectedWod;
+        var shouldDelete = await DisplayAlertAsync(
+            "Delete custom WOD",
+            $"Do you want to delete '{wodToDelete.Name}'?",
+            "Delete",
+            "Cancel");
+
+        if (!shouldDelete)
+        {
+            return;
+        }
+
+        await _heroWodRepository.DeleteAsync(wodToDelete.UniqueId);
+        await HideDetailSheetAsync();
+        await LoadWodsAsync();
     }
 
-    private void OnDeleteCustomWodClicked(object? sender, EventArgs e)
+    private static void SetChipActive(Border chipBorder, Label chipLabel, bool active)
     {
-        // TODO: Implement custom WOD deletion logic here
+        chipLabel.TextColor        = active ? Color.FromArgb("#00363D") : Color.FromArgb("#8A8A8A");
+        chipBorder.BackgroundColor = active ? Color.FromArgb("#DAFF6E") : Color.FromArgb("#262626");
     }
 }

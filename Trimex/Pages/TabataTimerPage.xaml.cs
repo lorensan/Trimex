@@ -83,7 +83,6 @@ public partial class TabataTimerPage : ContentPage
         _timer.Stop();
         _state = WorkoutTimerState.Completed;
         _currentRunStartedAtUtc = null;
-        // Do not overwrite the subtitle
         _ = TimerCueService.PlayCompletionSequenceAsync();
         UpdateVisualState();
     }
@@ -273,7 +272,7 @@ public partial class TabataTimerPage : ContentPage
     private void TryPlayFinalWarningCue(TimeSpan remaining)
     {
         var remainingSeconds = (int)Math.Ceiling(remaining.TotalSeconds);
-        if (remainingSeconds is < 1 or > 3 || remainingSeconds == _lastFinalWarningSecond) return;
+        if (remainingSeconds is < 1 or > 5 || remainingSeconds == _lastFinalWarningSecond) return;
         _lastFinalWarningSecond = remainingSeconds;
         _ = TimerCueService.PlayCountdownWarningAsync();
     }

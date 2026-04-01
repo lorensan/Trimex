@@ -9,251 +9,317 @@
         <Image Aspect="AspectFill" InputTransparent="True" Source="background.jpg" />
         <BoxView BackgroundColor="#0D0D0D" Opacity="0.65" />
 
-        <!-- Centered content, not full-width -->
-        <VerticalStackLayout
-            HorizontalOptions="Center"
-            Spacing="16"
-            VerticalOptions="Center">
-
-            <!-- TRIMEX title -->
-            <Label
-                CharacterSpacing="4"
-                FontFamily="OpenSansSemibold"
-                FontSize="26"
+        <Grid RowDefinitions="*,Auto">
+            <VerticalStackLayout
+                Grid.Row="0"
                 HorizontalOptions="Center"
-                Text="TRIMEX"
-                TextColor="{StaticResource AccentNeonYellow}" />
+                Spacing="16"
+                VerticalOptions="Center">
 
-            <!-- Headline -->
-            <VerticalStackLayout HorizontalOptions="Center" Spacing="2">
+                <!-- TRIMEX title -->
                 <Label
-                    CharacterSpacing="3"
+                    CharacterSpacing="4"
                     FontFamily="OpenSansSemibold"
-                    FontSize="10"
+                    FontSize="26"
                     HorizontalOptions="Center"
-                    Text="READY TO TRAIN"
-                    TextColor="{StaticResource TextSecondary}" />
-                <Label FontFamily="OpenSansSemibold" FontSize="28" HorizontalOptions="Center">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="CHOOSE YOUR " TextColor="{StaticResource TextPrimary}" />
-                            <Span Text="TIMER" TextColor="{StaticResource AccentNeonYellow}" />
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
+                    Text="TRIMEX"
+                    TextColor="{StaticResource AccentNeonYellow}" />
+
+                <!-- Headline -->
+                <VerticalStackLayout HorizontalOptions="Center" Spacing="2">
+                    <Label
+                        CharacterSpacing="3"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="10"
+                        HorizontalOptions="Center"
+                        Text="READY TO TRAIN"
+                        TextColor="{StaticResource TextSecondary}" />
+                    <Label FontFamily="OpenSansSemibold" FontSize="28" HorizontalOptions="Center">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="CHOOSE YOUR " TextColor="{StaticResource TextPrimary}" />
+                                <Span Text="TIMER" TextColor="{StaticResource AccentNeonYellow}" />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </VerticalStackLayout>
+
+                <!-- 2×2 card grid, fixed width -->
+                <Grid
+                    ColumnDefinitions="140,140"
+                    ColumnSpacing="12"
+                    HorizontalOptions="Center"
+                    RowDefinitions="Auto,Auto"
+                    RowSpacing="12">
+
+                    <!-- FOR TIME -->
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        BackgroundColor="{StaticResource SurfaceContainerLow}"
+                        HeightRequest="140"
+                        StrokeThickness="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="18" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnForTimeClicked" />
+                        </Border.GestureRecognizers>
+                        <Grid Padding="14,12,14,14" RowDefinitions="Auto,*,Auto" RowSpacing="0">
+                            <Image
+                                Grid.Row="0"
+                                HeightRequest="30"
+                                HorizontalOptions="Start"
+                                Source="cron.png"
+                                VerticalOptions="Start"
+                                WidthRequest="30" />
+                            <VerticalStackLayout Grid.Row="2" Spacing="6">
+                                <Label
+                                    FontFamily="OpenSansSemibold"
+                                    FontSize="22"
+                                    Text="FOR TIME"
+                                    TextColor="{StaticResource TextPrimary}" />
+                                <BoxView
+                                    BackgroundColor="{StaticResource AccentNeonYellow}"
+                                    CornerRadius="2"
+                                    HeightRequest="3"
+                                    HorizontalOptions="Start"
+                                    WidthRequest="28" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                    <!-- AMRAP -->
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        BackgroundColor="{StaticResource SurfaceContainerLow}"
+                        HeightRequest="140"
+                        StrokeThickness="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="18" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnAmrapClicked" />
+                        </Border.GestureRecognizers>
+                        <Grid Padding="14,12,14,14" RowDefinitions="Auto,*,Auto" RowSpacing="0">
+                            <Image
+                                Grid.Row="0"
+                                HeightRequest="30"
+                                HorizontalOptions="Start"
+                                Source="rep.png"
+                                VerticalOptions="Start"
+                                WidthRequest="30" />
+                            <VerticalStackLayout Grid.Row="2" Spacing="4">
+                                <Label
+                                    FontFamily="OpenSansSemibold"
+                                    FontSize="22"
+                                    Text="AMRAP"
+                                    TextColor="{StaticResource TextPrimary}" />
+                                <Label
+                                    CharacterSpacing="1"
+                                    FontFamily="OpenSansRegular"
+                                    FontSize="9"
+                                    Text="AS MANY ROUNDS"
+                                    TextColor="{StaticResource TextSecondary}" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                    <!-- EMOM -->
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        BackgroundColor="{StaticResource SurfaceContainerLow}"
+                        HeightRequest="140"
+                        StrokeThickness="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="18" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnEmomClicked" />
+                        </Border.GestureRecognizers>
+                        <Grid Padding="14,12,14,14" RowDefinitions="Auto,*,Auto" RowSpacing="0">
+                            <Image
+                                Grid.Row="0"
+                                HeightRequest="30"
+                                HorizontalOptions="Start"
+                                Source="watch.png"
+                                VerticalOptions="Start"
+                                WidthRequest="30" />
+                            <VerticalStackLayout Grid.Row="2" Spacing="4">
+                                <Label
+                                    FontFamily="OpenSansSemibold"
+                                    FontSize="22"
+                                    Text="EMOM"
+                                    TextColor="{StaticResource TextPrimary}" />
+                                <Label
+                                    CharacterSpacing="1"
+                                    FontFamily="OpenSansRegular"
+                                    FontSize="9"
+                                    Text="EVERY MINUTE"
+                                    TextColor="{StaticResource TextSecondary}" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                    <!-- TABATA -->
+                    <Border
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        BackgroundColor="{StaticResource SurfaceContainerLow}"
+                        HeightRequest="140"
+                        StrokeThickness="0">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="18" />
+                        </Border.StrokeShape>
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnTabataClicked" />
+                        </Border.GestureRecognizers>
+                        <Grid Padding="14,12,14,14" RowDefinitions="Auto,*,Auto" RowSpacing="0">
+                            <Image
+                                Grid.Row="0"
+                                HeightRequest="30"
+                                HorizontalOptions="Start"
+                                Source="ray.png"
+                                VerticalOptions="Start"
+                                WidthRequest="30" />
+                            <VerticalStackLayout Grid.Row="2" Spacing="8">
+                                <Label
+                                    FontFamily="OpenSansSemibold"
+                                    FontSize="22"
+                                    Text="TABATA"
+                                    TextColor="{StaticResource TextPrimary}" />
+                                <HorizontalStackLayout Spacing="4">
+                                    <BoxView
+                                        BackgroundColor="{StaticResource AccentRed}"
+                                        CornerRadius="2"
+                                        HeightRequest="3"
+                                        VerticalOptions="Center"
+                                        WidthRequest="18" />
+                                    <BoxView
+                                        BackgroundColor="#4DFF3B3B"
+                                        CornerRadius="2"
+                                        HeightRequest="3"
+                                        VerticalOptions="Center"
+                                        WidthRequest="10" />
+                                </HorizontalStackLayout>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+
+                </Grid>
+
+                <!-- HERO WOD square card, centered -->
+                <Border
+                    BackgroundColor="{StaticResource AccentNeonYellow}"
+                    HeightRequest="140"
+                    HorizontalOptions="Center"
+                    StrokeThickness="0"
+                    WidthRequest="140">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="18" />
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnHeroWodsClicked" />
+                    </Border.GestureRecognizers>
+                    <VerticalStackLayout
+                        HorizontalOptions="Center"
+                        Spacing="10"
+                        VerticalOptions="Center">
+                        <Label
+                            FontFamily="OpenSansSemibold"
+                            FontSize="13"
+                            HorizontalOptions="Center"
+                            Text="HERO WOD"
+                            TextColor="#0D0D0D"
+                            TextDecorations="Underline" />
+                        <!-- Circle with rayb.png inside -->
+                        <Border
+                            BackgroundColor="Transparent"
+                            HeightRequest="60"
+                            HorizontalOptions="Center"
+                            Stroke="#0D0D0D"
+                            StrokeThickness="2"
+                            WidthRequest="60">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="30" />
+                            </Border.StrokeShape>
+                            <Image
+                                HeightRequest="36"
+                                HorizontalOptions="Center"
+                                Source="rayb.png"
+                                VerticalOptions="Center"
+                                WidthRequest="36" />
+                        </Border>
+                    </VerticalStackLayout>
+                </Border>
+
             </VerticalStackLayout>
 
-            <!-- 2×2 card grid, fixed width -->
-            <Grid
-                ColumnDefinitions="140,140"
-                ColumnSpacing="12"
+            <Label
+                Grid.Row="1"
+                Margin="24,8,24,24"
+                FontSize="12"
                 HorizontalOptions="Center"
-                RowDefinitions="Auto,Auto"
-                RowSpacing="12">
+                HorizontalTextAlignment="Center"
+                Text="Application with love by Trimex"
+                TextColor="{StaticResource AccentNeonYellow}">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="OnApplicationInfoTapped" />
+                </Label.GestureRecognizers>
+            </Label>
+        </Grid>
 
-                <!-- FOR TIME -->
-                <Border
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    BackgroundColor="{StaticResource SurfaceContainerLow}"
-                    HeightRequest="140"
-                    StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="18" />
-                    </Border.StrokeShape>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnForTimeClicked" />
-                    </Border.GestureRecognizers>
-                    <Grid Padding="14,12,14,14" RowDefinitions="Auto,*,Auto" RowSpacing="0">
-                        <Image
-                            Grid.Row="0"
-                            HeightRequest="30"
-                            HorizontalOptions="Start"
-                            Source="cron.png"
-                            VerticalOptions="Start"
-                            WidthRequest="30" />
-                        <VerticalStackLayout Grid.Row="2" Spacing="6">
-                            <Label
-                                FontFamily="OpenSansSemibold"
-                                FontSize="22"
-                                Text="FOR TIME"
-                                TextColor="{StaticResource TextPrimary}" />
-                            <BoxView
-                                BackgroundColor="{StaticResource AccentNeonYellow}"
-                                CornerRadius="2"
-                                HeightRequest="3"
-                                HorizontalOptions="Start"
-                                WidthRequest="28" />
-                        </VerticalStackLayout>
-                    </Grid>
-                </Border>
+        <BoxView
+            x:Name="ApplicationInfoDimmer"
+            IsVisible="False"
+            Color="#99000000">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnApplicationInfoDimmerTapped" />
+            </BoxView.GestureRecognizers>
+        </BoxView>
 
-                <!-- AMRAP -->
-                <Border
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    BackgroundColor="{StaticResource SurfaceContainerLow}"
-                    HeightRequest="140"
-                    StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="18" />
-                    </Border.StrokeShape>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnAmrapClicked" />
-                    </Border.GestureRecognizers>
-                    <Grid Padding="14,12,14,14" RowDefinitions="Auto,*,Auto" RowSpacing="0">
-                        <Image
-                            Grid.Row="0"
-                            HeightRequest="30"
-                            HorizontalOptions="Start"
-                            Source="rep.png"
-                            VerticalOptions="Start"
-                            WidthRequest="30" />
-                        <VerticalStackLayout Grid.Row="2" Spacing="4">
-                            <Label
-                                FontFamily="OpenSansSemibold"
-                                FontSize="22"
-                                Text="AMRAP"
-                                TextColor="{StaticResource TextPrimary}" />
-                            <Label
-                                CharacterSpacing="1"
-                                FontFamily="OpenSansRegular"
-                                FontSize="9"
-                                Text="AS MANY ROUNDS"
-                                TextColor="{StaticResource TextSecondary}" />
-                        </VerticalStackLayout>
-                    </Grid>
-                </Border>
-
-                <!-- EMOM -->
-                <Border
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    BackgroundColor="{StaticResource SurfaceContainerLow}"
-                    HeightRequest="140"
-                    StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="18" />
-                    </Border.StrokeShape>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnEmomClicked" />
-                    </Border.GestureRecognizers>
-                    <Grid Padding="14,12,14,14" RowDefinitions="Auto,*,Auto" RowSpacing="0">
-                        <Image
-                            Grid.Row="0"
-                            HeightRequest="30"
-                            HorizontalOptions="Start"
-                            Source="watch.png"
-                            VerticalOptions="Start"
-                            WidthRequest="30" />
-                        <VerticalStackLayout Grid.Row="2" Spacing="4">
-                            <Label
-                                FontFamily="OpenSansSemibold"
-                                FontSize="22"
-                                Text="EMOM"
-                                TextColor="{StaticResource TextPrimary}" />
-                            <Label
-                                CharacterSpacing="1"
-                                FontFamily="OpenSansRegular"
-                                FontSize="9"
-                                Text="EVERY MINUTE"
-                                TextColor="{StaticResource TextSecondary}" />
-                        </VerticalStackLayout>
-                    </Grid>
-                </Border>
-
-                <!-- TABATA -->
-                <Border
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    BackgroundColor="{StaticResource SurfaceContainerLow}"
-                    HeightRequest="140"
-                    StrokeThickness="0">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="18" />
-                    </Border.StrokeShape>
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnTabataClicked" />
-                    </Border.GestureRecognizers>
-                    <Grid Padding="14,12,14,14" RowDefinitions="Auto,*,Auto" RowSpacing="0">
-                        <Image
-                            Grid.Row="0"
-                            HeightRequest="30"
-                            HorizontalOptions="Start"
-                            Source="ray.png"
-                            VerticalOptions="Start"
-                            WidthRequest="30" />
-                        <VerticalStackLayout Grid.Row="2" Spacing="8">
-                            <Label
-                                FontFamily="OpenSansSemibold"
-                                FontSize="22"
-                                Text="TABATA"
-                                TextColor="{StaticResource TextPrimary}" />
-                            <HorizontalStackLayout Spacing="4">
-                                <BoxView
-                                    BackgroundColor="{StaticResource AccentRed}"
-                                    CornerRadius="2"
-                                    HeightRequest="3"
-                                    VerticalOptions="Center"
-                                    WidthRequest="18" />
-                                <BoxView
-                                    BackgroundColor="#4DFF3B3B"
-                                    CornerRadius="2"
-                                    HeightRequest="3"
-                                    VerticalOptions="Center"
-                                    WidthRequest="10" />
-                            </HorizontalStackLayout>
-                        </VerticalStackLayout>
-                    </Grid>
-                </Border>
-
-            </Grid>
-
-            <!-- HERO WOD square card, centered -->
-            <Border
-                BackgroundColor="{StaticResource AccentNeonYellow}"
-                HeightRequest="140"
-                HorizontalOptions="Center"
-                StrokeThickness="0"
-                WidthRequest="140">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="18" />
-                </Border.StrokeShape>
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="OnHeroWodsClicked" />
-                </Border.GestureRecognizers>
-                <VerticalStackLayout
-                    HorizontalOptions="Center"
-                    Spacing="10"
-                    VerticalOptions="Center">
-                    <Label
-                        FontFamily="OpenSansSemibold"
-                        FontSize="13"
-                        HorizontalOptions="Center"
-                        Text="HERO WOD"
-                        TextColor="#0D0D0D"
-                        TextDecorations="Underline" />
-                    <!-- Circle with rayb.png inside -->
-                    <Border
-                        BackgroundColor="Transparent"
-                        HeightRequest="60"
-                        HorizontalOptions="Center"
-                        Stroke="#0D0D0D"
-                        StrokeThickness="2"
-                        WidthRequest="60">
-                        <Border.StrokeShape>
-                            <RoundRectangle CornerRadius="30" />
-                        </Border.StrokeShape>
-                        <Image
-                            HeightRequest="36"
-                            HorizontalOptions="Center"
-                            Source="rayb.png"
-                            VerticalOptions="Center"
-                            WidthRequest="36" />
-                    </Border>
-                </VerticalStackLayout>
-            </Border>
-
-        </VerticalStackLayout>
+        <Border
+            x:Name="ApplicationInfoPopup"
+            Margin="24"
+            Padding="24,20"
+            BackgroundColor="{StaticResource Surface}"
+            HorizontalOptions="Center"
+            IsVisible="False"
+            MaximumWidthRequest="380"
+            Stroke="{StaticResource AccentNeonYellow}"
+            StrokeShape="RoundRectangle 28"
+            StrokeThickness="1"
+            VerticalOptions="Center">
+            <VerticalStackLayout Spacing="10">
+                <Label
+                    FontFamily="OpenSansSemibold"
+                    FontSize="20"
+                    HorizontalTextAlignment="Center"
+                    Text="APPLICATION INFO"
+                    TextColor="{StaticResource AccentNeonYellow}" />
+                <Label
+                    x:Name="ApplicationVersionLabel"
+                    FontSize="14"
+                    TextColor="{StaticResource TextSecondary}" />
+                <Label
+                    x:Name="ApplicationBuildLabel"
+                    FontSize="14"
+                    TextColor="{StaticResource TextSecondary}" />
+                <Label
+                    x:Name="ApplicationAuthorLabel"
+                    FontSize="14"
+                    TextColor="{StaticResource TextSecondary}" />
+                <Label
+                    x:Name="ApplicationLicenseLabel"
+                    FontSize="14"
+                    TextColor="{StaticResource TextSecondary}" />
+                <Label
+                    x:Name="ApplicationPackageLabel"
+                    FontSize="14"
+                    TextColor="{StaticResource TextSecondary}" />
+            </VerticalStackLayout>
+        </Border>
     </Grid>
 </ContentPage>

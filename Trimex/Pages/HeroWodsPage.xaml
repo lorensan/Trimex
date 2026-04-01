@@ -273,31 +273,8 @@
                                 BackgroundColor="Transparent"
                                 BorderWidth="0"
                                 Clicked="OnWodCardClicked"
-                                CornerRadius="16"
-                                Pressed="OnWodCardPressed"
-                                Released="OnWodCardReleased" />
-
-                            <ImageButton
-                                Margin="8"
-                                Padding="0"
-                                Aspect="AspectFit"
-                                BackgroundColor="Transparent"
-                                Clicked="OnDeleteCustomWodClicked"
-                                HeightRequest="34"
-                                HorizontalOptions="End"
-                                IsVisible="{Binding CanShowDelete}"
-                                Source="del.png"
-                                VerticalOptions="Start"
-                                WidthRequest="34" />
+                                CornerRadius="16" />
                         </Grid>
-                        <Border.Triggers>
-                            <DataTrigger
-                                Binding="{Binding IsPendingDelete}"
-                                TargetType="Border"
-                                Value="True">
-                                <Setter Property="Opacity" Value="0.7" />
-                            </DataTrigger>
-                        </Border.Triggers>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
@@ -394,18 +371,32 @@
                     </VerticalStackLayout>
 
                     <!--  History icon  -->
-                    <Image
+                    <HorizontalStackLayout
                         Grid.Row="1"
                         Grid.Column="1"
-                        HeightRequest="32"
-                        WidthRequest="32"
-                        Source="history.png"
+                        Margin="0,16,0,0"
+                        Spacing="12"
                         HorizontalOptions="End"
                         VerticalOptions="Start">
-                        <Image.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="OnHistoryIconTapped" />
-                        </Image.GestureRecognizers>
-                    </Image>
+                        <ImageButton
+                            x:Name="DetailDeleteCustomWodButton"
+                            Padding="0"
+                            Aspect="AspectFit"
+                            BackgroundColor="Transparent"
+                            Clicked="OnDeleteCustomWodClicked"
+                            HeightRequest="32"
+                            IsVisible="False"
+                            Source="del.png"
+                            WidthRequest="32" />
+                        <ImageButton
+                            Padding="0"
+                            Aspect="AspectFit"
+                            BackgroundColor="Transparent"
+                            Clicked="OnHistoryIconClicked"
+                            HeightRequest="32"
+                            Source="history.png"
+                            WidthRequest="32" />
+                    </HorizontalStackLayout>
 
                 </Grid>
 

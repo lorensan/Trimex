@@ -229,7 +229,7 @@ public partial class EmomTimerPage : ContentPage
     {
         var remainingSeconds = (int)Math.Ceiling(remaining.TotalSeconds);
 
-        if (remainingSeconds is < 1 or > 3 || remainingSeconds == _lastFinalWarningSecond)
+        if (remainingSeconds is < 1 or > 5 || remainingSeconds == _lastFinalWarningSecond)
         {
             return;
         }

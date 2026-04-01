@@ -28,6 +28,24 @@
                     HorizontalOptions="Fill" />
             </VerticalStackLayout>
 
+            <!-- ═══ WOD TYPE ══════════════════════════════════════════════ -->
+            <VerticalStackLayout Spacing="12">
+                <Label
+                    Text="WOD TYPE"
+                    Style="{StaticResource SectionTitleStyle}" />
+                <Border
+                    BackgroundColor="{StaticResource SurfaceContainerLow}"
+                    Padding="12,4"
+                    Stroke="{StaticResource BorderColor}"
+                    StrokeShape="RoundRectangle 14"
+                    StrokeThickness="1">
+                    <Picker
+                        x:Name="WorkoutTypePicker"
+                        BackgroundColor="Transparent"
+                        Title="Select workout type" />
+                </Border>
+            </VerticalStackLayout>
+
             <!-- ═══ SEQUENCE ═════════════════════════════════════════════════ -->
             <VerticalStackLayout Spacing="12">
                 <Label

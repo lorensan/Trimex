@@ -240,52 +240,52 @@
             <VerticalStackLayout
                 x:Name="RoundSection"
                 IsVisible="False"
-                Spacing="0"
+                Spacing="8"
                 HorizontalOptions="Center"
                 VerticalOptions="Center">
 
+                <Label
+                    CharacterSpacing="2"
+                    FontSize="10"
+                    Style="{StaticResource MutedCaptionStyle}"
+                    Text="ROUNDS"
+                    TextColor="{StaticResource AccentNeonYellow}"
+                    HorizontalTextAlignment="Center"
+                    HorizontalOptions="Center" />
+
                 <Border
-                    BackgroundColor="{StaticResource SurfaceContainerLow}"
-                    Stroke="{StaticResource BorderColor}"
-                    StrokeShape="RoundRectangle 16"
-                    StrokeThickness="1">
-                    <Border.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="OnMetricsGridTapped" />
-                    </Border.GestureRecognizers>
-                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center" VerticalOptions="Center">
-                        <Label
-                            CharacterSpacing="2"
-                            FontSize="10"
-                            Style="{StaticResource MutedCaptionStyle}"
-                            Text="ROUNDS"
-                            HorizontalTextAlignment="Center"
-                            HorizontalOptions="Center" />
-                        <HorizontalStackLayout Spacing="4" VerticalOptions="Center" HorizontalOptions="Center">
-                            <Button
-                                x:Name="RoundButton"
-                                Padding="0"
-                                BackgroundColor="Transparent"
-                                Clicked="OnRoundClicked"
-                                CornerRadius="0"
-                                FontAttributes="Bold"
-                                FontFamily="OpenSansSemibold"
-                                FontSize="30"
-                                HeightRequest="42"
-                                HorizontalOptions="Center"
-                                IsEnabled="False"
-                                MinimumWidthRequest="0"
-                                Text="00"
-                                TextColor="{StaticResource TextPrimary}" />
-                            <Label
-                                FontSize="12"
-                                Style="{StaticResource MutedCaptionStyle}"
-                                Text="TOTAL"
-                                VerticalTextAlignment="Center"
-                                HorizontalTextAlignment="Center"
-                                HorizontalOptions="Center" />
-                        </HorizontalStackLayout>
-                    </VerticalStackLayout>
+                    BackgroundColor="{StaticResource SurfaceContainerHighest}"
+                    HeightRequest="120"
+                    Stroke="Transparent"
+                    StrokeShape="RoundRectangle 60"
+                    WidthRequest="120">
+                    <Button
+                        x:Name="RoundButton"
+                        Padding="0"
+                        BackgroundColor="Transparent"
+                        Clicked="OnRoundClicked"
+                        CornerRadius="60"
+                        FontAttributes="Bold"
+                        FontFamily="OpenSansSemibold"
+                        FontSize="30"
+                        HeightRequest="120"
+                        HorizontalOptions="Center"
+                        IsEnabled="False"
+                        MinimumWidthRequest="0"
+                        Text="00"
+                        TextColor="{StaticResource AccentNeonYellow}"
+                        VerticalOptions="Center"
+                        WidthRequest="120" />
                 </Border>
+
+                <Label
+                    FontSize="12"
+                    Style="{StaticResource MutedCaptionStyle}"
+                    Text="TOTAL"
+                    TextColor="{StaticResource AccentNeonYellow}"
+                    VerticalTextAlignment="Center"
+                    HorizontalTextAlignment="Center"
+                    HorizontalOptions="Center" />
             </VerticalStackLayout>
         </Grid>
 

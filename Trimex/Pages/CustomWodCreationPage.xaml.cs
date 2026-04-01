@@ -7,11 +7,21 @@ public partial class CustomWodCreationPage : ContentPage
 {
     private readonly IHeroWodRepository _heroWodRepository;
     private readonly List<string> _exercises = [];
+    private static readonly IReadOnlyList<KeyValuePair<string, string>> WorkoutTypeOptions =
+    [
+        new(WorkoutTypes.ForTime, "For Time"),
+        new(WorkoutTypes.Amrap, "AMRAP"),
+        new(WorkoutTypes.Emom, "EMOM"),
+        new(WorkoutTypes.Tabata, "Tabata")
+    ];
 
     public CustomWodCreationPage(IHeroWodRepository heroWodRepository)
     {
         InitializeComponent();
         _heroWodRepository = heroWodRepository;
+
+        WorkoutTypePicker.ItemsSource = WorkoutTypeOptions.Select(option => option.Value).ToList();
+        WorkoutTypePicker.SelectedIndex = 0;
     }
 
     // ── Exercises queue ───────────────────────────────────────────────────────
@@ -122,13 +132,17 @@ public partial class CustomWodCreationPage : ContentPage
             return;
         }
 
+        var selectedType = GetSelectedWorkoutType();
+        var totalSeconds = ParseTimeValue();
+
         var wod = new HeroWod
         {
-            Type           = WorkoutTypes.ForTime,
+            Type           = selectedType,
             Name           = name,
             GenderCategory = string.Empty,
             IsCustom       = true,
-            TimeCap        = ParseTimeCap(),
+            Duration       = selectedType == WorkoutTypes.ForTime ? null : totalSeconds,
+            TimeCap        = selectedType == WorkoutTypes.ForTime ? totalSeconds : null,
             WodDescription = string.Join('\n', _exercises),
             Notes          = string.Empty
         };
@@ -137,7 +151,17 @@ public partial class CustomWodCreationPage : ContentPage
         await Navigation.PopAsync();
     }
 
-    private int? ParseTimeCap()
+    private string GetSelectedWorkoutType()
+    {
+        if (WorkoutTypePicker.SelectedIndex < 0 || WorkoutTypePicker.SelectedIndex >= WorkoutTypeOptions.Count)
+        {
+            return WorkoutTypes.ForTime;
+        }
+
+        return WorkoutTypeOptions[WorkoutTypePicker.SelectedIndex].Key;
+    }
+
+    private int? ParseTimeValue()
     {
         var minutes = int.TryParse(MinutesEntry.Text, out var m) ? m : 0;
         var seconds = int.TryParse(SecondsEntry.Text, out var s) ? s : 0;
