@@ -10,6 +10,7 @@ public partial class HeroWodsPage : ContentPage
     private readonly IWorkoutNoteRepository _workoutNoteRepository;
     private readonly IHeroWodHistoryRepository _heroWodHistoryRepository;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IBackupDatabase _backupDatabase;
 
     private IReadOnlyList<HeroWod> _allWods = [];
     private HeroWod? _selectedWod;
@@ -31,13 +32,15 @@ public partial class HeroWodsPage : ContentPage
         IHeroWodRepository heroWodRepository,
         IWorkoutNoteRepository workoutNoteRepository,
         IHeroWodHistoryRepository heroWodHistoryRepository,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider,
+        IBackupDatabase backupDatabase)
     {
         InitializeComponent();
         _heroWodRepository = heroWodRepository;
         _workoutNoteRepository = workoutNoteRepository;
         _heroWodHistoryRepository = heroWodHistoryRepository;
         _serviceProvider = serviceProvider;
+        _backupDatabase = backupDatabase;
     }
 
     protected override void OnAppearing()
@@ -496,5 +499,41 @@ public partial class HeroWodsPage : ContentPage
     {
         chipLabel.TextColor        = active ? Color.FromArgb("#00363D") : Color.FromArgb("#8A8A8A");
         chipBorder.BackgroundColor = active ? Color.FromArgb("#DAFF6E") : Color.FromArgb("#262626");
+    }
+
+    // ── Database Backup/Restore ─────────────────────────────────────────────
+
+    private void OnDatabaseIconClicked(object? sender, EventArgs e)
+    {
+        BackupRestoreMenu.IsVisible = true;
+        BackupRestoreMenuDimmer.IsVisible = true;
+    }
+
+    private void OnBackupRestoreMenuDimmerTapped(object? sender, TappedEventArgs e)
+    {
+        HideBackupRestoreMenu();
+    }
+
+    private void HideBackupRestoreMenu()
+    {
+        BackupRestoreMenu.IsVisible = false;
+        BackupRestoreMenuDimmer.IsVisible = false;
+    }
+
+    private async void OnBackupClicked(object? sender, TappedEventArgs e)
+    {
+        HideBackupRestoreMenu();
+        await _backupDatabase.BackupDatabaseAsync();
+    }
+
+    private async void OnRestoreClicked(object? sender, TappedEventArgs e)
+    {
+        HideBackupRestoreMenu();
+        var success = await _backupDatabase.RestoreDatabaseAsync();
+        if (success)
+        {
+            // Reload WODs after successful restore
+            await LoadWodsAsync();
+        }
     }
 }

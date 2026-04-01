@@ -16,11 +16,27 @@
             BackgroundColor="{StaticResource AppBackground}"
             Spacing="12">
 
-            <Label
-                HorizontalOptions="Start"
-                Style="{StaticResource PageTitleStyle}"
-                Text="HERO WODs"
-                TextColor="#CAFD00" />
+            <Grid ColumnDefinitions="*,Auto">
+                <Label
+                    Grid.Column="0"
+                    HorizontalOptions="Start"
+                    Style="{StaticResource PageTitleStyle}"
+                    Text="HERO WODs"
+                    TextColor="#CAFD00" />
+
+                <!--  Database backup/restore button  -->
+                <ImageButton
+                    x:Name="DatabaseIconButton"
+                    Grid.Column="1"
+                    Padding="0"
+                    Aspect="AspectFit"
+                    BackgroundColor="Transparent"
+                    Clicked="OnDatabaseIconClicked"
+                    HeightRequest="32"
+                    HorizontalOptions="End"
+                    Source="db.png"
+                    WidthRequest="32" />
+            </Grid>
 
             <!--  Search bar  -->
             <Border
@@ -308,6 +324,99 @@
             TextColor="#0D0D0D"
             VerticalOptions="End"
             WidthRequest="60" />
+
+        <!--  ═══ BACKUP/RESTORE MENU DIMMER ═════════════════════════════════  -->
+        <BoxView
+            x:Name="BackupRestoreMenuDimmer"
+            Grid.RowSpan="2"
+            IsVisible="False"
+            Color="#80000000">
+            <BoxView.GestureRecognizers>
+                <TapGestureRecognizer Tapped="OnBackupRestoreMenuDimmerTapped" />
+            </BoxView.GestureRecognizers>
+        </BoxView>
+
+        <!--  ═══ DATABASE BACKUP/RESTORE FLOATING MENU ═════════════════════  -->
+        <Border
+            x:Name="BackupRestoreMenu"
+            Grid.RowSpan="2"
+            BackgroundColor="#262626"
+            IsVisible="False"
+            Padding="24"
+            Stroke="#CAFD00"
+            StrokeShape="RoundRectangle 24"
+            StrokeThickness="2"
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            WidthRequest="280">
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="24" RowDefinitions="Auto,Auto">
+                <!--  Title spanning both columns  -->
+                <Label
+                    Grid.ColumnSpan="2"
+                    FontFamily="OpenSansSemibold"
+                    FontSize="16"
+                    HorizontalOptions="Center"
+                    Text="Database Management"
+                    TextColor="#CAFD00"
+                    Margin="0,0,0,16" />
+
+                <!--  Backup button  -->
+                <VerticalStackLayout Grid.Row="1" Grid.Column="0" Spacing="12" HorizontalOptions="Center">
+                    <Border
+                        Padding="16"
+                        BackgroundColor="#1A2900"
+                        StrokeShape="RoundRectangle 40"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnBackupClicked" />
+                        </Border.GestureRecognizers>
+                        <Image
+                            Aspect="AspectFit"
+                            HeightRequest="40"
+                            Source="download_db.png"
+                            WidthRequest="40" />
+                    </Border>
+                    <Label
+                        FontFamily="OpenSansRegular"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        LineBreakMode="WordWrap"
+                        MaximumWidthRequest="100"
+                        Text="Backup your wod database"
+                        TextColor="#CAFD00"
+                        VerticalTextAlignment="Center" />
+                </VerticalStackLayout>
+
+                <!--  Restore button  -->
+                <VerticalStackLayout Grid.Row="1" Grid.Column="1" Spacing="12" HorizontalOptions="Center">
+                    <Border
+                        Padding="16"
+                        BackgroundColor="#290C0C"
+                        StrokeShape="RoundRectangle 40"
+                        HorizontalOptions="Center"
+                        VerticalOptions="Center">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnRestoreClicked" />
+                        </Border.GestureRecognizers>
+                        <Image
+                            Aspect="AspectFit"
+                            HeightRequest="40"
+                            Source="upload_db.png"
+                            WidthRequest="40" />
+                    </Border>
+                    <Label
+                        FontFamily="OpenSansRegular"
+                        FontSize="12"
+                        HorizontalOptions="Center"
+                        LineBreakMode="WordWrap"
+                        MaximumWidthRequest="100"
+                        Text="Restore your wod database"
+                        TextColor="#CAFD00"
+                        VerticalTextAlignment="Center" />
+                </VerticalStackLayout>
+            </Grid>
+        </Border>
 
         <!--  ═══ DETAIL BOTTOM SHEET (top of stacking order) ══════════════  -->
         <Border

@@ -23,6 +23,7 @@ namespace Trimex
             builder.Services.AddSingleton<IHeroWodRepository, HeroWodRepository>();
             builder.Services.AddSingleton<IWorkoutNoteRepository, WorkoutNoteRepository>();
             builder.Services.AddSingleton<IHeroWodHistoryRepository, HeroWodHistoryRepository>();
+            builder.Services.AddSingleton<IBackupDatabase, BackupDatabase>();
 
             builder.Services.AddSingleton<AppShell>();
             builder.Services.AddSingleton<HomePage>();
