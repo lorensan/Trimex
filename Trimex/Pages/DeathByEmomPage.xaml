@@ -9,7 +9,7 @@
 
     <Grid
         BackgroundColor="{StaticResource AppBackground}"
-        RowDefinitions="Auto,Auto,*,Auto,Auto">
+        RowDefinitions="Auto,Auto,Auto,*,Auto">
 
         <!-- Row 0 · Top Navigation Bar -->
         <Grid
@@ -77,10 +77,10 @@
         <!-- Row 2 · Central Timer (carousel) -->
         <Grid
             Grid.Row="2"
-            Padding="24,0">
+            Padding="24,16,24,0">
             <Border
                 BackgroundColor="{StaticResource SurfaceContainerLow}"
-                Padding="0"
+                Padding="16"
                 Stroke="{StaticResource BorderColor}"
                 StrokeThickness="1">
                 <Border.StrokeShape>
@@ -144,15 +144,22 @@
             </Border>
         </Grid>
 
-        <!-- Row 3 · Metrics Grid (empty for now) -->
+        <!-- Row 3 · Metrics Grid (empty spacer) -->
         <Grid Grid.Row="3" Padding="24,0" />
 
         <!-- Row 4 · Start Button -->
         <Button
             Grid.Row="4"
             Clicked="OnStartClicked"
-            Style="{StaticResource GreenButtonStyle}"
-            Text="START"
+            BackgroundColor="{StaticResource AccentNeonYellow}"
+            TextColor="#0D0D0D"
+            FontFamily="OpenSansSemibold"
+            FontSize="18"
+            CornerRadius="22"
+            HeightRequest="56"
+            ImageSource="rayb.png"
+            ContentLayout="Right, 8"
+            Text="START WORKOUT"
             Margin="24,16,24,32" />
     </Grid>
 </ContentPage>
