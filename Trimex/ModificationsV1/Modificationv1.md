@@ -1,0 +1,2 @@
+# Objetive
+the main objetive is capable the solution with the lattest modification and feature described below. Using the techniques implemented and respecting the main functionality that's working currently.
