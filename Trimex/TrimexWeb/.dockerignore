@@ -1,0 +1,9 @@
+node_modules
+dist
+.git
+.gitignore
+.dockerignore
+package-lock.json
+README.md
+CHANGESV1.MD
+VIEWINFORMATION.MD

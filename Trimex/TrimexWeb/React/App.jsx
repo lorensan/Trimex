@@ -1,10 +1,42 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import Sidebar from './Sidebar';
 import RoundMenu from './RoundMenu';
 import Section from './Section';
 
+// Screenshot imports
+import amrapImg from '../ScreenShotAPP/Amrap.png';
+import customWodImg from '../ScreenShotAPP/CustomWod.png';
+import forTimeImg from '../ScreenShotAPP/ForTime.png';
+import heroImg from '../ScreenShotAPP/Hero.png';
+import mainMenuImg from '../ScreenShotAPP/mainMenu.png';
+
 const App = () => {
+    const [selectedView, setSelectedView] = React.useState(null);
+
+    const viewData = {
+        amrap: {
+            title: "AMRAP",
+            content: "Push your limits against the clock. Complete as many rounds as possible within a set time and challenge your endurance, pacing, and mental toughness. Perfect for tracking progress and testing consistency."
+        },
+        forTime: {
+            title: "FOR TIME",
+            content: "Race against time and finish the workout as fast as possible. Designed to maximize intensity and performance, this mode rewards efficiency, strategy, and raw determination."
+        },
+        hero: {
+            title: "HERO WOD",
+            content: "Honor the legacy. Take on iconic workouts dedicated to fallen heroes, designed to test your physical and mental resilience at the highest level. More than 200 hero wod (male, female and teams)."
+        },
+        custom: {
+            title: "CUSTOM WOD",
+            content: "Total flexibility, built your way. Create and tailor your own workouts to match your goals, style, and training needs without limitations."
+        },
+        mainMenu: {
+            title: "TRIMEX HUB",
+            content: "The central nervous system of your training. Access all performance protocols, track your evolution, and synchronize your biometrics in one unified interface."
+        }
+    };
+
     const fadeIn = {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
@@ -20,8 +52,40 @@ const App = () => {
         }
     };
 
+    const howItWorksRef = useRef(null);
+    const { scrollYProgress } = useScroll({
+        target: howItWorksRef,
+        offset: ["start end", "end start"]
+    });
+
+    const y1 = useTransform(scrollYProgress, [0, 1], [0, -200]);
+    const y2 = useTransform(scrollYProgress, [0, 1], [0, -400]);
+    const y3 = useTransform(scrollYProgress, [0, 1], [0, -100]);
+    const y4 = useTransform(scrollYProgress, [0, 1], [0, -300]);
+    const y5 = useTransform(scrollYProgress, [0, 1], [0, -500]);
+
+    const rotate1 = useTransform(scrollYProgress, [0, 1], [-5, 5]);
+    const rotate2 = useTransform(scrollYProgress, [0, 1], [5, -5]);
+    const rotate3 = useTransform(scrollYProgress, [0, 1], [-10, 10]);
+    const rotate4 = useTransform(scrollYProgress, [0, 1], [10, -10]);
+    const rotate5 = useTransform(scrollYProgress, [0, 1], [-2, 2]);
+
+    const imageVariants = {
+        hover: { 
+            scale: 1.1, 
+            zIndex: 20, 
+            rotate: 0,
+            transition: { duration: 0.3, ease: "easeOut" }
+        },
+        tap: { 
+            scale: 0.95,
+            transition: { duration: 0.1 }
+        }
+    };
+
     return (
         <div className="app-container">
+            <div className="static-logo-bg"></div>
             <Sidebar />
             
             <main>
@@ -34,9 +98,6 @@ const App = () => {
                     viewport={{ once: true }}
                     variants={fadeIn}
                 >
-                    <div className="hero-background"></div>
-                    <div className="hero-overlay"></div>
-                    
                     <motion.h1 
                         initial={{ scale: 0.9, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
@@ -82,35 +143,116 @@ const App = () => {
                 </Section>
 
                 <Section id="how-it-works" title="The Performance Protocol">
-                    <motion.div 
-                        className="timeline"
-                        initial="hidden"
-                        whileInView="visible"
-                        viewport={{ once: true }}
-                        variants={staggerContainer}
-                    >
-                        <motion.div className="step" variants={fadeIn}>
-                            <div className="step-number">01</div>
-                            <div className="step-content">
-                                <h3>Calibrate</h3>
-                                <p>Establish your baseline with a full-spectrum biometric scan and strength assessment.</p>
-                            </div>
+                    <div className="how-it-works-content" ref={howItWorksRef}>
+                        <motion.div 
+                            className="timeline"
+                            initial="hidden"
+                            whileInView="visible"
+                            viewport={{ once: true }}
+                            variants={staggerContainer}
+                        >
+                            <motion.div className="step" variants={fadeIn}>
+                                <div className="step-number">01</div>
+                                <div className="step-content">
+                                    <h3>Calibrate</h3>
+                                    <p>Establish your baseline with a full-spectrum biometric scan and strength assessment.</p>
+                                </div>
+                            </motion.div>
+                            <motion.div className="step" variants={fadeIn}>
+                                <div className="step-number">02</div>
+                                <div className="step-content">
+                                    <h3>Execute</h3>
+                                    <p>Follow high-intensity protocols generated specifically for your neural profile.</p>
+                                </div>
+                            </motion.div>
+                            <motion.div className="step" variants={fadeIn}>
+                                <div className="step-number">03</div>
+                                <div className="step-content">
+                                    <h3>Optimize</h3>
+                                    <p>Review granular data analytics to fine-tune recovery and future performance.</p>
+                                </div>
+                            </motion.div>
                         </motion.div>
-                        <motion.div className="step" variants={fadeIn}>
-                            <div className="step-number">02</div>
-                            <div className="step-content">
-                                <h3>Execute</h3>
-                                <p>Follow high-intensity protocols generated specifically for your neural profile.</p>
-                            </div>
-                        </motion.div>
-                        <motion.div className="step" variants={fadeIn}>
-                            <div className="step-number">03</div>
-                            <div className="step-content">
-                                <h3>Optimize</h3>
-                                <p>Review granular data analytics to fine-tune recovery and future performance.</p>
-                            </div>
-                        </motion.div>
-                    </motion.div>
+
+                        <div className="parallax-container">
+                            <motion.img 
+                                src={heroImg} 
+                                alt="Hero" 
+                                className="parallax-img img-1" 
+                                style={{ y: y1, rotate: rotate1 }} 
+                                whileHover="hover"
+                                whileTap="tap"
+                                variants={imageVariants}
+                                onClick={() => setSelectedView('hero')}
+                            />
+                            <motion.img 
+                                src={mainMenuImg} 
+                                alt="Main Menu" 
+                                className="parallax-img img-2" 
+                                style={{ y: y2, rotate: rotate2 }} 
+                                whileHover="hover"
+                                whileTap="tap"
+                                variants={imageVariants}
+                                onClick={() => setSelectedView('mainMenu')}
+                            />
+                            <motion.img 
+                                src={amrapImg} 
+                                alt="Amrap" 
+                                className="parallax-img img-3" 
+                                style={{ y: y3, rotate: rotate3 }} 
+                                whileHover="hover"
+                                whileTap="tap"
+                                variants={imageVariants}
+                                onClick={() => setSelectedView('amrap')}
+                            />
+                            <motion.img 
+                                src={forTimeImg} 
+                                alt="For Time" 
+                                className="parallax-img img-4" 
+                                style={{ y: y4, rotate: rotate4 }} 
+                                whileHover="hover"
+                                whileTap="tap"
+                                variants={imageVariants}
+                                onClick={() => setSelectedView('forTime')}
+                            />
+                            <motion.img 
+                                src={customWodImg} 
+                                alt="Custom Wod" 
+                                className="parallax-img img-5" 
+                                style={{ y: y5, rotate: rotate5 }} 
+                                whileHover="hover"
+                                whileTap="tap"
+                                variants={imageVariants}
+                                onClick={() => setSelectedView('custom')}
+                            />
+                        </div>
+
+                        <AnimatePresence>
+                            {selectedView && (
+                                <motion.div 
+                                    className="view-detail-overlay"
+                                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                                    onClick={() => setSelectedView(null)}
+                                >
+                                    <div className="detail-box" onClick={(e) => e.stopPropagation()}>
+                                        <button className="close-btn" onClick={() => setSelectedView(null)}>
+                                            <span className="material-symbols-outlined">close</span>
+                                        </button>
+                                        <div className="detail-header">
+                                            <span className="material-symbols-outlined">info</span>
+                                            <h3>{viewData[selectedView].title}</h3>
+                                        </div>
+                                        <p>{viewData[selectedView].content}</p>
+                                        <div className="detail-footer">
+                                            <span>TRIMEX PROTOCOL v1.0</span>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </div>
                 </Section>
 
                 <Section id="contact" title="JOIN THE LAB">
