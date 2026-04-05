@@ -37,6 +37,16 @@ const App = () => {
         }
     };
 
+    const [cardOrder, setCardOrder] = React.useState(['hero', 'mainMenu', 'amrap', 'forTime', 'custom']);
+
+    const handleCardClick = (viewId) => {
+        setCardOrder(prev => {
+            const newOrder = prev.filter(id => id !== viewId);
+            return [...newOrder, viewId];
+        });
+        setSelectedView(viewId);
+    };
+
     const fadeIn = {
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
@@ -71,9 +81,11 @@ const App = () => {
     const rotate5 = useTransform(scrollYProgress, [0, 1], [-2, 2]);
 
     const imageVariants = {
+        idle: {
+            scale: 1,
+        },
         hover: { 
             scale: 1.1, 
-            zIndex: 20, 
             rotate: 0,
             transition: { duration: 0.3, ease: "easeOut" }
         },
@@ -82,6 +94,16 @@ const App = () => {
             transition: { duration: 0.1 }
         }
     };
+
+    const getFloatingAnimation = (delay) => ({
+        y: [0, -15, 0],
+        transition: {
+            duration: 4,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: delay
+        }
+    });
 
     return (
         <div className="app-container">
@@ -144,114 +166,163 @@ const App = () => {
 
                 <Section id="how-it-works" title="The Performance Protocol">
                     <div className="how-it-works-content" ref={howItWorksRef}>
-                        <motion.div 
-                            className="timeline"
-                            initial="hidden"
-                            whileInView="visible"
-                            viewport={{ once: true }}
-                            variants={staggerContainer}
-                        >
-                            <motion.div className="step" variants={fadeIn}>
-                                <div className="step-number">01</div>
-                                <div className="step-content">
-                                    <h3>Calibrate</h3>
-                                    <p>Establish your baseline with a full-spectrum biometric scan and strength assessment.</p>
-                                </div>
-                            </motion.div>
-                            <motion.div className="step" variants={fadeIn}>
-                                <div className="step-number">02</div>
-                                <div className="step-content">
-                                    <h3>Execute</h3>
-                                    <p>Follow high-intensity protocols generated specifically for your neural profile.</p>
-                                </div>
-                            </motion.div>
-                            <motion.div className="step" variants={fadeIn}>
-                                <div className="step-number">03</div>
-                                <div className="step-content">
-                                    <h3>Optimize</h3>
-                                    <p>Review granular data analytics to fine-tune recovery and future performance.</p>
-                                </div>
-                            </motion.div>
-                        </motion.div>
-
-                        <div className="parallax-container">
-                            <motion.img 
-                                src={heroImg} 
-                                alt="Hero" 
-                                className="parallax-img img-1" 
-                                style={{ y: y1, rotate: rotate1 }} 
-                                whileHover="hover"
-                                whileTap="tap"
-                                variants={imageVariants}
-                                onClick={() => setSelectedView('hero')}
-                            />
-                            <motion.img 
-                                src={mainMenuImg} 
-                                alt="Main Menu" 
-                                className="parallax-img img-2" 
-                                style={{ y: y2, rotate: rotate2 }} 
-                                whileHover="hover"
-                                whileTap="tap"
-                                variants={imageVariants}
-                                onClick={() => setSelectedView('mainMenu')}
-                            />
-                            <motion.img 
-                                src={amrapImg} 
-                                alt="Amrap" 
-                                className="parallax-img img-3" 
-                                style={{ y: y3, rotate: rotate3 }} 
-                                whileHover="hover"
-                                whileTap="tap"
-                                variants={imageVariants}
-                                onClick={() => setSelectedView('amrap')}
-                            />
-                            <motion.img 
-                                src={forTimeImg} 
-                                alt="For Time" 
-                                className="parallax-img img-4" 
-                                style={{ y: y4, rotate: rotate4 }} 
-                                whileHover="hover"
-                                whileTap="tap"
-                                variants={imageVariants}
-                                onClick={() => setSelectedView('forTime')}
-                            />
-                            <motion.img 
-                                src={customWodImg} 
-                                alt="Custom Wod" 
-                                className="parallax-img img-5" 
-                                style={{ y: y5, rotate: rotate5 }} 
-                                whileHover="hover"
-                                whileTap="tap"
-                                variants={imageVariants}
-                                onClick={() => setSelectedView('custom')}
-                            />
+                        <div className="information">
+                            <AnimatePresence mode="wait">
+                                {!selectedView ? (
+                                    <motion.div 
+                                        key="timeline"
+                                        className="timeline"
+                                        initial="hidden"
+                                        whileInView="visible"
+                                        viewport={{ once: true }}
+                                        variants={staggerContainer}
+                                        exit={{ opacity: 0, x: -20 }}
+                                    >
+                                        <motion.div className="step" variants={fadeIn}>
+                                            <div className="step-number">01</div>
+                                            <div className="step-content">
+                                                <h3>Calibrate</h3>
+                                                <p>Establish your baseline with a full-spectrum biometric scan and strength assessment.</p>
+                                            </div>
+                                        </motion.div>
+                                        <motion.div className="step" variants={fadeIn}>
+                                            <div className="step-number">02</div>
+                                            <div className="step-content">
+                                                <h3>Execute</h3>
+                                                <p>Follow high-intensity protocols generated specifically for your neural profile.</p>
+                                            </div>
+                                        </motion.div>
+                                        <motion.div className="step" variants={fadeIn}>
+                                            <div className="step-number">03</div>
+                                            <div className="step-content">
+                                                <h3>Optimize</h3>
+                                                <p>Review granular data analytics to fine-tune recovery and future performance.</p>
+                                            </div>
+                                        </motion.div>
+                                    </motion.div>
+                                ) : (
+                                    <motion.div 
+                                        key="detail"
+                                        className="step"
+                                        initial={{ opacity: 0, x: 20 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: -20 }}
+                                        transition={{ duration: 0.4 }}
+                                    >
+                                        <div className="step-number" style={{ fontSize: '1rem' }}>INFO</div>
+                                        <div className="step-content">
+                                            <h3 style={{ fontSize: '2.5rem', color: 'var(--accent-primary)', marginBottom: '1.5rem' }}>{viewData[selectedView].title}</h3>
+                                            <p style={{ fontSize: '1.1rem', lineHeight: '1.8', color: 'var(--text-secondary)' }}>{viewData[selectedView].content}</p>
+                                            <button 
+                                                onClick={() => setSelectedView(null)}
+                                                style={{
+                                                    marginTop: '2rem',
+                                                    background: 'transparent',
+                                                    border: '1px solid var(--accent-primary)',
+                                                    color: 'var(--accent-primary)',
+                                                    padding: '0.75rem 1.5rem',
+                                                    borderRadius: '12px',
+                                                    cursor: 'pointer',
+                                                    fontFamily: 'Space Grotesk',
+                                                    fontWeight: '700',
+                                                    textTransform: 'uppercase',
+                                                    letterSpacing: '0.1em'
+                                                }}
+                                            >
+                                                Back to Protocol
+                                            </button>
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
 
-                        <AnimatePresence>
-                            {selectedView && (
-                                <motion.div 
-                                    className="view-detail-overlay"
-                                    initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                                    exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                                    onClick={() => setSelectedView(null)}
-                                >
-                                    <div className="detail-box" onClick={(e) => e.stopPropagation()}>
-                                        <button className="close-btn" onClick={() => setSelectedView(null)}>
-                                            <span className="material-symbols-outlined">close</span>
-                                        </button>
-                                        <div className="detail-header">
-                                            <span className="material-symbols-outlined">info</span>
-                                            <h3>{viewData[selectedView].title}</h3>
-                                        </div>
-                                        <p>{viewData[selectedView].content}</p>
-                                        <div className="detail-footer">
-                                            <span>TRIMEX PROTOCOL v1.0</span>
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+                        <div className="parallax-container">
+                            <motion.div 
+                                className="parallax-card-wrapper img-1"
+                                style={{ y: y1, zIndex: cardOrder.indexOf('hero') }}
+                                animate={getFloatingAnimation(0)}
+                            >
+                                <motion.img 
+                                    src={heroImg} 
+                                    alt="Hero" 
+                                    className="parallax-img" 
+                                    style={{ rotate: rotate1 }} 
+                                    whileHover="hover"
+                                    whileTap="tap"
+                                    variants={imageVariants}
+                                    onClick={() => handleCardClick('hero')}
+                                />
+                            </motion.div>
+
+                            <motion.div 
+                                className="parallax-card-wrapper img-2"
+                                style={{ y: y2, zIndex: cardOrder.indexOf('mainMenu') }}
+                                animate={getFloatingAnimation(0.5)}
+                            >
+                                <motion.img 
+                                    src={mainMenuImg} 
+                                    alt="Main Menu" 
+                                    className="parallax-img" 
+                                    style={{ rotate: rotate2 }} 
+                                    whileHover="hover"
+                                    whileTap="tap"
+                                    variants={imageVariants}
+                                    onClick={() => handleCardClick('mainMenu')}
+                                />
+                            </motion.div>
+
+                            <motion.div 
+                                className="parallax-card-wrapper img-3"
+                                style={{ y: y3, zIndex: cardOrder.indexOf('amrap') }}
+                                animate={getFloatingAnimation(1)}
+                            >
+                                <motion.img 
+                                    src={amrapImg} 
+                                    alt="Amrap" 
+                                    className="parallax-img" 
+                                    style={{ rotate: rotate3 }} 
+                                    whileHover="hover"
+                                    whileTap="tap"
+                                    variants={imageVariants}
+                                    onClick={() => handleCardClick('amrap')}
+                                />
+                            </motion.div>
+
+                            <motion.div 
+                                className="parallax-card-wrapper img-4"
+                                style={{ y: y4, zIndex: cardOrder.indexOf('forTime') }}
+                                animate={getFloatingAnimation(1.5)}
+                            >
+                                <motion.img 
+                                    src={forTimeImg} 
+                                    alt="For Time" 
+                                    className="parallax-img" 
+                                    style={{ rotate: rotate4 }} 
+                                    whileHover="hover"
+                                    whileTap="tap"
+                                    variants={imageVariants}
+                                    onClick={() => handleCardClick('forTime')}
+                                />
+                            </motion.div>
+
+                            <motion.div 
+                                className="parallax-card-wrapper img-5"
+                                style={{ y: y5, zIndex: cardOrder.indexOf('custom') }}
+                                animate={getFloatingAnimation(2)}
+                            >
+                                <motion.img 
+                                    src={customWodImg} 
+                                    alt="Custom Wod" 
+                                    className="parallax-img" 
+                                    style={{ rotate: rotate5 }} 
+                                    whileHover="hover"
+                                    whileTap="tap"
+                                    variants={imageVariants}
+                                    onClick={() => handleCardClick('custom')}
+                                />
+                            </motion.div>
+                        </div>
                     </div>
                 </Section>
 
@@ -298,4 +369,3 @@ const App = () => {
 };
 
 export default App;
-
